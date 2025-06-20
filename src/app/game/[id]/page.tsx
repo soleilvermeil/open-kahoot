@@ -529,18 +529,33 @@ export default function GamePage() {
 
     // Fallback if data isn't ready yet
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
-        <div className="text-white text-center">
-          <h1 className="text-2xl font-bold mb-4">Loading results...</h1>
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-pulse">
+            <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
+          </div>
+          <h1 className="text-3xl font-bold text-white mb-4">Getting your results ready...</h1>
+          <p className="text-white/80 text-lg">Hold tight, we're calculating scores!</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
-      <div className="text-white text-center">
-        <h1 className="text-2xl font-bold mb-4">Loading...</h1>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-8">
+      <div className="text-center">
+        <div className="animate-pulse">
+          <Users className="w-16 h-16 text-white/60 mx-auto mb-4" />
+        </div>
+        <h1 className="text-3xl font-bold text-white mb-4">Waiting for the next question...</h1>
+        <p className="text-white/80 text-lg">The host is preparing something exciting!</p>
+        <div className="flex justify-center mt-6">
+          <div className="animate-pulse flex space-x-1">
+            <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+            <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+            <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+          </div>
+        </div>
       </div>
     </div>
   );
