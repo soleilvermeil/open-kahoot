@@ -159,10 +159,11 @@ export default function HostPage() {
   };
 
   const createGame = () => {
-    if (!gameTitle || questions.length === 0) return;
+    if (questions.length === 0) return;
     
     const socket = getSocket();
-    socket.emit('createGame', gameTitle, questions, gameSettings, (createdGame: Game) => {
+    const title = gameTitle || 'Quiz Game'; // Use default title if none provided
+    socket.emit('createGame', title, questions, gameSettings, (createdGame: Game) => {
       setGame(createdGame);
     });
   };
@@ -319,7 +320,8 @@ export default function HostPage() {
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
           <h1 className="text-4xl font-bold text-white mb-8 text-center">Create Your Quiz</h1>
 
-          <div className="mb-8">
+          {/* Quiz Title field hidden for now */}
+          {/* <div className="mb-8">
             <label className="block text-white text-lg font-semibold mb-2">
               Quiz Title
             </label>
@@ -330,7 +332,7 @@ export default function HostPage() {
               className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
               placeholder="Enter your quiz title..."
             />
-          </div>
+          </div> */}
 
           {/* Game Settings */}
           <div className="mb-8 bg-white/5 rounded-lg p-6 border border-white/20">
@@ -466,7 +468,7 @@ export default function HostPage() {
             <div className="text-center">
               <button
                 onClick={createGame}
-                disabled={!gameTitle || questions.some(q => !q.question || q.options.some(o => !o))}
+                disabled={questions.some(q => !q.question || q.options.some(o => !o))}
                 className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
               >
                 Create Game
