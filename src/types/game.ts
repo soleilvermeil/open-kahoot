@@ -73,6 +73,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   createGame: (title: string, questions: Question[], settings: GameSettings, callback: (game: Game) => void) => void;
   joinGame: (pin: string, playerName: string, callback: (success: boolean, game?: Game) => void) => void;
+  validateGame: (gameId: string, callback: (valid: boolean, game?: Game) => void) => void;
   startGame: (gameId: string) => void;
   submitAnswer: (gameId: string, questionId: string, answerIndex: number) => void;
   nextQuestion: (gameId: string) => void;

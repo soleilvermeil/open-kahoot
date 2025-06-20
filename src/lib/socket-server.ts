@@ -41,6 +41,16 @@ export class GameServer {
         callback(result.success, result.game);
       });
 
+      socket.on('validateGame', (gameId, callback) => {
+        const game = this.games.get(gameId);
+        if (game && game.players.find(p => p.isHost)) {
+          socket.join(game.id);
+          callback(true, game);
+        } else {
+          callback(false);
+        }
+      });
+
       socket.on('startGame', (gameId) => {
         const game = this.games.get(gameId);
         if (game && this.isHost(socket.id, game)) {

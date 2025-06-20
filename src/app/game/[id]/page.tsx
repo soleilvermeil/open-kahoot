@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Eye, Users } from 'lucide-react';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { Clock, Trophy, ChevronRight, Eye, Users, AlertCircle } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
 
 export default function GamePage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const gameId = params.id as string;
   const isHost = searchParams.get('host') === 'true';
   const isPlayer = searchParams.get('player') === 'true';
@@ -22,10 +23,30 @@ export default function GamePage() {
   const [questionStats, setQuestionStats] = useState<GameStats | null>(null);
   const [personalResult, setPersonalResult] = useState<PersonalResult | null>(null);
   const [finalScores, setFinalScores] = useState<Player[]>([]);
-  const [gameStatus, setGameStatus] = useState<'waiting' | 'started' | 'thinking' | 'answering' | 'results' | 'finished'>('waiting');
+  const [gameStatus, setGameStatus] = useState<'waiting' | 'started' | 'question' | 'results' | 'finished'>('waiting');
+  const [gameError, setGameError] = useState<string | null>(null);
+  const [isValidating, setIsValidating] = useState(true);
 
   useEffect(() => {
     const socket = getSocket();
+
+    // Validate game exists when component mounts
+    socket.emit('validateGame', gameId, (valid: boolean, gameData?: Game) => {
+      setIsValidating(false);
+      if (valid && gameData) {
+        setGame(gameData);
+        setGameStatus(gameData.status);
+        
+        // Socket already joined the game room in the validateGame handler
+        // No need to call joinGame again
+      } else {
+        setGameError('Game not found or no longer available');
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          router.push('/');
+        }, 3000);
+      }
+    });
 
     socket.on('gameStarted', (gameData: Game) => {
       setGame(gameData);
@@ -40,7 +61,7 @@ export default function GamePage() {
       setHasAnswered(false);
       setQuestionStats(null);
       setPersonalResult(null);
-      setGameStatus('thinking');
+      setGameStatus('question');
       
       // Timer countdown for thinking phase
       const timer = setInterval(() => {
@@ -59,7 +80,7 @@ export default function GamePage() {
     socket.on('answeringPhase', (answerTime: number) => {
       setTimeLeft(answerTime);
       setPhase('answering');
-      setGameStatus('answering');
+      setGameStatus('question');
       
       // Timer countdown for answering phase
       const timer = setInterval(() => {
@@ -126,6 +147,39 @@ export default function GamePage() {
     'bg-yellow-500 hover:bg-yellow-600 border-yellow-400',
     'bg-green-500 hover:bg-green-600 border-green-400'
   ];
+
+  // Loading/Validation screen
+  if (isValidating) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <h1 className="text-2xl font-bold text-white mb-2">Validating game...</h1>
+          <p className="text-white/80">Please wait while we check the game status</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error screen
+  if (gameError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center p-8">
+        <div className="text-center">
+          <AlertCircle className="w-16 h-16 text-red-300 mx-auto mb-4" />
+          <h1 className="text-4xl font-bold text-white mb-4">Game Not Found</h1>
+          <p className="text-white/80 text-xl mb-6">{gameError}</p>
+          <p className="text-white/60 mb-4">Redirecting to home page...</p>
+          <button
+            onClick={() => router.push('/')}
+            className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          >
+            Go Home Now
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Waiting screen
   if (gameStatus === 'waiting' || gameStatus === 'started') {
@@ -198,7 +252,7 @@ export default function GamePage() {
   }
 
   // Thinking Phase - Show only question for host, waiting message for players
-  if (gameStatus === 'thinking' && currentQuestion) {
+  if (gameStatus === 'question' && phase === 'thinking' && currentQuestion) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-600 p-8">
         <div className="container mx-auto max-w-4xl">
@@ -244,7 +298,7 @@ export default function GamePage() {
   }
 
   // Answering Phase
-  if (gameStatus === 'answering' && currentQuestion) {
+  if (gameStatus === 'question' && phase === 'answering' && currentQuestion) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600 p-8">
         <div className="container mx-auto max-w-4xl">
