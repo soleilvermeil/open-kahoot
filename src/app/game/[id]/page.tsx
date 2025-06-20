@@ -175,9 +175,6 @@ export default function GamePage() {
                   <div className="flex items-center gap-4">
                     <div className="text-2xl font-bold text-white">
                       {index + 1}
-                      {index === 0 && '🥇'}
-                      {index === 1 && '🥈'}
-                      {index === 2 && '🥉'}
                     </div>
                     <div className="text-white font-semibold text-lg">{player.name}</div>
                   </div>
@@ -416,9 +413,9 @@ export default function GamePage() {
                   personalResult.wasCorrect ? 'bg-green-500/30' : 'bg-red-500/30'
                 }`}>
                   {personalResult.wasCorrect ? (
-                    <span className="text-6xl">🎉</span>
+                    <span className="text-6xl text-green-300">✓</span>
                   ) : (
-                    <span className="text-6xl">😔</span>
+                    <span className="text-6xl text-red-300">✗</span>
                   )}
                 </div>
                 <h1 className="text-5xl font-bold text-white mb-4">
@@ -440,9 +437,6 @@ export default function GamePage() {
                 <p className="text-white/80 text-lg mb-2">Current Position</p>
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <span className="text-4xl font-bold text-white">#{personalResult.position}</span>
-                  {personalResult.position === 1 && <span className="text-3xl">👑</span>}
-                  {personalResult.position === 2 && <span className="text-3xl">🥈</span>}
-                  {personalResult.position === 3 && <span className="text-3xl">🥉</span>}
                 </div>
                 
                 {personalResult.pointsBehind > 0 ? (
@@ -452,12 +446,12 @@ export default function GamePage() {
                       <span className="font-bold text-white">{personalResult.nextPlayerName}</span>
                     </p>
                     <p className="text-yellow-300 font-semibold text-lg mt-2">
-                      Catch up on the next question! 🏃‍♂️
+                      Catch up on the next question!
                     </p>
                   </div>
                 ) : (
                   <p className="text-yellow-300 font-semibold text-lg">
-                    You're in the lead! Keep it up! 🌟
+                    You're in the lead! Keep it up!
                   </p>
                 )}
               </div>
