@@ -26,12 +26,14 @@ export interface Game {
 }
 
 export interface Player {
-  id: string;
+  id: string; // This is now the persistent player ID (UUID)
+  socketId: string; // Current socket connection ID
   name: string;
   score: number;
   isHost: boolean;
   currentAnswer?: number;
   answerTime?: number;
+  isConnected: boolean; // Track connection status
 }
 
 export interface GameStats {
@@ -65,17 +67,19 @@ export interface ServerToClientEvents {
   personalResult: (result: PersonalResult) => void;
   gameFinished: (finalScores: Player[]) => void;
   playerJoined: (player: Player) => void;
+  playerReconnected: (player: Player) => void;
   playerLeft: (playerId: string) => void;
+  playerDisconnected: (playerId: string) => void;
   error: (message: string) => void;
   playerAnswered: (playerId: string) => void;
 }
 
 export interface ClientToServerEvents {
   createGame: (title: string, questions: Question[], settings: GameSettings, callback: (game: Game) => void) => void;
-  joinGame: (pin: string, playerName: string, callback: (success: boolean, game?: Game) => void) => void;
+  joinGame: (pin: string, playerName: string, persistentId?: string, callback?: (success: boolean, game?: Game, playerId?: string) => void) => void;
   validateGame: (gameId: string, callback: (valid: boolean, game?: Game) => void) => void;
   startGame: (gameId: string) => void;
-  submitAnswer: (gameId: string, questionId: string, answerIndex: number) => void;
+  submitAnswer: (gameId: string, questionId: string, answerIndex: number, persistentId?: string) => void;
   nextQuestion: (gameId: string) => void;
   endGame: (gameId: string) => void;
 } 

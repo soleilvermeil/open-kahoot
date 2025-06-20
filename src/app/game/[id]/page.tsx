@@ -30,23 +30,57 @@ export default function GamePage() {
   useEffect(() => {
     const socket = getSocket();
 
-    // Validate game exists when component mounts
-    socket.emit('validateGame', gameId, (valid: boolean, gameData?: Game) => {
-      setIsValidating(false);
-      if (valid && gameData) {
-        setGame(gameData);
-        setGameStatus(gameData.status);
-        
-        // Socket already joined the game room in the validateGame handler
-        // No need to call joinGame again
-      } else {
-        setGameError('Game not found or no longer available');
-        // Redirect after 3 seconds
-        setTimeout(() => {
-          router.push('/');
-        }, 3000);
-      }
-    });
+    // Check if this is a player trying to rejoin a game
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPlayer = urlParams.get('player') === 'true';
+    
+    if (isPlayer) {
+      // Player is rejoining - first validate game to get the PIN
+      socket.emit('validateGame', gameId, (valid: boolean, gameData?: Game) => {
+        if (valid && gameData) {
+          // Game exists, now check if we have a stored player ID for this game's PIN
+          const gamePin = gameData.pin;
+          const storedId = localStorage.getItem(`player_id_${gamePin}`) || undefined;
+          
+          if (storedId) {
+            // We have a stored player ID, try to rejoin
+            const playerName = gameData.players.find(p => p.id === storedId)?.name || 'Player';
+            
+            socket.emit('joinGame', gamePin, playerName, storedId, (success: boolean, game?: Game) => {
+              setIsValidating(false);
+              if (success && game) {
+                setGame(game);
+                setGameStatus(game.status);
+              } else {
+                setGameError('Unable to rejoin game. You may have been removed.');
+                setTimeout(() => router.push('/'), 3000);
+              }
+            });
+          } else {
+            // No stored player ID for this game
+            setIsValidating(false);
+            setGameError('No player data found for this game. Please join the game again.');
+            setTimeout(() => router.push('/'), 3000);
+          }
+        } else {
+          setIsValidating(false);
+          setGameError('Game not found or no longer available');
+          setTimeout(() => router.push('/'), 3000);
+        }
+      });
+    } else {
+      // Host validation - just validate game exists
+      socket.emit('validateGame', gameId, (valid: boolean, gameData?: Game) => {
+        setIsValidating(false);
+        if (valid && gameData) {
+          setGame(gameData);
+          setGameStatus(gameData.status);
+        } else {
+          setGameError('Game not found or no longer available');
+          setTimeout(() => router.push('/'), 3000);
+        }
+      });
+    }
 
     socket.on('gameStarted', (gameData: Game) => {
       setGame(gameData);
@@ -131,8 +165,12 @@ export default function GamePage() {
     setSelectedAnswer(answerIndex);
     setHasAnswered(true);
     
+    // Get persistent player ID from localStorage
+    const gamePin = game?.pin;
+    const persistentId = gamePin ? localStorage.getItem(`player_id_${gamePin}`) || undefined : undefined;
+    
     const socket = getSocket();
-    socket.emit('submitAnswer', gameId, currentQuestion.id, answerIndex);
+    socket.emit('submitAnswer', gameId, currentQuestion.id, answerIndex, persistentId);
   };
 
   const nextQuestion = () => {

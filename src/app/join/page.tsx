@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { LogIn, Gamepad2, Lock } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
 import { getSocket } from '@/lib/socket-client';
 import type { Game } from '@/types/game';
 
@@ -32,10 +33,21 @@ function JoinGameForm() {
     
     const socket = getSocket();
     
-    socket.emit('joinGame', pin, playerName, (success: boolean, game?: Game) => {
+    // Get or generate persistent player ID
+    const storageKey = `player_id_${pin}`;
+    let persistentId = localStorage.getItem(storageKey);
+    
+    if (!persistentId) {
+      persistentId = uuidv4();
+      localStorage.setItem(storageKey, persistentId);
+    }
+    
+    socket.emit('joinGame', pin, playerName, persistentId, (success: boolean, game?: Game, playerId?: string) => {
       setIsJoining(false);
       
-      if (success && game) {
+      if (success && game && playerId) {
+        // Store the player ID for this game
+        localStorage.setItem(storageKey, playerId);
         router.push(`/game/${game.id}?player=true`);
       } else {
         setError('Game not found or already started. Please check the PIN and try again.');
