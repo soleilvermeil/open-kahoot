@@ -45,6 +45,15 @@ export interface GameStats {
   totalPlayers: number;
 }
 
+export interface PersonalResult {
+  wasCorrect: boolean;
+  pointsEarned: number;
+  totalScore: number;
+  position: number;
+  pointsBehind: number;
+  nextPlayerName: string | null;
+}
+
 // Socket Events
 export interface ServerToClientEvents {
   gameJoined: (game: Game) => void;
@@ -53,6 +62,7 @@ export interface ServerToClientEvents {
   thinkingPhase: (question: Question, thinkTime: number) => void;
   answeringPhase: (answerTime: number) => void;
   questionEnded: (stats: GameStats) => void;
+  personalResult: (result: PersonalResult) => void;
   gameFinished: (finalScores: Player[]) => void;
   playerJoined: (player: Player) => void;
   playerLeft: (playerId: string) => void;

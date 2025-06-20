@@ -235,7 +235,36 @@ class GameServer {
       totalPlayers: nonHostPlayers.length
     };
 
+    // Send general stats to host
     this.io.to(game.id).emit('questionEnded', stats);
+
+    // Send personalized results to each player
+    nonHostPlayers.forEach(player => {
+      const wasCorrect = player.currentAnswer === question.correctAnswer;
+      let pointsEarned = 0;
+      
+      if (wasCorrect && player.answerTime) {
+        const timeBonus = Math.max(0, (game.settings.answerTime * 1000 - player.answerTime) / 1000);
+        pointsEarned = Math.round(1000 + (timeBonus * 10));
+      }
+
+      // Calculate position and points behind next player
+      const sortedPlayers = [...nonHostPlayers].sort((a, b) => b.score - a.score);
+      const playerPosition = sortedPlayers.findIndex(p => p.id === player.id);
+      const nextPlayer = sortedPlayers[playerPosition - 1];
+      const pointsBehind = nextPlayer ? nextPlayer.score - player.score : 0;
+
+      const personalResult = {
+        wasCorrect,
+        pointsEarned,
+        totalScore: player.score,
+        position: playerPosition + 1,
+        pointsBehind,
+        nextPlayerName: nextPlayer?.name || null
+      };
+
+      this.io.to(player.id).emit('personalResult', personalResult);
+    });
   }
 
   endGame(game) {

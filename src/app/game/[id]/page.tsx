@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { Clock, Trophy, ChevronRight, Eye, Users } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
-import type { Game, Question, GameStats, Player } from '@/types/game';
+import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
 
 export default function GamePage() {
   const params = useParams();
@@ -20,6 +20,7 @@ export default function GamePage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [questionStats, setQuestionStats] = useState<GameStats | null>(null);
+  const [personalResult, setPersonalResult] = useState<PersonalResult | null>(null);
   const [finalScores, setFinalScores] = useState<Player[]>([]);
   const [gameStatus, setGameStatus] = useState<'waiting' | 'started' | 'thinking' | 'answering' | 'results' | 'finished'>('waiting');
 
@@ -38,6 +39,7 @@ export default function GamePage() {
       setSelectedAnswer(null);
       setHasAnswered(false);
       setQuestionStats(null);
+      setPersonalResult(null);
       setGameStatus('thinking');
       
       // Timer countdown for thinking phase
@@ -78,6 +80,10 @@ export default function GamePage() {
       setGameStatus('results');
     });
 
+    socket.on('personalResult', (result: PersonalResult) => {
+      setPersonalResult(result);
+    });
+
     socket.on('gameFinished', (scores: Player[]) => {
       setFinalScores(scores);
       setGameStatus('finished');
@@ -92,6 +98,7 @@ export default function GamePage() {
       socket.off('thinkingPhase');
       socket.off('answeringPhase');
       socket.off('questionEnded');
+      socket.off('personalResult');
       socket.off('gameFinished');
       socket.off('playerAnswered');
     };
@@ -325,58 +332,59 @@ export default function GamePage() {
     );
   }
 
-  // Results screen - Now safe to show correct answers
-  if (gameStatus === 'results' && questionStats) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-600 to-blue-600 p-8">
-        <div className="container mx-auto max-w-4xl">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-6">
-                {questionStats.question.question}
-              </h1>
-              <p className="text-white/80 text-2xl">
-                {questionStats.correctAnswers} out of {questionStats.totalPlayers} players got it right!
-              </p>
-            </div>
+  // Results screen - Different views for host and players
+  if (gameStatus === 'results') {
+    // Host view - Show full statistics
+    if (isHost && questionStats) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-green-600 to-blue-600 p-8">
+          <div className="container mx-auto max-w-4xl">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-white mb-6">
+                  {questionStats.question.question}
+                </h1>
+                <p className="text-white/80 text-2xl">
+                  {questionStats.correctAnswers} out of {questionStats.totalPlayers} players got it right!
+                </p>
+              </div>
 
-            <div className="space-y-4 mb-8">
-              {questionStats.answers.map((answer, index) => (
-                <div key={index} className="relative">
-                  <div className={`flex items-center justify-between p-6 rounded-lg border-2 ${
-                    index === questionStats.question.correctAnswer
-                      ? 'bg-green-500/30 border-green-400 ring-2 ring-green-300'
-                      : 'bg-white/10 border-white/20'
-                  }`}>
-                    <div className="flex items-center gap-6">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl ${
-                        choiceColors[index].split(' ')[0]
-                      }`}>
-                        {String.fromCharCode(65 + index)}
+              <div className="space-y-4 mb-8">
+                {questionStats.answers.map((answer, index) => (
+                  <div key={index} className="relative">
+                    <div className={`flex items-center justify-between p-6 rounded-lg border-2 ${
+                      index === questionStats.question.correctAnswer
+                        ? 'bg-green-500/30 border-green-400 ring-2 ring-green-300'
+                        : 'bg-white/10 border-white/20'
+                    }`}>
+                      <div className="flex items-center gap-6">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl ${
+                          choiceColors[index].split(' ')[0]
+                        }`}>
+                          {String.fromCharCode(65 + index)}
+                        </div>
+                        <span className="text-white font-semibold text-xl">
+                          {questionStats.question.options[index]}
+                        </span>
+                        {index === questionStats.question.correctAnswer && (
+                          <span className="text-green-300 font-bold text-lg">✓ CORRECT</span>
+                        )}
                       </div>
-                      <span className="text-white font-semibold text-xl">
-                        {questionStats.question.options[index]}
-                      </span>
-                      {index === questionStats.question.correctAnswer && (
-                        <span className="text-green-300 font-bold text-lg">✓ CORRECT</span>
-                      )}
+                      <div className="flex items-center gap-4">
+                        <span className="text-white font-bold text-xl">{answer.count}</span>
+                        <span className="text-white/80 text-lg">({answer.percentage}%)</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-white font-bold text-xl">{answer.count}</span>
-                      <span className="text-white/80 text-lg">({answer.percentage}%)</span>
-                    </div>
+                    <div 
+                      className={`absolute bottom-0 left-0 h-2 rounded-b-lg transition-all duration-1000 ${
+                        index === questionStats.question.correctAnswer ? 'bg-green-400' : 'bg-blue-400'
+                      }`}
+                      style={{ width: `${answer.percentage}%` }}
+                    />
                   </div>
-                  <div 
-                    className={`absolute bottom-0 left-0 h-2 rounded-b-lg transition-all duration-1000 ${
-                      index === questionStats.question.correctAnswer ? 'bg-green-400' : 'bg-blue-400'
-                    }`}
-                    style={{ width: `${answer.percentage}%` }}
-                  />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            {isHost && (
               <div className="text-center">
                 <button
                   onClick={nextQuestion}
@@ -386,14 +394,96 @@ export default function GamePage() {
                   <ChevronRight className="w-6 h-6" />
                 </button>
               </div>
-            )}
+            </div>
+          </div>
+        </div>
+      );
+    }
 
-            {isPlayer && (
+    // Player view - Show personal competitive results
+    if (isPlayer && personalResult) {
+      return (
+        <div className={`min-h-screen bg-gradient-to-br ${
+          personalResult.wasCorrect 
+            ? 'from-green-600 to-emerald-600' 
+            : 'from-red-600 to-pink-600'
+        } p-8`}>
+          <div className="container mx-auto max-w-2xl">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 text-center">
+              {/* Result Header */}
+              <div className="mb-8">
+                <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
+                  personalResult.wasCorrect ? 'bg-green-500/30' : 'bg-red-500/30'
+                }`}>
+                  {personalResult.wasCorrect ? (
+                    <span className="text-6xl">🎉</span>
+                  ) : (
+                    <span className="text-6xl">😔</span>
+                  )}
+                </div>
+                <h1 className="text-5xl font-bold text-white mb-4">
+                  {personalResult.wasCorrect ? 'Correct!' : 'Incorrect!'}
+                </h1>
+              </div>
+
+              {/* Points Earned */}
+              <div className="bg-white/10 rounded-xl p-6 mb-6">
+                <p className="text-white/80 text-lg mb-2">Points Earned This Question</p>
+                <p className="text-4xl font-bold text-white">
+                  +{personalResult.pointsEarned}
+                </p>
+                <p className="text-white/80 text-lg mt-2">Total Score: {personalResult.totalScore}</p>
+              </div>
+
+              {/* Position & Competition */}
+              <div className="bg-white/10 rounded-xl p-6 mb-6">
+                <p className="text-white/80 text-lg mb-2">Current Position</p>
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <span className="text-4xl font-bold text-white">#{personalResult.position}</span>
+                  {personalResult.position === 1 && <span className="text-3xl">👑</span>}
+                  {personalResult.position === 2 && <span className="text-3xl">🥈</span>}
+                  {personalResult.position === 3 && <span className="text-3xl">🥉</span>}
+                </div>
+                
+                {personalResult.pointsBehind > 0 ? (
+                  <div className="text-center">
+                    <p className="text-white/80 text-lg">
+                      {personalResult.pointsBehind} points behind{' '}
+                      <span className="font-bold text-white">{personalResult.nextPlayerName}</span>
+                    </p>
+                    <p className="text-yellow-300 font-semibold text-lg mt-2">
+                      Catch up on the next question! 🏃‍♂️
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-yellow-300 font-semibold text-lg">
+                    You're in the lead! Keep it up! 🌟
+                  </p>
+                )}
+              </div>
+
+              {/* Waiting Message */}
               <div className="text-center">
                 <p className="text-white/80 text-lg">Waiting for host to continue...</p>
+                <div className="flex justify-center mt-4">
+                  <div className="animate-pulse flex space-x-1">
+                    <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                    <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                    <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
           </div>
+        </div>
+      );
+    }
+
+    // Fallback if data isn't ready yet
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
+        <div className="text-white text-center">
+          <h1 className="text-2xl font-bold mb-4">Loading results...</h1>
         </div>
       </div>
     );
