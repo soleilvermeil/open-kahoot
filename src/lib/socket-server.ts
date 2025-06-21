@@ -104,10 +104,25 @@ export class GameServer {
         console.log(`➡️ [NEXT_QUESTION] Host ${socket.id} requesting next question for game: ${gameId}`);
         const game = this.games.get(gameId);
         if (game && this.isHost(socket.id, game)) {
-          console.log(`✅ [NEXT_QUESTION] Moving to next question (${game.currentQuestionIndex + 2}/${game.questions.length})`);
-          this.nextQuestion(game);
+          if (game.status === 'leaderboard') {
+            console.log(`✅ [NEXT_QUESTION] Moving to next question (${game.currentQuestionIndex + 2}/${game.questions.length})`);
+            this.nextQuestion(game);
+          } else {
+            console.log(`❌ [NEXT_QUESTION] Failed - Game status is '${game.status}', expected 'leaderboard'`);
+          }
         } else {
           console.log(`❌ [NEXT_QUESTION] Failed - ${!game ? 'Game not found' : 'Not authorized (not host)'}`);
+        }
+      });
+
+      socket.on('showLeaderboard', (gameId) => {
+        console.log(`🏆 [SHOW_LEADERBOARD] Host ${socket.id} requesting leaderboard for game: ${gameId}`);
+        const game = this.games.get(gameId);
+        if (game && this.isHost(socket.id, game)) {
+          console.log(`✅ [SHOW_LEADERBOARD] Showing leaderboard for game ${game.pin}`);
+          this.showLeaderboard(game);
+        } else {
+          console.log(`❌ [SHOW_LEADERBOARD] Failed - ${!game ? 'Game not found' : 'Not authorized (not host)'}`);
         }
       });
 
@@ -361,6 +376,23 @@ export class GameServer {
     });
     
     console.log(`📤 [PERSONAL_RESULTS] Sent personal results to ${personalResultsSent}/${connectedPlayers.length} connected players for game ${game.pin}`);
+  }
+
+  private showLeaderboard(game: Game) {
+    console.log(`🏆 [SHOW_LEADERBOARD] Showing leaderboard for game ${game.pin}`);
+    game.status = 'leaderboard';
+    
+    // Get current leaderboard (sorted by score)
+    const leaderboard = game.players
+      .filter(p => !p.isHost)
+      .sort((a, b) => b.score - a.score);
+    
+    console.log(`📊 [LEADERBOARD] Current standings for game ${game.pin}:`);
+    leaderboard.forEach((player, index) => {
+      console.log(`  ${index + 1}. ${player.name}: ${player.score} points`);
+    });
+    
+    this.io.to(game.id).emit('leaderboardShown', leaderboard);
   }
 
   private endGame(game: Game) {

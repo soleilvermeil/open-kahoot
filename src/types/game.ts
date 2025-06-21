@@ -19,7 +19,7 @@ export interface Game {
   questions: Question[];
   settings: GameSettings;
   currentQuestionIndex: number;
-  status: 'waiting' | 'started' | 'question' | 'results' | 'finished';
+  status: 'waiting' | 'started' | 'question' | 'results' | 'leaderboard' | 'finished';
   players: Player[];
   questionStartTime?: number;
   phaseStartTime?: number;
@@ -65,6 +65,7 @@ export interface ServerToClientEvents {
   answeringPhase: (answerTime: number) => void;
   questionEnded: (stats: GameStats) => void;
   personalResult: (result: PersonalResult) => void;
+  leaderboardShown: (leaderboard: Player[]) => void;
   gameFinished: (finalScores: Player[]) => void;
   playerJoined: (player: Player) => void;
   playerReconnected: (player: Player) => void;
@@ -81,5 +82,6 @@ export interface ClientToServerEvents {
   startGame: (gameId: string) => void;
   submitAnswer: (gameId: string, questionId: string, answerIndex: number, persistentId?: string) => void;
   nextQuestion: (gameId: string) => void;
+  showLeaderboard: (gameId: string) => void;
   endGame: (gameId: string) => void;
 } 

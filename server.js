@@ -17,7 +17,9 @@ class GameServer {
     this.io = io;
     this.games = new Map();
     this.gamesByPin = new Map();
+    this.timers = new Map(); // Store all active timers by game ID
     this.setupEventHandlers();
+    this.setupPeriodicLogging();
   }
 
   setupEventHandlers() {
@@ -92,9 +94,28 @@ class GameServer {
       });
 
       socket.on('nextQuestion', (gameId) => {
+        console.log(`➡️ [NEXT_QUESTION] Host ${socket.id} requesting next question for game: ${gameId}`);
         const game = this.games.get(gameId);
         if (game && this.isHost(socket.id, game)) {
-          this.nextQuestion(game);
+          if (game.status === 'leaderboard') {
+            console.log(`✅ [NEXT_QUESTION] Moving to next question (${game.currentQuestionIndex + 2}/${game.questions.length})`);
+            this.nextQuestion(game);
+          } else {
+            console.log(`❌ [NEXT_QUESTION] Failed - Game status is '${game.status}', expected 'leaderboard'`);
+          }
+        } else {
+          console.log(`❌ [NEXT_QUESTION] Failed - ${!game ? 'Game not found' : 'Not authorized (not host)'}`);
+        }
+      });
+
+      socket.on('showLeaderboard', (gameId) => {
+        console.log(`🏆 [SHOW_LEADERBOARD] Host ${socket.id} requesting leaderboard for game: ${gameId}`);
+        const game = this.games.get(gameId);
+        if (game && this.isHost(socket.id, game)) {
+          console.log(`✅ [SHOW_LEADERBOARD] Showing leaderboard for game ${game.pin}`);
+          this.showLeaderboard(game);
+        } else {
+          console.log(`❌ [SHOW_LEADERBOARD] Failed - ${!game ? 'Game not found' : 'Not authorized (not host)'}`);
         }
       });
 
@@ -160,6 +181,16 @@ class GameServer {
         // Reconnection: update socket ID and connection status
         existingPlayer.socketId = socketId;
         existingPlayer.isConnected = true;
+        
+        // Cancel any cleanup timer for this player
+        if (existingPlayer.isHost) {
+          console.log(`⏰ [RECONNECT] Cancelling host reconnection timer for game ${game.pin}`);
+          this.clearTimer(gameId, 'hostReconnect');
+        } else {
+          console.log(`⏰ [RECONNECT] Cancelling player cleanup timer for ${existingPlayer.name} in game ${game.pin}`);
+          this.clearTimer(gameId, `playerCleanup_${persistentId}`);
+        }
+        
         console.log(`Player ${existingPlayer.name} reconnected to game ${game.pin}`);
         return { success: true, game, playerId: persistentId, isReconnection: true };
       }
@@ -191,15 +222,22 @@ class GameServer {
     game.status = 'started';
     this.io.to(game.id).emit('gameStarted', game);
     
-    setTimeout(() => {
+    console.log(`🎮 [GAME_START] Starting game ${game.pin}, scheduling first question`);
+    this.setTimer(game.id, 'gameStart', () => {
       this.nextQuestion(game);
     }, 2000);
+    this.logActiveTimers(game.id);
   }
 
   nextQuestion(game) {
+    // Clear any existing phase timers
+    this.clearTimer(game.id, 'thinkingPhase');
+    this.clearTimer(game.id, 'answeringPhase');
+    
     game.currentQuestionIndex++;
     
     if (game.currentQuestionIndex >= game.questions.length) {
+      console.log(`🏁 [GAME_END] All questions completed for game ${game.pin}`);
       this.endGame(game);
       return;
     }
@@ -207,6 +245,9 @@ class GameServer {
     const question = game.questions[game.currentQuestionIndex];
     game.status = 'thinking';
     game.phaseStartTime = Date.now();
+    
+    console.log(`🤔 [THINKING_PHASE] Starting question ${game.currentQuestionIndex + 1}/${game.questions.length} for game ${game.pin}`);
+    this.logActiveTimers(game.id);
 
     // Reset player answers
     game.players.forEach(player => {
@@ -218,7 +259,7 @@ class GameServer {
     this.io.to(game.id).emit('thinkingPhase', question, game.settings.thinkTime);
 
     // After think time, start answering phase
-    setTimeout(() => {
+    this.setTimer(game.id, 'thinkingPhase', () => {
       if (game.status === 'thinking') {
         this.startAnsweringPhase(game);
       }
@@ -229,14 +270,19 @@ class GameServer {
     game.status = 'answering';
     game.questionStartTime = Date.now();
     
+    console.log(`⏰ [ANSWERING_PHASE] Starting answering phase for game ${game.pin} (${game.settings.answerTime}s)`);
     this.io.to(game.id).emit('answeringPhase', game.settings.answerTime);
 
     // Auto-end question after answer time
-    setTimeout(() => {
+    this.setTimer(game.id, 'answeringPhase', () => {
       if (game.status === 'answering') {
+        console.log(`⏱️ [TIMER_TIMEOUT] Answering phase timed out for game ${game.pin}`);
         this.endQuestion(game);
+      } else {
+        console.log(`⏱️ [TIMER_SKIP] Answering timer fired but game ${game.pin} is no longer in answering phase (status: ${game.status})`);
       }
     }, game.settings.answerTime * 1000);
+    this.logActiveTimers(game.id);
   }
 
   submitAnswer(playerId, game, questionId, answerIndex, isPersistentId = false) {
@@ -280,8 +326,12 @@ class GameServer {
     });
     console.log(`📊 [ANSWER_CHECK] Game ${game.pin}: ${answeredPlayers.length}/${connectedPlayers.length} connected players have answered (${allPlayers.length} total players)`);
     
-    if (answeredPlayers.length === connectedPlayers.length && connectedPlayers.length > 0) {
+    // Only end question early if we're in the answering phase (not thinking phase)
+    if (answeredPlayers.length === connectedPlayers.length && connectedPlayers.length > 0 && game.status === 'answering') {
       console.log(`🎯 [ALL_ANSWERED] All connected players answered, ending question early for game ${game.pin}`);
+      // Cancel the answering phase timer since we're ending early
+      console.log(`⏰ [EARLY_END] Cancelling answering phase timer due to all players answering`);
+      this.clearTimer(game.id, 'answeringPhase');
       this.endQuestion(game);
     }
   }
@@ -341,7 +391,27 @@ class GameServer {
     });
   }
 
+  showLeaderboard(game) {
+    console.log(`🏆 [SHOW_LEADERBOARD] Showing leaderboard for game ${game.pin}`);
+    game.status = 'leaderboard';
+    
+    // Get current leaderboard (sorted by score)
+    const leaderboard = game.players
+      .filter(p => !p.isHost)
+      .sort((a, b) => b.score - a.score);
+    
+    console.log(`📊 [LEADERBOARD] Current standings for game ${game.pin}:`);
+    leaderboard.forEach((player, index) => {
+      console.log(`  ${index + 1}. ${player.name}: ${player.score} points`);
+    });
+    
+    this.io.to(game.id).emit('leaderboardShown', leaderboard);
+  }
+
   endGame(game) {
+    console.log(`🏁 [END_GAME] Ending game ${game.pin}, clearing all active timers`);
+    this.logActiveTimers(game.id);
+    
     game.status = 'finished';
     const finalScores = game.players
       .filter(p => !p.isHost)
@@ -349,9 +419,16 @@ class GameServer {
     
     this.io.to(game.id).emit('gameFinished', finalScores);
     
-    setTimeout(() => {
+    // Clear all active timers for this game
+    this.clearAllTimers(game.id);
+    
+    // Schedule game cleanup
+    console.log(`🗑️ [CLEANUP_SCHEDULE] Scheduling cleanup for game ${game.pin} in 5 minutes`);
+    this.setTimer(game.id, 'gameCleanup', () => {
+      console.log(`🗑️ [CLEANUP_EXECUTE] Cleaning up game ${game.pin} data`);
       this.gamesByPin.delete(game.pin);
       this.games.delete(game.id);
+      this.clearAllTimers(game.id); // Final cleanup
     }, 5 * 60 * 1000);
   }
 
@@ -369,7 +446,7 @@ class GameServer {
           this.io.to(gameId).emit('playerDisconnected', player.id);
           
           // Give host 2 minutes to reconnect, then end game
-          setTimeout(() => {
+          this.setTimer(gameId, 'hostReconnect', () => {
             const currentPlayer = game.players.find(p => p.id === player.id);
             if (currentPlayer && !currentPlayer.isConnected) {
               console.log(`💀 [HOST_TIMEOUT] Host didn't reconnect within 2 minutes, ending game ${game.pin}`);
@@ -386,7 +463,7 @@ class GameServer {
           this.io.to(gameId).emit('playerDisconnected', player.id);
           
           // Remove player after 5 minutes if they don't reconnect
-          setTimeout(() => {
+          this.setTimer(gameId, `playerCleanup_${player.id}`, () => {
             const currentPlayer = game.players.find(p => p.id === player.id);
             if (currentPlayer && !currentPlayer.isConnected) {
               const playerIndex = game.players.findIndex(p => p.id === player.id);
@@ -417,6 +494,128 @@ class GameServer {
       pin = Math.floor(100000 + Math.random() * 900000).toString();
     } while (this.gamesByPin.has(pin));
     return pin;
+  }
+
+  // Timer management methods
+  setTimer(gameId, timerType, callback, delay) {
+    // Wrap callback to add execution logging
+    const wrappedCallback = () => {
+      console.log(`⏰ [TIMER_EXECUTE] Executing ${timerType} timer for game ${gameId}`);
+      try {
+        callback();
+        console.log(`⏰ [TIMER_COMPLETE] Completed ${timerType} timer for game ${gameId}`);
+      } catch (error) {
+        console.error(`⏰ [TIMER_ERROR] Error in ${timerType} timer for game ${gameId}:`, error);
+      }
+      // Remove from active timers after execution
+      this.clearTimer(gameId, timerType);
+    };
+    
+    const timerId = setTimeout(wrappedCallback, delay);
+    
+    if (!this.timers.has(gameId)) {
+      this.timers.set(gameId, new Map());
+    }
+    
+    const gameTimers = this.timers.get(gameId);
+    gameTimers.set(timerType, timerId);
+    
+    const activeTimerCount = this.getActiveTimerCount(gameId);
+    console.log(`⏰ [TIMER_SET] Set ${timerType} timer for game ${gameId} (${delay}ms) - ${activeTimerCount} active timers`);
+    return timerId;
+  }
+
+  clearTimer(gameId, timerType) {
+    const gameTimers = this.timers.get(gameId);
+    if (gameTimers && gameTimers.has(timerType)) {
+      clearTimeout(gameTimers.get(timerType));
+      gameTimers.delete(timerType);
+      const activeTimerCount = this.getActiveTimerCount(gameId);
+      console.log(`⏰ [TIMER_CLEAR] Cleared ${timerType} timer for game ${gameId} - ${activeTimerCount} active timers remaining`);
+    } else {
+      console.log(`⏰ [TIMER_CLEAR] Attempted to clear non-existent ${timerType} timer for game ${gameId}`);
+    }
+  }
+
+  clearAllTimers(gameId) {
+    const gameTimers = this.timers.get(gameId);
+    if (gameTimers) {
+      const timerCount = gameTimers.size;
+      const timerTypes = Array.from(gameTimers.keys());
+      console.log(`⏰ [TIMER_CLEAR_ALL] Clearing ${timerCount} timers for game ${gameId}: [${timerTypes.join(', ')}]`);
+      
+      gameTimers.forEach((timerId, timerType) => {
+        clearTimeout(timerId);
+        console.log(`⏰ [TIMER_CLEAR] Cleared ${timerType} timer for game ${gameId}`);
+      });
+      this.timers.delete(gameId);
+      console.log(`⏰ [TIMER_CLEAR_ALL] All timers cleared for game ${gameId}`);
+    } else {
+      console.log(`⏰ [TIMER_CLEAR_ALL] No timers to clear for game ${gameId}`);
+    }
+  }
+
+  hasTimer(gameId, timerType) {
+    const gameTimers = this.timers.get(gameId);
+    return gameTimers && gameTimers.has(timerType);
+  }
+
+  getActiveTimerCount(gameId) {
+    const gameTimers = this.timers.get(gameId);
+    return gameTimers ? gameTimers.size : 0;
+  }
+
+  getActiveTimers(gameId) {
+    const gameTimers = this.timers.get(gameId);
+    return gameTimers ? Array.from(gameTimers.keys()) : [];
+  }
+
+  logActiveTimers(gameId) {
+    const activeTimers = this.getActiveTimers(gameId);
+    const count = activeTimers.length;
+    if (count > 0) {
+      console.log(`⏰ [TIMER_STATUS] Game ${gameId} has ${count} active timers: [${activeTimers.join(', ')}]`);
+    } else {
+      console.log(`⏰ [TIMER_STATUS] Game ${gameId} has no active timers`);
+    }
+  }
+
+  logAllTimers() {
+    const totalGames = this.timers.size;
+    let totalTimers = 0;
+    
+    console.log(`⏰ [TIMER_SUMMARY] === Active Timer Summary (${totalGames} games) ===`);
+    
+    if (totalGames === 0) {
+      console.log(`⏰ [TIMER_SUMMARY] No active games with timers`);
+      return;
+    }
+    
+    for (const [gameId, gameTimers] of this.timers) {
+      const timerCount = gameTimers.size;
+      totalTimers += timerCount;
+      const timerTypes = Array.from(gameTimers.keys());
+      console.log(`⏰ [TIMER_SUMMARY] Game ${gameId}: ${timerCount} timers [${timerTypes.join(', ')}]`);
+    }
+    
+    console.log(`⏰ [TIMER_SUMMARY] Total: ${totalTimers} active timers across ${totalGames} games`);
+  }
+
+  setupPeriodicLogging() {
+    // Log timer summary every 5 minutes
+    setInterval(() => {
+      const totalGames = this.games.size;
+      const totalTimers = Array.from(this.timers.values()).reduce((sum, gameTimers) => sum + gameTimers.size, 0);
+      
+      if (totalGames > 0 || totalTimers > 0) {
+        console.log(`⏰ [PERIODIC] === System Status ===`);
+        console.log(`⏰ [PERIODIC] Active games: ${totalGames}, Active timers: ${totalTimers}`);
+        
+        if (totalTimers > 0) {
+          this.logAllTimers();
+        }
+      }
+    }, 5 * 60 * 1000); // Every 5 minutes
   }
 }
 

@@ -23,7 +23,8 @@ export default function GamePage() {
   const [questionStats, setQuestionStats] = useState<GameStats | null>(null);
   const [personalResult, setPersonalResult] = useState<PersonalResult | null>(null);
   const [finalScores, setFinalScores] = useState<Player[]>([]);
-  const [gameStatus, setGameStatus] = useState<'waiting' | 'started' | 'question' | 'results' | 'finished'>('waiting');
+  const [leaderboard, setLeaderboard] = useState<Player[]>([]);
+  const [gameStatus, setGameStatus] = useState<'waiting' | 'started' | 'question' | 'results' | 'leaderboard' | 'finished'>('waiting');
   const [gameError, setGameError] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(true);
 
@@ -139,6 +140,14 @@ export default function GamePage() {
       setPersonalResult(result);
     });
 
+    socket.on('leaderboardShown', (leaderboardData: Player[]) => {
+      setLeaderboard(leaderboardData);
+      if (isHost) {
+        setGameStatus('leaderboard');
+      }
+      // Players stay on their personal result screen
+    });
+
     socket.on('gameFinished', (scores: Player[]) => {
       setFinalScores(scores);
       setGameStatus('finished');
@@ -154,6 +163,7 @@ export default function GamePage() {
       socket.off('answeringPhase');
       socket.off('questionEnded');
       socket.off('personalResult');
+      socket.off('leaderboardShown');
       socket.off('gameFinished');
       socket.off('playerAnswered');
     };
@@ -176,6 +186,11 @@ export default function GamePage() {
   const nextQuestion = () => {
     const socket = getSocket();
     socket.emit('nextQuestion', gameId);
+  };
+
+  const showLeaderboard = () => {
+    const socket = getSocket();
+    socket.emit('showLeaderboard', gameId);
   };
 
   // Choice button colors for players
@@ -233,6 +248,79 @@ export default function GamePage() {
             {gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
           </h1>
           <p className="text-white/80 text-xl">Get ready to answer some questions!</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Leaderboard screen
+  if (gameStatus === 'leaderboard') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-600 p-8">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+            <div className="text-center mb-8">
+              <Trophy className="w-16 h-16 text-yellow-300 mx-auto mb-4" />
+              <h1 className="text-4xl font-bold text-white mb-4">Current Leaderboard</h1>
+              <p className="text-white/80 text-xl">
+                Question {game?.currentQuestionIndex! + 1} of {game?.questions.length} completed
+              </p>
+            </div>
+
+            <div className="space-y-4 mb-8">
+              {leaderboard.map((player, index) => (
+                <div
+                  key={player.id}
+                  className={`flex items-center justify-between p-6 rounded-lg border-2 transition-all ${
+                    index === 0 
+                      ? 'bg-yellow-500/30 border-yellow-400 ring-2 ring-yellow-300 scale-105' 
+                      : index === 1
+                      ? 'bg-gray-300/30 border-gray-400'
+                      : index === 2
+                      ? 'bg-orange-600/30 border-orange-500'
+                      : 'bg-white/10 border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center gap-6">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl ${
+                      index === 0 
+                        ? 'bg-yellow-500' 
+                        : index === 1
+                        ? 'bg-gray-500'
+                        : index === 2
+                        ? 'bg-orange-600'
+                        : 'bg-slate-600'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div>
+                      <div className="text-white font-bold text-xl">{player.name}</div>
+                      {index === 0 && (
+                        <div className="text-yellow-300 font-semibold">👑 Leader</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-white font-bold text-2xl">{player.score}</div>
+                    <div className="text-white/70 text-sm">points</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Host controls */}
+            {isHost && (
+              <div className="text-center">
+                <button
+                  onClick={nextQuestion}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 mx-auto transition-colors"
+                >
+                  {game?.currentQuestionIndex! + 1 >= game?.questions.length! ? 'Finish Game' : 'Next Question'}
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -476,10 +564,10 @@ export default function GamePage() {
 
               <div className="text-center">
                 <button
-                  onClick={nextQuestion}
+                  onClick={showLeaderboard}
                   className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 mx-auto transition-colors"
                 >
-                  Next Question
+                  Show Leaderboard
                   <ChevronRight className="w-6 h-6" />
                 </button>
               </div>
