@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import QRCode from 'react-qr-code';
 import { getSocket } from '@/lib/socket-client';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
+import Button from '@/components/Button';
 
 export default function HostPage() {
   const [gameTitle, setGameTitle] = useState('');
@@ -214,14 +215,15 @@ export default function HostPage() {
       <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
         <div className="container mx-auto max-w-6xl">
           {/* Logo Header */}
-          <div className="text-center mb-8">
-            <button
-              onClick={() => window.location.href = '/'}
-              className="text-white hover:text-white/80 transition-colors"
-            >
-              <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-            </button>
-          </div>
+                  <div className="text-center mb-8">
+          <Button
+            onClick={() => window.location.href = '/'}
+            variant="ghost"
+            className="text-4xl font-galindo"
+          >
+            Open Kahoot!
+          </Button>
+        </div>
           
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
             <div className="text-center mb-8">
@@ -247,22 +249,22 @@ export default function HostPage() {
                 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-2">
-                  <button
+                  <Button
                     onClick={copyPin}
-                    className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors"
+                    variant="secondary"
+                    size="icon"
                     title="Copy PIN"
+                    icon={copied ? Check : Copy}
                   >
-                    {copied ? <Check className="w-6 h-6" /> : <Copy className="w-6 h-6" />}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setShowQR(!showQR)}
-                    className={`p-3 rounded-lg transition-colors ${
-                      showQR ? 'bg-blue-500 hover:bg-blue-600' : 'bg-white/20 hover:bg-white/30'
-                    } text-white`}
+                    variant={showQR ? 'primary' : 'secondary'}
+                    size="icon"
                     title="Toggle QR Code"
+                    icon={QrCode}
                   >
-                    <QrCode className="w-6 h-6" />
-                  </button>
+                  </Button>
                 </div>
               </div>
               
@@ -271,12 +273,13 @@ export default function HostPage() {
                 {showQR && (
                   <div className="text-white/70 text-sm">
                     <p>Scan QR code or visit: {getJoinUrl()}</p>
-                    <button
+                    <Button
                       onClick={copyJoinUrl}
-                      className="text-blue-300 hover:text-blue-200 underline mt-1"
+                      variant="link"
+                      className="mt-1"
                     >
                       Copy join link
-                    </button>
+                    </Button>
                   </div>
                 )}
                 <div className="text-white/60 text-sm">
@@ -291,14 +294,15 @@ export default function HostPage() {
                   <Users className="w-6 h-6" />
                   Players ({game.players.filter(p => !p.isHost).length})
                 </h2>
-                <button
+                <Button
                   onClick={startGame}
                   disabled={game.players.filter(p => !p.isHost).length === 0}
-                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors"
+                  variant="success"
+                  size="lg"
+                  icon={Play}
                 >
-                  <Play className="w-5 h-5" />
                   Start Game
-                </button>
+                </Button>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -329,12 +333,13 @@ export default function HostPage() {
       <div className="container mx-auto max-w-4xl">
         {/* Logo Header */}
         <div className="text-center mb-8">
-          <button
+          <Button
             onClick={() => window.location.href = '/'}
-            className="text-white hover:text-white/80 transition-colors"
+            variant="ghost"
+            className="text-4xl font-galindo"
           >
-            <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-          </button>
+            Open Kahoot!
+          </Button>
         </div>
         
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
@@ -410,20 +415,19 @@ export default function HostPage() {
                     type="file"
                     accept=".tsv,.txt"
                     onChange={handleFileImport}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    className="absolute inset-0 w-full h-full opacity-0"
                   />
-                  <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-                    <Upload className="w-5 h-5" />
+                  <Button variant="primary" icon={Upload}>
                     Import TSV
-                  </button>
+                  </Button>
                 </div>
-                <button
+                <Button
                   onClick={addQuestion}
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                  variant="success"
+                  icon={Plus}
                 >
-                  <Plus className="w-5 h-5" />
                   Add Question
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -441,12 +445,14 @@ export default function HostPage() {
                 <div key={question.id} className="bg-white/5 rounded-lg p-6 border border-white/20">
                   <div className="flex items-start justify-between mb-4">
                     <h3 className="text-lg font-semibold text-white font-jua">Question {questionIndex + 1}</h3>
-                    <button
+                    <Button
                       onClick={() => removeQuestion(questionIndex)}
-                      className="text-white hover:text-white/70 transition-colors"
+                      variant="ghost"
+                      size="icon"
+                      icon={Trash2}
+                      className="text-white hover:text-white/70"
                     >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="mb-4">
@@ -486,13 +492,14 @@ export default function HostPage() {
 
           {questions.length > 0 && (
             <div className="text-center">
-              <button
+              <Button
                 onClick={createGame}
                 disabled={questions.some(q => !q.question || q.options.some(o => !o))}
-                className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
+                variant="primary"
+                size="xl"
               >
                 Create Game
-              </button>
+              </Button>
             </div>
           )}
         </div>

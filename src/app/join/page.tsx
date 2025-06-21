@@ -6,6 +6,7 @@ import { LogIn, Gamepad2, Lock } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { getSocket } from '@/lib/socket-client';
 import type { Game } from '@/types/game';
+import Button from '@/components/Button';
 
 function JoinGameForm() {
   const [pin, setPin] = useState('');
@@ -115,20 +116,17 @@ function JoinGameForm() {
           </div>
         )}
 
-        <button
+        <Button
           type="submit"
           disabled={!pin || !playerName || isJoining || pin.length !== 6}
-          className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+          variant="success"
+          size="lg"
+          fullWidth
+          loading={isJoining}
+          icon={LogIn}
         >
-          {isJoining ? (
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-          ) : (
-            <>
-              <LogIn className="w-5 h-5" />
-              Join Game
-            </>
-          )}
-        </button>
+          Join Game
+        </Button>
       </form>
 
       <div className="mt-8 text-center">
@@ -146,12 +144,13 @@ export default function JoinPage() {
       <div className="container mx-auto max-w-md">
         {/* Logo Header */}
         <div className="text-center mb-8">
-          <button
+          <Button
             onClick={() => window.location.href = '/'}
-            className="text-white hover:text-white/80 transition-colors"
+            variant="ghost"
+            className="text-4xl font-galindo"
           >
-            <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-          </button>
+            Open Kahoot!
+          </Button>
         </div>
         
         <div className="flex items-center justify-center">

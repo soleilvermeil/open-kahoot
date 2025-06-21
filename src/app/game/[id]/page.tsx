@@ -5,6 +5,7 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Clock, Trophy, ChevronRight, Eye, Users, AlertCircle } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
+import Button from '@/components/Button';
 
 export default function GamePage() {
   const params = useParams();
@@ -223,12 +224,13 @@ export default function GamePage() {
           <h1 className="text-4xl font-bold text-white mb-4 font-jua">Game Not Found</h1>
           <p className="text-white/80 text-xl mb-6">{gameError}</p>
           <p className="text-white/60 mb-4">Redirecting to home page...</p>
-          <button
+          <Button
             onClick={() => router.push('/')}
-            className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            variant="secondary"
+            size="lg"
           >
             Go Home Now
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -311,13 +313,16 @@ export default function GamePage() {
             {/* Host controls */}
             {isHost && (
               <div className="text-center">
-                <button
+                <Button
                   onClick={nextQuestion}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 mx-auto transition-colors"
+                  variant="primary"
+                  size="xl"
+                  icon={ChevronRight}
+                  iconPosition="right"
+                  className="mx-auto"
                 >
                   {game?.currentQuestionIndex! + 1 >= game?.questions.length! ? 'Finish Game' : 'Next Question'}
-                  <ChevronRight className="w-6 h-6" />
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -364,12 +369,13 @@ export default function GamePage() {
             </div>
 
             <div className="text-center mt-8">
-              <button
+              <Button
                 onClick={() => window.location.href = '/'}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
+                variant="primary"
+                size="xl"
               >
                 Play Again
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -563,13 +569,16 @@ export default function GamePage() {
               </div>
 
               <div className="text-center">
-                <button
+                <Button
                   onClick={showLeaderboard}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 mx-auto transition-colors"
+                  variant="primary"
+                  size="xl"
+                  icon={ChevronRight}
+                  iconPosition="right"
+                  className="mx-auto"
                 >
                   Show Leaderboard
-                  <ChevronRight className="w-6 h-6" />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
