@@ -142,17 +142,31 @@ function JoinGameForm() {
 
 export default function JoinPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center p-8">
-      <Suspense fallback={
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 w-full max-w-md">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-            <p className="text-white mt-4">Loading...</p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-green-500 to-blue-500 p-8">
+      <div className="container mx-auto max-w-md">
+        {/* Logo Header */}
+        <div className="text-center mb-8">
+          <button
+            onClick={() => window.location.href = '/'}
+            className="text-white hover:text-white/80 transition-colors"
+          >
+            <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
+          </button>
         </div>
-      }>
-        <JoinGameForm />
-      </Suspense>
+        
+        <div className="flex items-center justify-center">
+          <Suspense fallback={
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 w-full max-w-md">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+                <p className="text-white mt-4">Loading...</p>
+              </div>
+            </div>
+          }>
+            <JoinGameForm />
+          </Suspense>
+        </div>
+      </div>
     </div>
   );
 } 

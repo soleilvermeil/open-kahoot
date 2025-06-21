@@ -1,21 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { GamepadIcon, Users, Zap } from 'lucide-react';
+import { Users, Zap } from 'lucide-react';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <GamepadIcon className="w-16 h-16 text-white mr-4" />
-            <h1 className="text-6xl font-bold text-white">Open Kahoot!</h1>
+        <div className="text-center">
+          <div className="py-12 mb-8">
+            <h1 className="text-7xl text-white font-galindo">Open Kahoot!</h1>
           </div>
-          <p className="text-xl text-white/90">
-            Real-time multiplayer quiz game - Create, Host, Play!
-          </p>
         </div>
 
         {/* Action Cards */}

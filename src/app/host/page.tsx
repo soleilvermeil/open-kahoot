@@ -213,9 +213,19 @@ export default function HostPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
         <div className="container mx-auto max-w-6xl">
+          {/* Logo Header */}
+          <div className="text-center mb-8">
+            <button
+              onClick={() => window.location.href = '/'}
+              className="text-white hover:text-white/80 transition-colors"
+            >
+              <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
+            </button>
+          </div>
+          
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4">{game.title}</h1>
+              <h2 className="text-3xl font-bold text-white mb-4">{game.title}</h2>
               
               <div className="flex items-center justify-center gap-6 mb-6">
                 {/* PIN Display */}
@@ -317,8 +327,18 @@ export default function HostPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
       <div className="container mx-auto max-w-4xl">
+        {/* Logo Header */}
+        <div className="text-center mb-8">
+          <button
+            onClick={() => window.location.href = '/'}
+            className="text-white hover:text-white/80 transition-colors"
+          >
+            <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
+          </button>
+        </div>
+        
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-          <h1 className="text-4xl font-bold text-white mb-8 text-center">Create Your Quiz</h1>
+          <h2 className="text-3xl font-bold text-white mb-8 text-center">Create Your Quiz</h2>
 
           {/* Quiz Title field hidden for now */}
           {/* <div className="mb-8">
