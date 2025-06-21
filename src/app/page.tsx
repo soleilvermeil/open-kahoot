@@ -23,7 +23,7 @@ export default function Home() {
                 <div className="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <Users className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-white mb-4">Host Game</h2>
+                <h2 className="text-3xl font-bold text-white mb-4 font-jua">Host Game</h2>
                 <p className="text-white/80 text-lg mb-6">
                   Create your own quiz with custom questions and let players join with a game pin
                 </p>
@@ -41,7 +41,7 @@ export default function Home() {
                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <Zap className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-white mb-4">Join Game</h2>
+                <h2 className="text-3xl font-bold text-white mb-4 font-jua">Join Game</h2>
                 <p className="text-white/80 text-lg mb-6">
                   Enter a game pin to join an existing quiz and compete with other players
                 </p>

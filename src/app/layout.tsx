@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Galindo } from "next/font/google";
+import { Geist, Geist_Mono, Galindo, Jua } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,6 +18,12 @@ const galindo = Galindo({
   weight: "400",
 });
 
+const jua = Jua({
+  variable: "--font-jua",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Open Kahoot!",
   description: "Real-time multiplayer quiz game - Create, Host, Play!",
@@ -31,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${galindo.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${galindo.variable} ${jua.variable} antialiased`}
       >
         {children}
       </body>

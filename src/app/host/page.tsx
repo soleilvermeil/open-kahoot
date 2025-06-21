@@ -225,7 +225,7 @@ export default function HostPage() {
           
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-4">{game.title}</h2>
+              <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
               
               <div className="flex items-center justify-center gap-6 mb-6">
                 {/* PIN Display */}
@@ -287,7 +287,7 @@ export default function HostPage() {
 
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-jua">
                   <Users className="w-6 h-6" />
                   Players ({game.players.filter(p => !p.isHost).length})
                 </h2>
@@ -338,7 +338,7 @@ export default function HostPage() {
         </div>
         
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Create Your Quiz</h2>
+          <h2 className="text-3xl font-bold text-white mb-8 text-center font-jua">Create Your Quiz</h2>
 
           {/* Quiz Title field hidden for now */}
           {/* <div className="mb-8">
@@ -356,7 +356,7 @@ export default function HostPage() {
 
           {/* Game Settings */}
           <div className="mb-8 bg-white/5 rounded-lg p-6 border border-white/20">
-            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2 font-jua">
               <Settings className="w-6 h-6" />
               Game Settings
             </h2>
@@ -403,7 +403,7 @@ export default function HostPage() {
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-white">Questions</h2>
+              <h2 className="text-2xl font-bold text-white font-jua">Questions</h2>
               <div className="flex gap-2">
                 <div className="relative">
                   <input
@@ -440,7 +440,7 @@ export default function HostPage() {
               {questions.map((question, questionIndex) => (
                 <div key={question.id} className="bg-white/5 rounded-lg p-6 border border-white/20">
                   <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">Question {questionIndex + 1}</h3>
+                    <h3 className="text-lg font-semibold text-white font-jua">Question {questionIndex + 1}</h3>
                     <button
                       onClick={() => removeQuestion(questionIndex)}
                       className="text-white hover:text-white/70 transition-colors"

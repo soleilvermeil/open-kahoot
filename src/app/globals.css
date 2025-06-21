@@ -11,6 +11,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-galindo: var(--font-galindo);
+  --font-jua: var(--font-jua);
 }
 
 @media (prefers-color-scheme: dark) {

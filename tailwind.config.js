@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       fontFamily: {
         galindo: ['var(--font-galindo)', 'cursive'],
+        jua: ['var(--font-jua)', 'sans-serif'],
       },
     },
   },

@@ -207,7 +207,7 @@ export default function GamePage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center p-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <h1 className="text-2xl font-bold text-white mb-2">Validating game...</h1>
+          <h1 className="text-2xl font-bold text-white mb-2 font-jua">Validating game...</h1>
           <p className="text-white/80">Please wait while we check the game status</p>
         </div>
       </div>
@@ -220,7 +220,7 @@ export default function GamePage() {
       <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center p-8">
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-red-300 mx-auto mb-4" />
-          <h1 className="text-4xl font-bold text-white mb-4">Game Not Found</h1>
+          <h1 className="text-4xl font-bold text-white mb-4 font-jua">Game Not Found</h1>
           <p className="text-white/80 text-xl mb-6">{gameError}</p>
           <p className="text-white/60 mb-4">Redirecting to home page...</p>
           <button
@@ -244,7 +244,7 @@ export default function GamePage() {
               <Trophy className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4 font-jua">
             {gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
           </h1>
           <p className="text-white/80 text-xl">Get ready to answer some questions!</p>
@@ -261,7 +261,7 @@ export default function GamePage() {
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
             <div className="text-center mb-8">
               <Trophy className="w-16 h-16 text-yellow-300 mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-white mb-4">Current Leaderboard</h1>
+              <h1 className="text-4xl font-bold text-white mb-4 font-jua">Current Leaderboard</h1>
               <p className="text-white/80 text-xl">
                 Question {game?.currentQuestionIndex! + 1} of {game?.questions.length} completed
               </p>
@@ -334,7 +334,7 @@ export default function GamePage() {
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
             <div className="text-center mb-8">
               <Trophy className="w-16 h-16 text-yellow-300 mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-white mb-4">Game Over!</h1>
+              <h1 className="text-4xl font-bold text-white mb-4 font-jua">Game Over!</h1>
               <p className="text-white/80 text-xl">Final Results</p>
             </div>
 
@@ -402,7 +402,7 @@ export default function GamePage() {
           {/* Question Display - Host Screen */}
           {isHost && (
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 mb-8">
-              <h1 className="text-5xl font-bold text-white text-center leading-tight">
+              <h1 className="text-5xl font-bold text-white text-center leading-tight font-jua">
                 {currentQuestion.question}
               </h1>
             </div>
@@ -448,7 +448,7 @@ export default function GamePage() {
           {/* Host Screen - Show question and full answer choices */}
           {isHost && (
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <h1 className="text-4xl font-bold text-white text-center leading-tight mb-8">
+              <h1 className="text-4xl font-bold text-white text-center leading-tight mb-8 font-jua">
                 {currentQuestion.question}
               </h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -475,7 +475,7 @@ export default function GamePage() {
           {/* Player Device - Show only colored choice buttons */}
           {isPlayer && (
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <h2 className="text-3xl font-bold text-white text-center mb-8">
+              <h2 className="text-3xl font-bold text-white text-center mb-8 font-jua">
                 Choose your answer:
               </h2>
               <div className="grid grid-cols-2 gap-6">
@@ -518,7 +518,7 @@ export default function GamePage() {
           <div className="container mx-auto max-w-4xl">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
               <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-white mb-6">
+                <h1 className="text-4xl font-bold text-white mb-6 font-jua">
                   {questionStats.question.question}
                 </h1>
                 <p className="text-white/80 text-2xl">
@@ -598,7 +598,7 @@ export default function GamePage() {
                     <span className="text-6xl text-red-300">✗</span>
                   )}
                 </div>
-                <h1 className="text-5xl font-bold text-white mb-4">
+                <h1 className="text-5xl font-bold text-white mb-4 font-jua">
                   {personalResult.wasCorrect ? 'Correct!' : 'Incorrect!'}
                 </h1>
               </div>
