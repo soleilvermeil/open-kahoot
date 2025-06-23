@@ -2,23 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Play, Users, Copy, Check, Settings, QrCode, Upload } from 'lucide-react';
+import { Plus, Trash2, Play, Users, Settings, Upload } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import QRCode from 'react-qr-code';
+
 import { getSocket } from '@/lib/socket-client';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
 import Button from '@/components/Button';
+import PageLayout from '@/components/PageLayout';
+import Card from '@/components/Card';
+import GamePinDisplay from '@/components/GamePinDisplay';
+import PlayerList from '@/components/PlayerList';
 
 export default function HostPage() {
-  const [gameTitle, setGameTitle] = useState('');
+  const [gameTitle] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     thinkTime: 5,
     answerTime: 30
   });
   const [game, setGame] = useState<Game | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [showQR, setShowQR] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -143,7 +146,7 @@ export default function HostPage() {
     setQuestions([...questions, newQuestion]);
   };
 
-  const updateQuestion = (index: number, field: keyof Question, value: any) => {
+  const updateQuestion = (index: number, field: keyof Question, value: string | number) => {
     const updated = [...questions];
     updated[index] = { ...updated[index], [field]: value };
     setQuestions(updated);
@@ -177,32 +180,7 @@ export default function HostPage() {
     router.push(`/game/${game.id}?host=true`);
   };
 
-  const copyPin = async () => {
-    if (!game) return;
-    
-    try {
-      await navigator.clipboard.writeText(game.pin);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
 
-  const copyJoinUrl = async () => {
-    if (!game) return;
-    
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const joinUrl = `${baseUrl}/join?pin=${game.pin}`;
-    
-    try {
-      await navigator.clipboard.writeText(joinUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
 
   const getJoinUrl = () => {
     if (!game) return '';
@@ -211,138 +189,59 @@ export default function HostPage() {
   };
 
   if (game) {
+    const playersOnly = game.players.filter(p => !p.isHost);
+    
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
-        <div className="container mx-auto max-w-6xl">
-          {/* Logo Header */}
-                  <div className="text-center mb-8">
-          <Button
-            onClick={() => window.location.href = '/'}
-            variant="ghost"
-            className="text-4xl font-galindo"
-          >
-            Open Kahoot!
-          </Button>
-        </div>
-          
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
-              
-              <div className="flex items-center justify-center gap-6 mb-6">
-                {/* PIN Display */}
-                <div className="bg-white/20 rounded-lg p-6">
-                  <div className="text-white/80 text-sm mb-1">Game PIN</div>
-                  <div className="text-3xl font-bold text-white">{game.pin}</div>
-                </div>
-                
-                {/* QR Code Display */}
-                {showQR && (
-                  <div className="bg-white rounded-lg p-4">
-                    <QRCode
-                      size={120}
-                      value={getJoinUrl()}
-                      viewBox={`0 0 256 256`}
-                    />
-                  </div>
-                )}
-                
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2">
-                  <Button
-                    onClick={copyPin}
-                    variant="secondary"
-                    size="icon"
-                    title="Copy PIN"
-                    icon={copied ? Check : Copy}
-                  >
-                  </Button>
-                  <Button
-                    onClick={() => setShowQR(!showQR)}
-                    variant={showQR ? 'primary' : 'secondary'}
-                    size="icon"
-                    title="Toggle QR Code"
-                    icon={QrCode}
-                  >
-                  </Button>
-                </div>
+      <PageLayout gradient="host" maxWidth="6xl">
+        <Card>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
+            
+            <GamePinDisplay 
+              pin={game.pin}
+              joinUrl={getJoinUrl()}
+              showQRToggle={true}
+            />
+            
+            <div className="space-y-2">
+              <p className="text-white/80">Share this PIN with players to join the game</p>
+              <div className="text-white/60 text-sm">
+                Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
               </div>
-              
-              <div className="space-y-2">
-                <p className="text-white/80">Share this PIN with players to join the game</p>
-                {showQR && (
-                  <div className="text-white/70 text-sm">
-                    <p>Scan QR code or visit: {getJoinUrl()}</p>
-                    <Button
-                      onClick={copyJoinUrl}
-                      variant="link"
-                      className="mt-1"
-                    >
-                      Copy join link
-                    </Button>
-                  </div>
-                )}
-                <div className="text-white/60 text-sm">
-                  Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-jua">
-                  <Users className="w-6 h-6" />
-                  Players ({game.players.filter(p => !p.isHost).length})
-                </h2>
-                <Button
-                  onClick={startGame}
-                  disabled={game.players.filter(p => !p.isHost).length === 0}
-                  variant="success"
-                  size="lg"
-                  icon={Play}
-                >
-                  Start Game
-                </Button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {game.players.filter(p => !p.isHost).map((player) => (
-                  <div
-                    key={player.id}
-                    className="bg-white/20 rounded-lg p-4 text-center"
-                  >
-                    <div className="text-white font-semibold">{player.name}</div>
-                  </div>
-                ))}
-              </div>
-              
-              {game.players.filter(p => !p.isHost).length === 0 && (
-                <div className="text-center text-white/60 py-8">
-                  Waiting for players to join...
-                </div>
-              )}
             </div>
           </div>
-        </div>
-      </div>
+
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-jua">
+                <Users className="w-6 h-6" />
+                Players ({playersOnly.length})
+              </h2>
+              <Button
+                onClick={startGame}
+                disabled={playersOnly.length === 0}
+                variant="success"
+                size="lg"
+                icon={Play}
+              >
+                Start Game
+              </Button>
+            </div>
+            
+            <PlayerList 
+              players={playersOnly}
+              emptyMessage="Waiting for players to join..."
+              columns={3}
+            />
+          </div>
+        </Card>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
-      <div className="container mx-auto max-w-4xl">
-        {/* Logo Header */}
-        <div className="text-center mb-8">
-          <Button
-            onClick={() => window.location.href = '/'}
-            variant="ghost"
-            className="text-4xl font-galindo"
-          >
-            Open Kahoot!
-          </Button>
-        </div>
-        
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+    <PageLayout gradient="host" maxWidth="4xl">
+      <Card>
           <h2 className="text-3xl font-bold text-white mb-8 text-center font-jua">Create Your Quiz</h2>
 
           {/* Quiz Title field hidden for now */}
@@ -502,8 +401,7 @@ export default function HostPage() {
               </Button>
             </div>
           )}
-        </div>
-      </div>
-    </div>
-  );
+        </Card>
+      </PageLayout>
+    );
 } 
