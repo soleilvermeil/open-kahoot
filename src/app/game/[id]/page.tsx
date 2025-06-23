@@ -366,7 +366,6 @@ export default function GamePage() {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Clock className="w-8 h-8 text-white" />
-              <span className="text-4xl font-bold text-white">{timeLeft}</span>
             </div>
             <p className="text-white/80 text-lg">
               {isHost ? 'Players are choosing their answers' : 'Choose your answer!'}

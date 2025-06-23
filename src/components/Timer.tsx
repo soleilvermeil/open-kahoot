@@ -23,7 +23,6 @@ export default function Timer({
     <div className={`text-center mb-8 ${className}`}>
       <div className="flex items-center justify-center gap-2 mb-4">
         <Icon className="w-8 h-8 text-white" />
-        <span className="text-4xl font-bold text-white">{timeLeft}</span>
       </div>
       <p className="text-white/80 text-lg">{label}</p>
       <div className="w-full bg-white/20 rounded-full h-3 mt-4">
