@@ -487,7 +487,7 @@ export default function GamePage() {
                     </div>
                     <div 
                       className={`absolute bottom-0 left-0 h-2 rounded-b-lg transition-all duration-1000 ${
-                        index === questionStats.question.correctAnswer ? 'bg-green-400' : 'bg-blue-400'
+                        index === questionStats.question.correctAnswer ? 'bg-green-400' : 'bg-red-400'
                       }`}
                       style={{ width: `${answer.percentage}%` }}
                     />
