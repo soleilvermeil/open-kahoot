@@ -134,7 +134,10 @@ export default function GamePage() {
 
     socket.on('questionEnded', (stats: GameStats) => {
       setQuestionStats(stats);
-      setGameStatus('results');
+      // Add a 1-second delay before showing results to let players see their final choice
+      setTimeout(() => {
+        setGameStatus('results');
+      }, 1000);
     });
 
     socket.on('personalResult', (result: PersonalResult) => {
