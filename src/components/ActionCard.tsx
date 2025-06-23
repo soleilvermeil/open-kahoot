@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
+import { actionCards } from '@/lib/palette';
 
 interface ActionCardProps {
   href: string;
@@ -20,14 +21,14 @@ export default function ActionCard({
 }: ActionCardProps) {
   const variantStyles = {
     host: {
-      iconColor: 'bg-orange-500',
-      buttonColor: 'bg-orange-500',
-      hoverButtonColor: 'group-hover:bg-orange-600'
+      iconColor: actionCards.host.icon,
+      buttonColor: actionCards.host.button,
+      hoverButtonColor: actionCards.host.buttonHover
     },
     join: {
-      iconColor: 'bg-green-500', 
-      buttonColor: 'bg-green-500',
-      hoverButtonColor: 'group-hover:bg-green-600'
+      iconColor: actionCards.join.icon, 
+      buttonColor: actionCards.join.button,
+      hoverButtonColor: actionCards.join.buttonHover
     }
   };
 

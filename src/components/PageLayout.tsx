@@ -1,4 +1,5 @@
 import Button from './Button';
+import { gradients } from '@/lib/palette';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -13,19 +14,7 @@ export default function PageLayout({
   maxWidth = '4xl',
   showLogo = true 
 }: PageLayoutProps) {
-  const gradientClasses = {
-    loading: 'bg-gradient-to-br from-gray-600 to-gray-800',
-    error: 'bg-gradient-to-br from-red-600 to-red-800',
-    join: 'bg-gradient-to-br from-green-500 to-blue-500',
-    host: 'bg-gradient-to-br from-orange-500 to-red-500',
-    leaderboard: 'bg-gradient-to-br from-purple-600 to-indigo-600',
-    finished: 'bg-gradient-to-br from-yellow-500 to-orange-500',
-    thinking: 'bg-gradient-to-br from-indigo-600 to-purple-600',
-    answering: 'bg-gradient-to-br from-blue-600 to-purple-600',
-    results: 'bg-gradient-to-br from-green-600 to-blue-600',
-    waiting: 'bg-gradient-to-br from-purple-600 to-blue-600',
-    home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
-  };
+  const gradientClasses = gradients;
 
   const maxWidthClasses = {
     'sm': 'max-w-sm',

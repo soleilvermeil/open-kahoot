@@ -1,4 +1,5 @@
 import { Clock, Eye } from 'lucide-react';
+import { palette } from '@/lib/palette';
 
 interface TimerProps {
   timeLeft: number;
@@ -17,7 +18,7 @@ export default function Timer({
 }: TimerProps) {
   const percentage = (timeLeft / totalTime) * 100;
   const Icon = variant === 'thinking' ? Eye : Clock;
-  const progressColor = variant === 'thinking' ? 'bg-yellow-400' : 'bg-white';
+  const progressColor = variant === 'thinking' ? palette.timer.thinking : palette.timer.answering;
 
   return (
     <div className={`text-center mb-8 ${className}`}>
@@ -25,7 +26,7 @@ export default function Timer({
         <Icon className="w-8 h-8 text-white" />
       </div>
       <p className="text-white/80 text-lg">{label}</p>
-      <div className="w-full bg-white/20 rounded-full h-3 mt-4">
+      <div className={`w-full ${palette.timer.progress} rounded-full h-3 mt-4`}>
         <div 
           className={`${progressColor} h-3 rounded-full transition-all duration-1000 ease-linear`}
           style={{ width: `${percentage}%` }}

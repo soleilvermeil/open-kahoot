@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Clock, Trophy, ChevronRight, Users } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
+import { correct, incorrect, getChoiceColor } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
 import Button from '@/components/Button';
 import PageLayout from '@/components/PageLayout';
@@ -203,12 +204,12 @@ export default function GamePage() {
     socket.emit('showLeaderboard', gameId);
   };
 
-  // Choice button colors for players
+  // Choice button colors for players - using palette
   const choiceColors = [
-    'bg-red-500 hover:bg-red-600 border-red-400',
-    'bg-blue-500 hover:bg-blue-600 border-blue-400', 
-    'bg-yellow-500 hover:bg-yellow-600 border-yellow-400',
-    'bg-green-500 hover:bg-green-600 border-green-400'
+    getChoiceColor(0), // A - Red
+    getChoiceColor(1), // B - Blue
+    getChoiceColor(2), // C - Yellow
+    getChoiceColor(3)  // D - Green
   ];
 
   // Loading/Validation screen
@@ -487,7 +488,7 @@ export default function GamePage() {
                     </div>
                     <div 
                       className={`absolute bottom-0 left-0 h-2 rounded-b-lg transition-all duration-1000 ${
-                        index === questionStats.question.correctAnswer ? 'bg-green-400' : 'bg-red-400'
+                        index === questionStats.question.correctAnswer ? correct.primary : incorrect.primary
                       }`}
                       style={{ width: `${answer.percentage}%` }}
                     />
