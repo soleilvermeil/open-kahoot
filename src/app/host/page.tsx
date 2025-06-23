@@ -203,7 +203,6 @@ export default function HostPage() {
             <GamePinDisplay 
               pin={game.pin}
               joinUrl={getJoinUrl()}
-              showQRToggle={true}
             />
             
             <div className="space-y-2">
