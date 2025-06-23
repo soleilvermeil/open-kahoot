@@ -87,47 +87,33 @@ export const palette = {
   },
 
   // Background gradients for different page states
+  // gradients: {
+  //   loading: 'bg-gradient-to-br from-gray-600 to-gray-800',
+  //   error: 'bg-gradient-to-br from-red-600 to-red-800',
+  //   join: 'bg-gradient-to-br from-green-500 to-blue-500',
+  //   host: 'bg-gradient-to-br from-orange-500 to-red-500',
+  //   leaderboard: 'bg-gradient-to-br from-purple-600 to-indigo-600',
+  //   finished: 'bg-gradient-to-br from-yellow-500 to-orange-500',
+  //   thinking: 'bg-gradient-to-br from-indigo-600 to-purple-600',
+  //   answering: 'bg-gradient-to-br from-blue-600 to-purple-600',
+  //   results: 'bg-gradient-to-br from-green-600 to-blue-600',
+  //   waiting: 'bg-gradient-to-br from-purple-600 to-blue-600',
+  //   home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
+  // },
   gradients: {
-    loading: 'bg-gradient-to-br from-gray-600 to-gray-800',
-    error: 'bg-gradient-to-br from-red-600 to-red-800',
-    join: 'bg-gradient-to-br from-green-500 to-blue-500',
-    host: 'bg-gradient-to-br from-orange-500 to-red-500',
-    leaderboard: 'bg-gradient-to-br from-purple-600 to-indigo-600',
-    finished: 'bg-gradient-to-br from-yellow-500 to-orange-500',
-    thinking: 'bg-gradient-to-br from-indigo-600 to-purple-600',
-    answering: 'bg-gradient-to-br from-blue-600 to-purple-600',
-    results: 'bg-gradient-to-br from-green-600 to-blue-600',
-    waiting: 'bg-gradient-to-br from-purple-600 to-blue-600',
-    home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
+    loading: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    error: 'bg-gradient-to-br from-orange-500 to-red-500', // Orange
+    join: 'bg-gradient-to-br from-green-500 to-blue-500', // Green
+    host: 'bg-gradient-to-br from-orange-500 to-red-500', // Orange
+    leaderboard: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    finished: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    thinking: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    answering: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    results: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    waiting: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
+    home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // Purple
   },
 
-  // Consolidate gradients to reduce visual noise
-  // Reuse similar gradients for better consistency
-  gradients_consolidated: (() => {
-    const base = {
-      loading: 'bg-gradient-to-br from-gray-600 to-gray-800',
-      error: 'bg-gradient-to-br from-red-600 to-red-800', 
-      join: 'bg-gradient-to-br from-green-500 to-blue-500',
-      host: 'bg-gradient-to-br from-orange-500 to-red-500',
-      primary: 'bg-gradient-to-br from-purple-600 to-blue-600', // Main purple-blue theme
-      success: 'bg-gradient-to-br from-green-600 to-blue-600',
-      home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
-    };
-    
-    return {
-      loading: base.loading,
-      error: base.error,
-      join: base.join,
-      host: base.host,
-      leaderboard: base.primary,    // Reuse primary purple-blue
-      finished: base.success,       // Reuse success gradient  
-      thinking: base.primary,       // Reuse primary purple-blue
-      answering: base.primary,      // Reuse primary purple-blue
-      results: base.success,        // Reuse success gradient
-      waiting: base.primary,        // Reuse primary purple-blue
-      home: base.home
-    };
-  })(),
 
   // Glass morphism and transparency effects
   glass: {
