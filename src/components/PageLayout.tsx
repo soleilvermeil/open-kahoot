@@ -2,7 +2,7 @@ import Button from './Button';
 
 interface PageLayoutProps {
   children: React.ReactNode;
-  gradient: 'loading' | 'error' | 'join' | 'host' | 'leaderboard' | 'finished' | 'thinking' | 'answering' | 'results' | 'waiting';
+  gradient: 'loading' | 'error' | 'join' | 'host' | 'leaderboard' | 'finished' | 'thinking' | 'answering' | 'results' | 'waiting' | 'home';
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '6xl';
   showLogo?: boolean;
 }
@@ -23,7 +23,8 @@ export default function PageLayout({
     thinking: 'bg-gradient-to-br from-indigo-600 to-purple-600',
     answering: 'bg-gradient-to-br from-blue-600 to-purple-600',
     results: 'bg-gradient-to-br from-green-600 to-blue-600',
-    waiting: 'bg-gradient-to-br from-purple-600 to-blue-600'
+    waiting: 'bg-gradient-to-br from-purple-600 to-blue-600',
+    home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
   };
 
   const maxWidthClasses = {

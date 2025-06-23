@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, Play, Users, Settings, Upload } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import QRCode from 'react-qr-code';
+
 
 import { getSocket } from '@/lib/socket-client';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
@@ -189,15 +189,7 @@ export default function HostPage() {
     return `${baseUrl}/join?pin=${game.pin}`;
   };
 
-  const getHomeUrl = () => {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    return baseUrl;
-  };
 
-  const getDisplayUrl = () => {
-    const url = getHomeUrl();
-    return url.replace(/^https?:\/\//, '');
-  };
 
   if (game) {
     const playersOnly = game.players.filter(p => !p.isHost);
@@ -208,28 +200,11 @@ export default function HostPage() {
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
             
-            <div className="flex items-stretch justify-center gap-6 mb-6">
-              {/* Website URL Display */}
-              <div className="bg-white/20 rounded-lg p-6 flex flex-col justify-center">
-                <div className="text-white/80 text-sm mb-1">Join us on</div>
-                <div className="text-xl font-bold text-white break-all">{getDisplayUrl()}</div>
-              </div>
-
-              {/* PIN Display */}
-              <div className="bg-white/20 rounded-lg p-6 flex flex-col justify-center">
-                <div className="text-white/80 text-sm mb-1">Game PIN</div>
-                <div className="text-5xl font-bold text-white">{game.pin}</div>
-              </div>
-              
-              {/* QR Code Display */}
-              <div className="bg-white rounded-lg p-6 flex flex-col justify-center">
-                <QRCode
-                  size={100}
-                  value={getJoinUrl()}
-                  viewBox={`0 0 256 256`}
-                />
-              </div>
-            </div>
+            <GamePinDisplay 
+              pin={game.pin}
+              joinUrl={getJoinUrl()}
+              showQRToggle={true}
+            />
             
             <div className="space-y-2">
               <p className="text-white/80">Share this PIN with players to join the game</p>
