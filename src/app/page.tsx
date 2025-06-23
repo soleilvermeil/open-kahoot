@@ -32,21 +32,20 @@ export default function Home() {
       {/* Action Cards */}
       <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
         <ActionCard
-          href="/host"
-          icon={Users}
-          variant="host"
-          title="Host Game"
-          description="Create your own quiz with custom questions and let players join with a game pin"
-          buttonText="Create Game →"
-        />
-        
-        <ActionCard
           href="/join"
           icon={Zap}
           variant="join"
           title="Join Game"
           description="Enter a game pin to join an existing quiz and compete with other players"
           buttonText="Join Game →"
+        />
+        <ActionCard
+          href="/host"
+          icon={Users}
+          variant="host"
+          title="Host Game"
+          description="Create your own quiz with custom questions and let players join with a game pin"
+          buttonText="Create Game →"
         />
       </div>
 
