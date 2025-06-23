@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Clock, Trophy, ChevronRight, Users } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
-import { correct, incorrect, getChoiceColor } from '@/lib/palette';
+import { correct, incorrect, getChoiceColor, getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
 import Button from '@/components/Button';
 import PageLayout from '@/components/PageLayout';
@@ -250,7 +250,7 @@ export default function GamePage() {
   // Waiting screen
   if (gameStatus === 'waiting' || gameStatus === 'started') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-8">
+      <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
           <div className="animate-pulse">
             <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -361,7 +361,7 @@ export default function GamePage() {
   // Answering Phase
   if (gameStatus === 'question' && phase === 'answering' && currentQuestion) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600 p-8">
+      <div className={`min-h-screen ${getGradient('answering')} p-8`}>
         <div className="container mx-auto max-w-4xl">
           {/* Timer */}
           <div className="text-center mb-8">
@@ -448,7 +448,7 @@ export default function GamePage() {
     // Host view - Show full statistics
     if (isHost && questionStats) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-green-600 to-blue-600 p-8">
+        <div className={`min-h-screen ${getGradient('results')} p-8`}>
           <div className="container mx-auto max-w-4xl">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
               <div className="text-center mb-8">
@@ -517,11 +517,7 @@ export default function GamePage() {
     // Player view - Show personal competitive results
     if (isPlayer && personalResult) {
       return (
-        <div className={`min-h-screen bg-gradient-to-br ${
-          personalResult.wasCorrect 
-            ? 'from-green-600 to-emerald-600' 
-            : 'from-red-600 to-pink-600'
-        } p-8`}>
+        <div className={`min-h-screen ${getGradient(personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
           <div className="container mx-auto max-w-2xl">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 text-center">
               {/* Result Header */}
@@ -592,7 +588,7 @@ export default function GamePage() {
 
     // Fallback if data isn't ready yet
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-8">
+      <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
           <div className="animate-pulse">
             <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
@@ -605,7 +601,7 @@ export default function GamePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-8">
+    <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
         <div className="animate-pulse">
           <Users className="w-16 h-16 text-white/60 mx-auto mb-4" />
