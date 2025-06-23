@@ -79,7 +79,8 @@ function JoinGameForm() {
         <div className="relative">
           <Input
             label="Game PIN"
-            type="text"
+            type="tel"
+            inputMode="numeric"
             value={pin}
             onChange={pinLocked ? undefined : (e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
             readOnly={pinLocked}
