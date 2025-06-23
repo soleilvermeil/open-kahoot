@@ -101,6 +101,34 @@ export const palette = {
     home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
   },
 
+  // Consolidate gradients to reduce visual noise
+  // Reuse similar gradients for better consistency
+  gradients_consolidated: (() => {
+    const base = {
+      loading: 'bg-gradient-to-br from-gray-600 to-gray-800',
+      error: 'bg-gradient-to-br from-red-600 to-red-800', 
+      join: 'bg-gradient-to-br from-green-500 to-blue-500',
+      host: 'bg-gradient-to-br from-orange-500 to-red-500',
+      primary: 'bg-gradient-to-br from-purple-600 to-blue-600', // Main purple-blue theme
+      success: 'bg-gradient-to-br from-green-600 to-blue-600',
+      home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
+    };
+    
+    return {
+      loading: base.loading,
+      error: base.error,
+      join: base.join,
+      host: base.host,
+      leaderboard: base.primary,    // Reuse primary purple-blue
+      finished: base.success,       // Reuse success gradient  
+      thinking: base.primary,       // Reuse primary purple-blue
+      answering: base.primary,      // Reuse primary purple-blue
+      results: base.success,        // Reuse success gradient
+      waiting: base.primary,        // Reuse primary purple-blue
+      home: base.home
+    };
+  })(),
+
   // Glass morphism and transparency effects
   glass: {
     primary: 'bg-white/10 backdrop-blur-lg border border-white/20',
@@ -126,6 +154,9 @@ export const palette = {
     busy: 'bg-red-500'
   }
 } as const;
+
+// Uncomment the line below to use consolidated gradients (reduces from 11 to 7 unique gradients)
+// palette.gradients = palette.gradients_consolidated;
 
 // Helper functions for dynamic color selection
 export const getChoiceColor = (index: number): string => {
