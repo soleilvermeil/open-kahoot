@@ -92,7 +92,7 @@ export default function QuestionEditor({
               onChange={(e) => onUpdateOption(questionIndex, optionIndex, e.target.value)}
               className={`flex-1 px-3 py-2 rounded-lg border text-white placeholder-white/60 focus:outline-none focus:ring-2 transition-all ${
                 question.correctAnswer === optionIndex
-                  ? 'bg-green-400/20 border-green-400 focus:ring-green-400 focus:border-green-300'
+                  ? 'bg-green-300/20 border-green-400 focus:ring-green-400 focus:border-green-300'
                   : 'bg-white/20 border-white/30 focus:ring-white/50 focus:border-white/50'
               }`}
               placeholder={`Option ${optionIndex + 1}...`}

@@ -21,7 +21,7 @@ export default function HostPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     thinkTime: 5,
-    answerTime: 30
+    answerTime: 20
   });
   const [game, setGame] = useState<Game | null>(null);
 
@@ -323,12 +323,11 @@ export default function HostPage() {
                 <select
                   value={gameSettings.thinkTime}
                   onChange={(e) => setGameSettings(prev => ({ ...prev, thinkTime: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 [&>option]:text-black [&>option]:bg-white"
                 >
-                  <option value={3}>3 seconds</option>
                   <option value={5}>5 seconds</option>
-                  <option value={7}>7 seconds</option>
                   <option value={10}>10 seconds</option>
+                  <option value={20}>20 seconds</option>
                 </select>
               </div>
               <div>
@@ -341,12 +340,10 @@ export default function HostPage() {
                 <select
                   value={gameSettings.answerTime}
                   onChange={(e) => setGameSettings(prev => ({ ...prev, answerTime: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 [&>option]:text-black [&>option]:bg-white"
                 >
-                  <option value={15}>15 seconds</option>
                   <option value={20}>20 seconds</option>
                   <option value={30}>30 seconds</option>
-                  <option value={45}>45 seconds</option>
                   <option value={60}>60 seconds</option>
                 </select>
               </div>
