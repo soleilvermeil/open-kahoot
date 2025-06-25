@@ -11,6 +11,7 @@ interface ButtonProps {
   fullWidth?: boolean;
   icon?: LucideIcon;
   iconPosition?: 'left' | 'right';
+  iconSize?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   title?: string;
@@ -26,6 +27,7 @@ export default function Button({
   fullWidth = false,
   icon: Icon,
   iconPosition = 'left',
+  iconSize = 'md',
   className = '',
   type = 'button',
   title,
@@ -58,7 +60,8 @@ export default function Button({
   };
   
   // Disabled styles
-  const disabledStyles = disabled ? 'disabled:bg-gray-500 disabled:cursor-not-allowed opacity-50' : '';
+  const disabledStyles = disabled ?
+  variant === 'ghost' ? 'disabled:text-white/50 disabled:cursor-not-allowed' : 'disabled:bg-gray-500 disabled:cursor-not-allowed opacity-50' : '';
   
   // Full width styles
   const fullWidthStyles = fullWidth ? 'w-full' : '';
@@ -79,7 +82,7 @@ export default function Button({
     ${className}
   `.trim().replace(/\s+/g, ' ');
 
-  const iconSize = {
+  const iconSize_ = {
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
     lg: 'w-5 h-5',
@@ -104,11 +107,11 @@ export default function Button({
       ) : (
         <>
           {Icon && iconPosition === 'left' && (
-            <Icon className={iconSize[size]} />
+            <Icon className={iconSize_[iconSize || size]} />
           )}
           {children}
           {Icon && iconPosition === 'right' && (
-            <Icon className={iconSize[size]} />
+            <Icon className={iconSize_[iconSize || size]} />
           )}
         </>
       )}
