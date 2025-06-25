@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users, Hourglass, CheckCircle, XCircle, Check, X } from 'lucide-react';
+import { Clock, Trophy, ChevronRight, Users, Hourglass, Check, X } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import { correct, incorrect, getChoiceColor, getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';

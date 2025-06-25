@@ -1,4 +1,3 @@
-import Button from './Button';
 import { gradients } from '@/lib/palette';
 import Link from 'next/link';
 

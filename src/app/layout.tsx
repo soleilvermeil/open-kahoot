@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Galindo, Jua, Chango } from "next/font/google";
+import { Geist, Geist_Mono, Galindo, Chango } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,12 +14,6 @@ const geistMono = Geist_Mono({
 
 const galindo = Galindo({
   variable: "--font-galindo",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-const jua = Jua({
-  variable: "--font-jua",
   subsets: ["latin"],
   weight: "400",
 });

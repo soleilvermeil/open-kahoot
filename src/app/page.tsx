@@ -4,26 +4,7 @@ import { Users, Zap } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Hero from '@/components/Hero';
 import ActionCard from '@/components/ActionCard';
-import FeatureGrid from '@/components/FeatureGrid';
-
 export default function Home() {
-  const features = [
-    {
-      emoji: '⚡',
-      title: 'Real-time',
-      description: 'Instant synchronization across all devices'
-    },
-    {
-      emoji: '🏆',
-      title: 'Competitive', 
-      description: 'Faster answers earn more points'
-    },
-    {
-      emoji: '🎯',
-      title: 'Custom Quizzes',
-      description: 'Create your own questions and answers'
-    }
-  ];
 
   return (
     <PageLayout gradient="home" showLogo={false}>

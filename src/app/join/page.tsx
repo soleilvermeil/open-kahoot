@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { LogIn, Gamepad2, Lock } from 'lucide-react';
+import { LogIn, Lock } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { getSocket } from '@/lib/socket-client';
 import type { Game } from '@/types/game';

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Play, Users, Settings, Upload, MonitorPlay, Download } from 'lucide-react';
+import { Plus, Play, Users, Settings, Upload, MonitorPlay, Download } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -402,7 +402,7 @@ export default function HostPage() {
             {questions.length === 0 ? (
               <div className="bg-white/5 rounded-lg p-8 border border-white/20 text-center">
                 <p className="text-white/80 text-lg mb-4 font-jua">Create Your First Question</p>
-                <p className="text-white/60 mb-6">Choose how you'd like to add questions to your quiz:</p>
+                <p className="text-white/60 mb-6">Choose how you&apos;d like to add questions to your quiz:</p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Button
