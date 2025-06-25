@@ -215,108 +215,39 @@ export default function HostPage() {
         <div className="container mx-auto max-w-6xl">
           {/* Logo Header */}
           <div className="text-center mb-8">
-            <button
-              onClick={() => window.location.href = '/'}
-              className="text-white hover:text-white/80 transition-colors"
-            >
-              <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-            </button>
+            <h2 className="text-3xl text-white mb-4 font-jua">{game.title}</h2>
+            
+            <GamePinDisplay 
+              pin={game.pin}
+              joinUrl={getJoinUrl()}
+            />
+            
+            {/* <div className="space-y-2">
+              <p className="text-white/80">Share this PIN with players to join the game</p>
+              <div className="text-white/60 text-sm">
+                Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
+              </div>
+            </div> */}
           </div>
-          
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
-              
-              <div className="flex items-center justify-center gap-6 mb-6">
-                {/* PIN Display */}
-                <div className="bg-white/20 rounded-lg p-6">
-                  <div className="text-white/80 text-sm mb-1">Game PIN</div>
-                  <div className="text-3xl font-bold text-white">{game.pin}</div>
-                </div>
-                
-                {/* QR Code Display */}
-                {showQR && (
-                  <div className="bg-white rounded-lg p-4">
-                    <QRCode
-                      size={120}
-                      value={getJoinUrl()}
-                      viewBox={`0 0 256 256`}
-                    />
-                  </div>
-                )}
-                
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={copyPin}
-                    className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors"
-                    title="Copy PIN"
-                  >
-                    {copied ? <Check className="w-6 h-6" /> : <Copy className="w-6 h-6" />}
-                  </button>
-                  <button
-                    onClick={() => setShowQR(!showQR)}
-                    className={`p-3 rounded-lg transition-colors ${
-                      showQR ? 'bg-blue-500 hover:bg-blue-600' : 'bg-white/20 hover:bg-white/30'
-                    } text-white`}
-                    title="Toggle QR Code"
-                  >
-                    <QrCode className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <p className="text-white/80">Share this PIN with players to join the game</p>
-                {showQR && (
-                  <div className="text-white/70 text-sm">
-                    <p>Scan QR code or visit: {getJoinUrl()}</p>
-                    <button
-                      onClick={copyJoinUrl}
-                      className="text-blue-300 hover:text-blue-200 underline mt-1"
-                    >
-                      Copy join link
-                    </button>
-                  </div>
-                )}
-                <div className="text-white/60 text-sm">
-                  Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
-                </div>
-              </div>
-            </div>
 
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-jua">
-                  <Users className="w-6 h-6" />
-                  Players ({game.players.filter(p => !p.isHost).length})
-                </h2>
-                <button
-                  onClick={startGame}
-                  disabled={game.players.filter(p => !p.isHost).length === 0}
-                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors"
-                >
-                  <Play className="w-5 h-5" />
-                  Start Game
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {game.players.filter(p => !p.isHost).map((player) => (
-                  <div
-                    key={player.id}
-                    className="bg-white/20 rounded-lg p-4 text-center"
-                  >
-                    <div className="text-white font-semibold">{player.name}</div>
-                  </div>
-                ))}
-              </div>
-              
-              {game.players.filter(p => !p.isHost).length === 0 && (
-                <div className="text-center text-white/60 py-8">
-                  Waiting for players to join...
-                </div>
-              )}
+          {/* Separator line */}
+          <div className="border-t border-white/20 mb-8"></div>
+
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl text-white flex items-center gap-2 font-jua">
+                <Users className="w-6 h-6" />
+                Players ({playersOnly.length})
+              </h2>
+              <Button
+                onClick={startGame}
+                disabled={playersOnly.length === 0}
+                variant="black"
+                size="lg"
+                icon={Play}
+              >
+                Start Game
+              </Button>
             </div>
           </div>
         </div>
