@@ -77,11 +77,12 @@ npm start
 
 ## Scoring System 🏆
 
-- **Correct Answer**: 1000 base points
-- **Time Bonus**: Up to 10 extra points per second remaining
+- **Correct Answer**: Points proportional to speed
+- **Immediate Answer**: 1000 points (full speed)
+- **Half Time**: 500 points (50% speed)
 - **Wrong Answer**: 0 points
 
-Formula: `Points = 1000 + (remaining_time_in_seconds * 10)`
+Formula: `Points = 1000 * (remaining_time / total_time)`
 
 ## Real-time Features ⚡
 

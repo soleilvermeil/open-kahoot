@@ -6,6 +6,11 @@ import { LogIn, Gamepad2, Lock } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { getSocket } from '@/lib/socket-client';
 import type { Game } from '@/types/game';
+import Button from '@/components/Button';
+import PageLayout from '@/components/PageLayout';
+import Card from '@/components/Card';
+import Input from '@/components/Input';
+import LoadingScreen from '@/components/LoadingScreen';
 
 function JoinGameForm() {
   const [pin, setPin] = useState('');
@@ -61,74 +66,68 @@ function JoinGameForm() {
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 w-full max-w-md">
+    <Card className="w-full max-w-md">
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+        {/* <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
           <Gamepad2 className="w-8 h-8 text-white" />
-        </div>
-        <h1 className="text-3xl font-bold text-white mb-2 font-jua">Join Game</h1>
-        <p className="text-white/80">Enter the game PIN and your name to play</p>
+        </div> */}
+        <h1 className="text-3xl text-white mb-2 font-jua">Join Game</h1>
+        {/* <p className="text-white/80">Enter the game PIN and your name to play</p> */}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-white text-sm font-medium mb-2">
-            Game PIN
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              value={pin}
-              onChange={pinLocked ? undefined : (e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              readOnly={pinLocked}
-              className={`w-full px-4 py-3 rounded-lg border text-white text-center text-2xl font-bold placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 ${
-                pinLocked 
-                  ? 'bg-white/10 border-white/20 cursor-not-allowed' 
-                  : 'bg-white/20 border-white/30'
-              }`}
-              placeholder="000000"
-              maxLength={6}
-            />
-            {pinLocked && (
-              <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
-            )}
-          </div>
+        <div className="relative">
+
+          <Input
+            label="Game PIN"
+            type="tel"
+            inputMode="numeric"
+            value={pin}
+            onChange={pinLocked ? undefined : (e) => {
+              setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
+              setError(''); // Clear error when user starts typing
+            }}
+            readOnly={pinLocked}
+            variant="center"
+            placeholder="000000"
+            maxLength={6}
+            className={pinLocked ? 'bg-white/10 border-white/20 cursor-not-allowed' : ''}
+          />
+          {pinLocked && (
+            <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
+          )}
         </div>
 
-        <div>
-          <label className="block text-white text-sm font-medium mb-2">
-            Your Name
-          </label>
-          <input
-            type="text"
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value.slice(0, 20))}
-            className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-            placeholder="Enter your name..."
-            maxLength={20}
-          />
-        </div>
+        <Input
+          label="Your Name"
+          type="text"
+          value={playerName}
+          onChange={(e) => {
+            setPlayerName(e.target.value.slice(0, 20));
+            setError(''); // Clear error when user starts typing
+          }}
+          placeholder="Enter your name..."
+          maxLength={20}
+          // error={error}
+        />
 
         {error && (
-          <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3">
-            <p className="text-red-200 text-sm">{error}</p>
+          <div className="bg-red-500 border border-none rounded-lg p-3">
+            <p className="text-white text-sm">{error}</p>
           </div>
         )}
 
-        <button
+        <Button
           type="submit"
           disabled={!pin || !playerName || isJoining || pin.length !== 6}
-          className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+          variant="black"
+          size="lg"
+          fullWidth
+          loading={isJoining}
+          icon={LogIn}
         >
-          {isJoining ? (
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-          ) : (
-            <>
-              <LogIn className="w-5 h-5" />
-              Join Game
-            </>
-          )}
-        </button>
+          Join Game
+        </Button>
       </form>
 
       <div className="mt-8 text-center">
@@ -136,37 +135,22 @@ function JoinGameForm() {
           Don&apos;t have a PIN? Ask the host to share it with you.
         </p>
       </div>
-    </div>
+    </Card>
   );
 }
 
 export default function JoinPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-500 to-blue-500 p-8">
-      <div className="container mx-auto max-w-md">
-        {/* Logo Header */}
-        <div className="text-center mb-8">
-          <button
-            onClick={() => window.location.href = '/'}
-            className="text-white hover:text-white/80 transition-colors"
-          >
-            <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-          </button>
-        </div>
-        
-        <div className="flex items-center justify-center">
-          <Suspense fallback={
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 w-full max-w-md">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-                <p className="text-white mt-4">Loading...</p>
-              </div>
-            </div>
-          }>
-            <JoinGameForm />
-          </Suspense>
-        </div>
+    <PageLayout gradient="join" maxWidth="md">
+      <div className="flex items-center justify-center">
+        <Suspense fallback={
+          <Card className="w-full max-w-md">
+            <LoadingScreen title="Loading..." size="sm" />
+          </Card>
+        }>
+          <JoinGameForm />
+        </Suspense>
       </div>
-    </div>
+    </PageLayout>
   );
 } 

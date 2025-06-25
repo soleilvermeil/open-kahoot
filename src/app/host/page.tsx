@@ -2,22 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Play, Users, Copy, Check, Settings, QrCode, Upload } from 'lucide-react';
+import { Plus, Trash2, Play, Users, Settings, Upload, MonitorPlay } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import QRCode from 'react-qr-code';
+
+
 import { getSocket } from '@/lib/socket-client';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
+import Button from '@/components/Button';
+import PageLayout from '@/components/PageLayout';
+import Card from '@/components/Card';
+import GamePinDisplay from '@/components/GamePinDisplay';
+import PlayerList from '@/components/PlayerList';
+import QuestionEditor from '@/components/QuestionEditor';
+import AddQuestionButton from '@/components/AddQuestionButton';
 
 export default function HostPage() {
-  const [gameTitle, setGameTitle] = useState('');
+  const [gameTitle] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     thinkTime: 5,
-    answerTime: 30
+    answerTime: 20
   });
   const [game, setGame] = useState<Game | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [showQR, setShowQR] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -131,7 +138,31 @@ export default function HostPage() {
     }
   };
 
-  const addQuestion = () => {
+  const handleAppendTSV = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const importedQuestions = await parseTsvFile(file);
+      
+      // Insert the imported questions at the specified index
+      const newQuestions = [...questions];
+      newQuestions.splice(index, 0, ...importedQuestions);
+      setQuestions(newQuestions);
+      
+      // Reset file input
+      event.target.value = '';
+      
+      // Show success message
+      console.log(`Successfully appended ${importedQuestions.length} questions at position ${index}`);
+    } catch (error) {
+      console.error('Append error:', error);
+      alert(`Error appending file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      event.target.value = '';
+    }
+  };
+
+  const addQuestion = (index?: number) => {
     const newQuestion: Question = {
       id: uuidv4(),
       question: '',
@@ -139,10 +170,19 @@ export default function HostPage() {
       correctAnswer: 0,
       timeLimit: 30
     };
-    setQuestions([...questions, newQuestion]);
+    
+    if (index !== undefined) {
+      // Insert at specific position
+      const newQuestions = [...questions];
+      newQuestions.splice(index, 0, newQuestion);
+      setQuestions(newQuestions);
+    } else {
+      // Add at the end (fallback)
+      setQuestions([...questions, newQuestion]);
+    }
   };
 
-  const updateQuestion = (index: number, field: keyof Question, value: any) => {
+  const updateQuestion = (index: number, field: keyof Question, value: string | number) => {
     const updated = [...questions];
     updated[index] = { ...updated[index], [field]: value };
     setQuestions(updated);
@@ -156,6 +196,17 @@ export default function HostPage() {
 
   const removeQuestion = (index: number) => {
     setQuestions(questions.filter((_, i) => i !== index));
+  };
+
+  const moveQuestion = (index: number, direction: 'up' | 'down') => {
+    const newQuestions = [...questions];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (targetIndex < 0 || targetIndex >= newQuestions.length) return;
+    
+    // Swap the questions
+    [newQuestions[index], newQuestions[targetIndex]] = [newQuestions[targetIndex], newQuestions[index]];
+    setQuestions(newQuestions);
   };
 
   const createGame = () => {
@@ -176,32 +227,7 @@ export default function HostPage() {
     router.push(`/game/${game.id}?host=true`);
   };
 
-  const copyPin = async () => {
-    if (!game) return;
-    
-    try {
-      await navigator.clipboard.writeText(game.pin);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
 
-  const copyJoinUrl = async () => {
-    if (!game) return;
-    
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const joinUrl = `${baseUrl}/join?pin=${game.pin}`;
-    
-    try {
-      await navigator.clipboard.writeText(joinUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
 
   const getJoinUrl = () => {
     if (!game) return '';
@@ -209,136 +235,62 @@ export default function HostPage() {
     return `${baseUrl}/join?pin=${game.pin}`;
   };
 
-  if (game) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
-        <div className="container mx-auto max-w-6xl">
-          {/* Logo Header */}
-          <div className="text-center mb-8">
-            <button
-              onClick={() => window.location.href = '/'}
-              className="text-white hover:text-white/80 transition-colors"
-            >
-              <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-            </button>
-          </div>
-          
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
-              
-              <div className="flex items-center justify-center gap-6 mb-6">
-                {/* PIN Display */}
-                <div className="bg-white/20 rounded-lg p-6">
-                  <div className="text-white/80 text-sm mb-1">Game PIN</div>
-                  <div className="text-3xl font-bold text-white">{game.pin}</div>
-                </div>
-                
-                {/* QR Code Display */}
-                {showQR && (
-                  <div className="bg-white rounded-lg p-4">
-                    <QRCode
-                      size={120}
-                      value={getJoinUrl()}
-                      viewBox={`0 0 256 256`}
-                    />
-                  </div>
-                )}
-                
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={copyPin}
-                    className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors"
-                    title="Copy PIN"
-                  >
-                    {copied ? <Check className="w-6 h-6" /> : <Copy className="w-6 h-6" />}
-                  </button>
-                  <button
-                    onClick={() => setShowQR(!showQR)}
-                    className={`p-3 rounded-lg transition-colors ${
-                      showQR ? 'bg-blue-500 hover:bg-blue-600' : 'bg-white/20 hover:bg-white/30'
-                    } text-white`}
-                    title="Toggle QR Code"
-                  >
-                    <QrCode className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <p className="text-white/80">Share this PIN with players to join the game</p>
-                {showQR && (
-                  <div className="text-white/70 text-sm">
-                    <p>Scan QR code or visit: {getJoinUrl()}</p>
-                    <button
-                      onClick={copyJoinUrl}
-                      className="text-blue-300 hover:text-blue-200 underline mt-1"
-                    >
-                      Copy join link
-                    </button>
-                  </div>
-                )}
-                <div className="text-white/60 text-sm">
-                  Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
-                </div>
-              </div>
-            </div>
 
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-jua">
-                  <Users className="w-6 h-6" />
-                  Players ({game.players.filter(p => !p.isHost).length})
-                </h2>
-                <button
-                  onClick={startGame}
-                  disabled={game.players.filter(p => !p.isHost).length === 0}
-                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors"
-                >
-                  <Play className="w-5 h-5" />
-                  Start Game
-                </button>
+
+  if (game) {
+    const playersOnly = game.players.filter(p => !p.isHost);
+    
+    return (
+      <PageLayout gradient="host" maxWidth="6xl">
+        <Card>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl text-white mb-4 font-jua">{game.title}</h2>
+            
+            <GamePinDisplay 
+              pin={game.pin}
+              joinUrl={getJoinUrl()}
+            />
+            
+            <div className="space-y-2">
+              <p className="text-white/80">Share this PIN with players to join the game</p>
+              <div className="text-white/60 text-sm">
+                Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {game.players.filter(p => !p.isHost).map((player) => (
-                  <div
-                    key={player.id}
-                    className="bg-white/20 rounded-lg p-4 text-center"
-                  >
-                    <div className="text-white font-semibold">{player.name}</div>
-                  </div>
-                ))}
-              </div>
-              
-              {game.players.filter(p => !p.isHost).length === 0 && (
-                <div className="text-center text-white/60 py-8">
-                  Waiting for players to join...
-                </div>
-              )}
             </div>
           </div>
-        </div>
-      </div>
+
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl text-white flex items-center gap-2 font-jua">
+                <Users className="w-6 h-6" />
+                Players ({playersOnly.length})
+              </h2>
+              <Button
+                onClick={startGame}
+                disabled={playersOnly.length === 0}
+                variant="black"
+                size="lg"
+                icon={Play}
+              >
+                Start Game
+              </Button>
+            </div>
+            
+            <PlayerList 
+              players={playersOnly}
+              emptyMessage="Waiting for players to join..."
+              columns={3}
+            />
+          </div>
+        </Card>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 p-8">
-      <div className="container mx-auto max-w-4xl">
-        {/* Logo Header */}
-        <div className="text-center mb-8">
-          <button
-            onClick={() => window.location.href = '/'}
-            className="text-white hover:text-white/80 transition-colors"
-          >
-            <h1 className="text-4xl font-galindo">Open Kahoot!</h1>
-          </button>
-        </div>
-        
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center font-jua">Create Your Quiz</h2>
+    <PageLayout gradient="host" maxWidth="4xl">
+      <Card>
+          <h2 className="text-3xl text-white mb-8 text-center font-jua">Create Your Quiz</h2>
 
           {/* Quiz Title field hidden for now */}
           {/* <div className="mb-8">
@@ -356,7 +308,7 @@ export default function HostPage() {
 
           {/* Game Settings */}
           <div className="mb-8 bg-white/5 rounded-lg p-6 border border-white/20">
-            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2 font-jua">
+            <h2 className="text-2xl text-white mb-4 flex items-center gap-2 font-jua">
               <Settings className="w-6 h-6" />
               Game Settings
             </h2>
@@ -371,12 +323,11 @@ export default function HostPage() {
                 <select
                   value={gameSettings.thinkTime}
                   onChange={(e) => setGameSettings(prev => ({ ...prev, thinkTime: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 [&>option]:text-black [&>option]:bg-white"
                 >
-                  <option value={3}>3 seconds</option>
                   <option value={5}>5 seconds</option>
-                  <option value={7}>7 seconds</option>
                   <option value={10}>10 seconds</option>
+                  <option value={20}>20 seconds</option>
                 </select>
               </div>
               <div>
@@ -389,12 +340,10 @@ export default function HostPage() {
                 <select
                   value={gameSettings.answerTime}
                   onChange={(e) => setGameSettings(prev => ({ ...prev, answerTime: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 [&>option]:text-black [&>option]:bg-white"
                 >
-                  <option value={15}>15 seconds</option>
                   <option value={20}>20 seconds</option>
                   <option value={30}>30 seconds</option>
-                  <option value={45}>45 seconds</option>
                   <option value={60}>60 seconds</option>
                 </select>
               </div>
@@ -403,100 +352,79 @@ export default function HostPage() {
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-white font-jua">Questions</h2>
-              <div className="flex gap-2">
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept=".tsv,.txt"
-                    onChange={handleFileImport}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-                    <Upload className="w-5 h-5" />
-                    Import TSV
-                  </button>
-                </div>
-                <button
-                  onClick={addQuestion}
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Question
-                </button>
-              </div>
+              <h2 className="text-2xl text-white font-jua">Questions</h2>
             </div>
 
-            {questions.length === 0 && (
-              <div className="bg-white/5 rounded-lg p-6 border border-white/20 text-center">
-                <p className="text-white/60 mb-2">No questions yet</p>
-                <p className="text-white/40 text-sm">
-                  Import a TSV file with columns: question, correct, wrong1, wrong2, wrong3
+            {questions.length === 0 ? (
+              <div className="bg-white/5 rounded-lg p-8 border border-white/20 text-center">
+                <p className="text-white/80 text-lg mb-4 font-jua">Create Your First Question</p>
+                <p className="text-white/60 mb-6">Choose how you'd like to add questions to your quiz:</p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Button
+                    onClick={() => addQuestion(0)}
+                    variant="black"
+                    size="lg"
+                    icon={Plus}
+                  >
+                    Create Question
+                  </Button>
+                  
+                  <div className="text-white/40 text-sm">or</div>
+                  
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept=".tsv,.txt"
+                      onChange={handleFileImport}
+                      className="absolute inset-0 w-full h-full opacity-0"
+                    />
+                    <Button variant="black" size="lg" icon={Upload}>
+                      Import TSV File
+                    </Button>
+                  </div>
+                </div>
+                
+                <p className="text-white/40 text-sm mt-4">
+                  TSV files should contain columns: question, correct, wrong1, wrong2, wrong3
                 </p>
               </div>
-            )}
-
-            <div className="space-y-6">
-              {questions.map((question, questionIndex) => (
-                <div key={question.id} className="bg-white/5 rounded-lg p-6 border border-white/20">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white font-jua">Question {questionIndex + 1}</h3>
-                    <button
-                      onClick={() => removeQuestion(questionIndex)}
-                      className="text-white hover:text-white/70 transition-colors"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-
-                  <div className="mb-4">
-                    <input
-                      type="text"
-                      value={question.question}
-                      onChange={(e) => updateQuestion(questionIndex, 'question', e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-                      placeholder="Enter your question..."
+            ) : (
+              <div>
+                <AddQuestionButton onAddQuestion={addQuestion} onAppendTSV={handleAppendTSV} index={0} />
+                
+                {questions.map((question, questionIndex) => (
+                  <div key={question.id}>
+                    <QuestionEditor
+                      question={question}
+                      questionIndex={questionIndex}
+                      totalQuestions={questions.length}
+                      onUpdateQuestion={updateQuestion}
+                      onUpdateOption={updateOption}
+                      onRemoveQuestion={removeQuestion}
+                      onMoveQuestion={moveQuestion}
                     />
+                    <AddQuestionButton onAddQuestion={addQuestion} onAppendTSV={handleAppendTSV} index={questionIndex + 1} />
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    {question.options.map((option, optionIndex) => (
-                      <div key={optionIndex} className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name={`correct-${questionIndex}`}
-                          checked={question.correctAnswer === optionIndex}
-                          onChange={() => updateQuestion(questionIndex, 'correctAnswer', optionIndex)}
-                          className="text-green-500"
-                        />
-                        <input
-                          type="text"
-                          value={option}
-                          onChange={(e) => updateOption(questionIndex, optionIndex, e.target.value)}
-                          className="flex-1 px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-                          placeholder={`Option ${optionIndex + 1}...`}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {questions.length > 0 && (
             <div className="text-center">
-              <button
+              <Button
                 onClick={createGame}
                 disabled={questions.some(q => !q.question || q.options.some(o => !o))}
-                className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
+                variant="black"
+                size="lg"
+                icon={MonitorPlay}
               >
                 Create Game
-              </button>
+              </Button>
             </div>
           )}
-        </div>
-      </div>
-    </div>
-  );
+        </Card>
+      </PageLayout>
+    );
 } 
