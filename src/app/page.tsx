@@ -49,7 +49,7 @@ export default function Home() {
         />
       </div>
 
-      <FeatureGrid features={features} />
+      {/* <FeatureGrid features={features} /> */}
       
       {/* Footer */}
       <div className="max-w-4xl mx-auto mt-16 text-center space-y-4">

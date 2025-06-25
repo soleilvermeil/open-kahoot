@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Play, Users, Settings, Upload } from 'lucide-react';
+import { Plus, Trash2, Play, Users, Settings, Upload, MonitorPlay } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -13,6 +13,8 @@ import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 import GamePinDisplay from '@/components/GamePinDisplay';
 import PlayerList from '@/components/PlayerList';
+import QuestionEditor from '@/components/QuestionEditor';
+import AddQuestionButton from '@/components/AddQuestionButton';
 
 export default function HostPage() {
   const [gameTitle] = useState('');
@@ -136,7 +138,31 @@ export default function HostPage() {
     }
   };
 
-  const addQuestion = () => {
+  const handleAppendTSV = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const importedQuestions = await parseTsvFile(file);
+      
+      // Insert the imported questions at the specified index
+      const newQuestions = [...questions];
+      newQuestions.splice(index, 0, ...importedQuestions);
+      setQuestions(newQuestions);
+      
+      // Reset file input
+      event.target.value = '';
+      
+      // Show success message
+      console.log(`Successfully appended ${importedQuestions.length} questions at position ${index}`);
+    } catch (error) {
+      console.error('Append error:', error);
+      alert(`Error appending file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      event.target.value = '';
+    }
+  };
+
+  const addQuestion = (index?: number) => {
     const newQuestion: Question = {
       id: uuidv4(),
       question: '',
@@ -144,7 +170,16 @@ export default function HostPage() {
       correctAnswer: 0,
       timeLimit: 30
     };
-    setQuestions([...questions, newQuestion]);
+    
+    if (index !== undefined) {
+      // Insert at specific position
+      const newQuestions = [...questions];
+      newQuestions.splice(index, 0, newQuestion);
+      setQuestions(newQuestions);
+    } else {
+      // Add at the end (fallback)
+      setQuestions([...questions, newQuestion]);
+    }
   };
 
   const updateQuestion = (index: number, field: keyof Question, value: string | number) => {
@@ -161,6 +196,17 @@ export default function HostPage() {
 
   const removeQuestion = (index: number) => {
     setQuestions(questions.filter((_, i) => i !== index));
+  };
+
+  const moveQuestion = (index: number, direction: 'up' | 'down') => {
+    const newQuestions = [...questions];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (targetIndex < 0 || targetIndex >= newQuestions.length) return;
+    
+    // Swap the questions
+    [newQuestions[index], newQuestions[targetIndex]] = [newQuestions[targetIndex], newQuestions[index]];
+    setQuestions(newQuestions);
   };
 
   const createGame = () => {
@@ -222,7 +268,7 @@ export default function HostPage() {
               <Button
                 onClick={startGame}
                 disabled={playersOnly.length === 0}
-                variant="success"
+                variant="black"
                 size="lg"
                 icon={Play}
               >
@@ -310,85 +356,62 @@ export default function HostPage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-white font-jua">Questions</h2>
-              <div className="flex gap-2">
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept=".tsv,.txt"
-                    onChange={handleFileImport}
-                    className="absolute inset-0 w-full h-full opacity-0"
-                  />
-                  <Button variant="primary" icon={Upload}>
-                    Import TSV
-                  </Button>
-                </div>
-                <Button
-                  onClick={addQuestion}
-                  variant="success"
-                  icon={Plus}
-                >
-                  Add Question
-                </Button>
-              </div>
             </div>
 
-            {questions.length === 0 && (
-              <div className="bg-white/5 rounded-lg p-6 border border-white/20 text-center">
-                <p className="text-white/60 mb-2">No questions yet</p>
-                <p className="text-white/40 text-sm">
-                  Import a TSV file with columns: question, correct, wrong1, wrong2, wrong3
-                </p>
-              </div>
-            )}
-
-            <div className="space-y-6">
-              {questions.map((question, questionIndex) => (
-                <div key={question.id} className="bg-white/5 rounded-lg p-6 border border-white/20">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white font-jua">Question {questionIndex + 1}</h3>
-                    <Button
-                      onClick={() => removeQuestion(questionIndex)}
-                      variant="ghost"
-                      size="icon"
-                      icon={Trash2}
-                      className="text-white hover:text-white/70"
-                    >
+            {questions.length === 0 ? (
+              <div className="bg-white/5 rounded-lg p-8 border border-white/20 text-center">
+                <p className="text-white/80 text-lg mb-4 font-jua">Create Your First Question</p>
+                <p className="text-white/60 mb-6">Choose how you'd like to add questions to your quiz:</p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Button
+                    onClick={() => addQuestion(0)}
+                    variant="black"
+                    size="lg"
+                    icon={Plus}
+                  >
+                    Create Question
+                  </Button>
+                  
+                  <div className="text-white/40 text-sm">or</div>
+                  
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept=".tsv,.txt"
+                      onChange={handleFileImport}
+                      className="absolute inset-0 w-full h-full opacity-0"
+                    />
+                    <Button variant="black" size="lg" icon={Upload}>
+                      Import TSV File
                     </Button>
                   </div>
-
-                  <div className="mb-4">
-                    <input
-                      type="text"
-                      value={question.question}
-                      onChange={(e) => updateQuestion(questionIndex, 'question', e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-                      placeholder="Enter your question..."
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    {question.options.map((option, optionIndex) => (
-                      <div key={optionIndex} className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name={`correct-${questionIndex}`}
-                          checked={question.correctAnswer === optionIndex}
-                          onChange={() => updateQuestion(questionIndex, 'correctAnswer', optionIndex)}
-                          className="text-green-500"
-                        />
-                        <input
-                          type="text"
-                          value={option}
-                          onChange={(e) => updateOption(questionIndex, optionIndex, e.target.value)}
-                          className="flex-1 px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-                          placeholder={`Option ${optionIndex + 1}...`}
-                        />
-                      </div>
-                    ))}
-                  </div>
                 </div>
-              ))}
-            </div>
+                
+                <p className="text-white/40 text-sm mt-4">
+                  TSV files should contain columns: question, correct, wrong1, wrong2, wrong3
+                </p>
+              </div>
+            ) : (
+              <div>
+                <AddQuestionButton onAddQuestion={addQuestion} onAppendTSV={handleAppendTSV} index={0} />
+                
+                {questions.map((question, questionIndex) => (
+                  <div key={question.id}>
+                    <QuestionEditor
+                      question={question}
+                      questionIndex={questionIndex}
+                      totalQuestions={questions.length}
+                      onUpdateQuestion={updateQuestion}
+                      onUpdateOption={updateOption}
+                      onRemoveQuestion={removeQuestion}
+                      onMoveQuestion={moveQuestion}
+                    />
+                    <AddQuestionButton onAddQuestion={addQuestion} onAppendTSV={handleAppendTSV} index={questionIndex + 1} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {questions.length > 0 && (
@@ -396,8 +419,9 @@ export default function HostPage() {
               <Button
                 onClick={createGame}
                 disabled={questions.some(q => !q.question || q.options.some(o => !o))}
-                variant="primary"
-                size="xl"
+                variant="black"
+                size="lg"
+                icon={MonitorPlay}
               >
                 Create Game
               </Button>

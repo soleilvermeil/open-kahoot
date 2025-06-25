@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users } from 'lucide-react';
+import { Clock, Trophy, ChevronRight, Users, Hourglass, CheckCircle, XCircle, Check, X } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import { correct, incorrect, getChoiceColor, getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
@@ -13,6 +13,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import ErrorScreen from '@/components/ErrorScreen';
 import Timer from '@/components/Timer';
 import Leaderboard from '@/components/Leaderboard';
+import AnimatedIcon from '@/components/AnimatedIcon';
 
 export default function GamePage() {
   const params = useParams();
@@ -252,11 +253,7 @@ export default function GamePage() {
     return (
       <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
-          <div className="animate-pulse">
-            <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trophy className="w-12 h-12 text-white" />
-            </div>
-          </div>
+          <AnimatedIcon icon={Hourglass} />
           <h1 className="text-4xl font-bold text-white mb-4 font-jua">
             {gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
           </h1>
@@ -274,7 +271,7 @@ export default function GamePage() {
           <Leaderboard
             players={leaderboard}
             title="Current Leaderboard"
-            subtitle={`Question ${(game?.currentQuestionIndex ?? 0) + 1} of ${game?.questions.length ?? 0} completed`}
+            subtitle={`Question ${(game?.currentQuestionIndex ?? 0) + 2} of ${game?.questions.length ?? 0} completed`}
             className="mb-8"
           />
 
@@ -283,7 +280,7 @@ export default function GamePage() {
             <div className="text-center">
               <Button
                 onClick={nextQuestion}
-                variant="primary"
+                variant="black"
                 size="xl"
                 icon={ChevronRight}
                 iconPosition="right"
@@ -313,10 +310,10 @@ export default function GamePage() {
           <div className="text-center">
             <Button
               onClick={() => window.location.href = '/'}
-              variant="primary"
+              variant="black"
               size="xl"
             >
-              Play Again
+              Back to Home
             </Button>
           </div>
         </Card>
@@ -347,9 +344,7 @@ export default function GamePage() {
         {/* Player Device - Waiting */}
         {isPlayer && (
           <Card className="text-center">
-            <div className="animate-pulse">
-              <Users className="w-16 h-16 text-white/60 mx-auto mb-4" />
-            </div>
+            <AnimatedIcon icon={Users} size="md" className="mb-4" iconColor="text-white/60" />
             <h2 className="text-2xl font-bold text-white mb-4">Get Ready!</h2>
             <p className="text-white/80 text-lg">Look at the main screen and read the question</p>
           </Card>
@@ -499,7 +494,7 @@ export default function GamePage() {
               <div className="text-center">
                 <Button
                   onClick={showLeaderboard}
-                  variant="primary"
+                  variant="black"
                   size="xl"
                   icon={ChevronRight}
                   iconPosition="right"
@@ -522,22 +517,17 @@ export default function GamePage() {
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 text-center">
               {/* Result Header */}
               <div className="mb-8">
-                <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
-                  personalResult.wasCorrect ? 'bg-green-500/30' : 'bg-red-500/30'
-                }`}>
-                  {personalResult.wasCorrect ? (
-                    <span className="text-6xl text-green-300">✓</span>
-                  ) : (
-                    <span className="text-6xl text-red-300">✗</span>
-                  )}
-                </div>
+                <AnimatedIcon 
+                  icon={personalResult.wasCorrect ? Check : X }
+                  size="lg"
+                />
                 <h1 className="text-5xl font-bold text-white mb-4 font-jua">
                   {personalResult.wasCorrect ? 'Correct!' : 'Incorrect!'}
                 </h1>
               </div>
 
               {/* Points Earned */}
-              <div className="bg-white/10 rounded-xl p-6 mb-6">
+              <div className="bg-white/10 rounded-xl p-6 mb-6 border border-white/20">
                 <p className="text-white/80 text-lg mb-2">Points Earned This Question</p>
                 <p className="text-4xl font-bold text-white">
                   +{personalResult.pointsEarned}
@@ -546,7 +536,7 @@ export default function GamePage() {
               </div>
 
               {/* Position & Competition */}
-              <div className="bg-white/10 rounded-xl p-6 mb-6">
+              <div className="bg-white/10 rounded-xl p-6 mb-6 border border-white/20">
                 <p className="text-white/80 text-lg mb-2">Current Position</p>
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <span className="text-4xl font-bold text-white">#{personalResult.position}</span>
@@ -590,9 +580,7 @@ export default function GamePage() {
     return (
       <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
-          <div className="animate-pulse">
-            <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
-          </div>
+          <AnimatedIcon icon={Trophy} size="md" iconColor="text-white/60" className="mb-4" />
           <h1 className="text-3xl font-bold text-white mb-4">Getting your results ready...</h1>
           <p className="text-white/80 text-lg">Hold tight, we&apos;re calculating scores!</p>
         </div>
@@ -603,9 +591,7 @@ export default function GamePage() {
   return (
     <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
-        <div className="animate-pulse">
-          <Users className="w-16 h-16 text-white/60 mx-auto mb-4" />
-        </div>
+        <AnimatedIcon icon={Users} size="md" iconColor="text-white/60" className="mb-4" />
         <h1 className="text-3xl font-bold text-white mb-4">Waiting for the next question...</h1>
         <p className="text-white/80 text-lg">The host is preparing something exciting!</p>
         <div className="flex justify-center mt-6">

@@ -107,7 +107,7 @@ function JoinGameForm() {
         <Button
           type="submit"
           disabled={!pin || !playerName || isJoining || pin.length !== 6}
-          variant="success"
+          variant="black"
           size="lg"
           fullWidth
           loading={isJoining}

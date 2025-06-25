@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   loading?: boolean;
-  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'ghost' | 'outline' | 'link';
+  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'ghost' | 'outline' | 'link' | 'pill' | 'black';
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
   fullWidth?: boolean;
   icon?: LucideIcon;
@@ -33,7 +33,7 @@ export default function Button({
 }: ButtonProps) {
   
   // Base styles
-  const baseStyles = 'font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 inline-flex items-center justify-center gap-2 cursor-pointer';
+  const baseStyles = `font-semibold ${variant === 'pill' ? 'rounded-full' : 'rounded-lg'} transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 inline-flex items-center justify-center gap-2 cursor-pointer`;
   
   // Variant styles
   const variantStyles = {
@@ -43,12 +43,14 @@ export default function Button({
     danger: 'bg-red-500 hover:bg-red-600 text-white',
     ghost: 'text-white hover:text-white/80',
     outline: 'border border-white/30 text-white hover:bg-white/10',
-    link: 'text-blue-300 hover:text-blue-200 underline'
+    link: 'text-blue-300 hover:text-blue-200 underline',
+    pill: 'text-white/60 hover:text-white hover:bg-white/10 border border-white/30 hover:border-white/50 transition-all duration-200',
+    black: 'bg-slate-700 hover:bg-slate-900 text-white',
   };
   
   // Size styles
   const sizeStyles = {
-    sm: 'px-3 py-2 text-sm',
+    sm: 'px-3 py-2 text-xs',
     md: 'px-4 py-2',
     lg: 'px-6 py-3',
     xl: 'px-8 py-4 text-lg font-bold',
