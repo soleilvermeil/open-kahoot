@@ -35,10 +35,18 @@ export default function GamePinDisplay({
   // Extract domain from URL without protocol
   const getDomainFromUrl = (url: string) => {
     try {
-      const urlObj = new URL(url);
+      // If no protocol is provided, assume https
+      const urlWithProtocol = url.startsWith('http://') || url.startsWith('https://') 
+        ? url 
+        : `https://${url}`;
+      
+      const urlObj = new URL(urlWithProtocol);
       return urlObj.hostname + (urlObj.port ? `:${urlObj.port}` : '');
     } catch {
-      return url.replace(/^https?:\/\//, '');
+      // Fallback: extract just the domain part, never include paths
+      const withoutProtocol = url.replace(/^https?:\/\//, '');
+      const domainOnly = withoutProtocol.split('/')[0];
+      return domainOnly;
     }
   };
 
