@@ -62,7 +62,7 @@ export default function Home() {
         
         <div className="text-white/80">
           <a 
-            href="https://github.com/soleilvermeil/open-kahoot-next-ai-v2"
+            href="https://github.com/soleilvermeil/open-kahoot"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 hover:text-white transition-colors"
