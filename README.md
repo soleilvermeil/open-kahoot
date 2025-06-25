@@ -66,8 +66,8 @@ src/
 Optional environment variables you can set:
 
 ```bash
-# Production deployment
-NEXT_PUBLIC_APP_URL=https://yourdomain.com   # Base URL for sharing links
+# Base URL for sharing links
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
 Create a `.env.local` file in the root directory to set these values.
