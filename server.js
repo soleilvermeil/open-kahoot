@@ -305,8 +305,9 @@ class GameServer {
     const isCorrect = answerIndex === question.correctAnswer;
     let pointsEarned = 0;
     if (isCorrect) {
-      const timeBonus = Math.max(0, (game.settings.answerTime * 1000 - answerTime) / 1000);
-      pointsEarned = Math.round(1000 + (timeBonus * 10));
+      const remainingTime = Math.max(0, (game.settings.answerTime * 1000 - answerTime) / 1000);
+      const timeRatio = remainingTime / game.settings.answerTime;
+      pointsEarned = Math.round(1000 * timeRatio);
       player.score += pointsEarned;
     }
 
@@ -368,8 +369,9 @@ class GameServer {
       let pointsEarned = 0;
       
       if (wasCorrect && player.answerTime) {
-        const timeBonus = Math.max(0, (game.settings.answerTime * 1000 - player.answerTime) / 1000);
-        pointsEarned = Math.round(1000 + (timeBonus * 10));
+        const remainingTime = Math.max(0, (game.settings.answerTime * 1000 - player.answerTime) / 1000);
+        const timeRatio = remainingTime / game.settings.answerTime;
+        pointsEarned = Math.round(1000 * timeRatio);
       }
 
       // Calculate position and points behind next player
