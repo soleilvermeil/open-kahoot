@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Play, Users, Settings, Upload, MonitorPlay } from 'lucide-react';
+import { Plus, Trash2, Play, Users, Settings, Upload, MonitorPlay, Download } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -235,6 +235,47 @@ export default function HostPage() {
     return `${baseUrl}/join?pin=${game.pin}`;
   };
 
+  const downloadTSV = () => {
+    if (questions.length === 0) return;
+
+    // Create TSV content
+    const headers = ['question', 'correct', 'wrong1', 'wrong2', 'wrong3'];
+    const tsvContent = [
+      headers.join('\t'), // Header row
+      ...questions.map(q => {
+        // Get correct answer and wrong answers
+        const correctAnswer = q.options[q.correctAnswer];
+        const wrongAnswers = q.options.filter((_, index) => index !== q.correctAnswer);
+        
+        // Ensure we have exactly 3 wrong answers by padding with empty strings if needed
+        while (wrongAnswers.length < 3) {
+          wrongAnswers.push('');
+        }
+        
+        return [
+          q.question,
+          correctAnswer,
+          wrongAnswers[0],
+          wrongAnswers[1],
+          wrongAnswers[2]
+        ].join('\t');
+      })
+    ].join('\n');
+
+    // Create and trigger download
+    const blob = new Blob([tsvContent], { type: 'text/tab-separated-values' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const now = new Date();
+    const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+    link.download = `quiz-${timestamp}.tsv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
 
 
   if (game) {
@@ -251,13 +292,16 @@ export default function HostPage() {
               joinUrl={getJoinUrl()}
             />
             
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <p className="text-white/80">Share this PIN with players to join the game</p>
               <div className="text-white/60 text-sm">
                 Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
               </div>
-            </div>
+            </div> */}
           </div>
+
+          {/* Separator line */}
+          <div className="border-t border-white/20 mb-8"></div>
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -413,15 +457,25 @@ export default function HostPage() {
 
           {questions.length > 0 && (
             <div className="text-center">
-              <Button
-                onClick={createGame}
-                disabled={questions.some(q => !q.question || q.options.some(o => !o))}
-                variant="black"
-                size="lg"
-                icon={MonitorPlay}
-              >
-                Create Game
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button
+                  onClick={downloadTSV}
+                  variant="black"
+                  size="lg"
+                  icon={Download}
+                >
+                  Download TSV
+                </Button>
+                <Button
+                  onClick={createGame}
+                  disabled={questions.some(q => !q.question || q.options.some(o => !o))}
+                  variant="black"
+                  size="lg"
+                  icon={MonitorPlay}
+                >
+                  Create Game
+                </Button>
+              </div>
             </div>
           )}
         </Card>
