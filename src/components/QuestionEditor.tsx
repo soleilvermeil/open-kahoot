@@ -75,19 +75,26 @@ export default function QuestionEditor({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {question.options.map((option, optionIndex) => (
-          <div key={optionIndex} className="flex items-center gap-2">
+          <div 
+            key={optionIndex} 
+            className="flex items-center gap-2"
+          >
             <input
               type="radio"
               name={`correct-${questionIndex}`}
               checked={question.correctAnswer === optionIndex}
               onChange={() => onUpdateQuestion(questionIndex, 'correctAnswer', optionIndex)}
-              className="text-green-500"
+              className="text-green-500 focus:ring-green-500"
             />
             <input
               type="text"
               value={option}
               onChange={(e) => onUpdateOption(questionIndex, optionIndex, e.target.value)}
-              className="flex-1 px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className={`flex-1 px-3 py-2 rounded-lg border text-white placeholder-white/60 focus:outline-none focus:ring-2 transition-all ${
+                question.correctAnswer === optionIndex
+                  ? 'bg-green-400/20 border-green-400 focus:ring-green-400 focus:border-green-300'
+                  : 'bg-white/20 border-white/30 focus:ring-white/50 focus:border-white/50'
+              }`}
               placeholder={`Option ${optionIndex + 1}...`}
             />
           </div>
