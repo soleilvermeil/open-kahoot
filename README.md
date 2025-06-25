@@ -44,6 +44,25 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
 - `npm run start` - Production server
 - `npm run lint` - Code linting
 
+### Production Deployment
+
+1. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+2. **Start production server**
+   
+   **On Windows:**
+   ```bash
+   set NODE_ENV=production && node server.js
+   ```
+   
+   **On Mac/Linux:**
+   ```bash
+   npm run start
+   ```
+
 ### Tech Stack
 - Next.js 15 + React 19
 - TypeScript
