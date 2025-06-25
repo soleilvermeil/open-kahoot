@@ -73,10 +73,10 @@ export const palette = {
 
   // Answer choice colors (A, B, C, D)
   choices: {
-    a: 'bg-red-500 hover:bg-red-600 border-red-400',
-    b: 'bg-blue-500 hover:bg-blue-600 border-blue-400',
-    c: 'bg-yellow-500 hover:bg-yellow-600 border-yellow-400',
-    d: 'bg-green-500 hover:bg-green-600 border-green-400'
+    a: 'bg-rose-500 hover:bg-rose-600 border-rose-400',
+    b: 'bg-blue-600 hover:bg-blue-700 border-blue-500',
+    c: 'bg-amber-400 hover:bg-amber-500 border-amber-300',
+    d: 'bg-emerald-500 hover:bg-emerald-600 border-emerald-400'
   },
 
   // Timer colors
