@@ -6,11 +6,7 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
 
 - Real-time multiplayer gameplay
 - Custom quiz creation with multiple-choice questions
-- Game PINs for easy joining
-- Live leaderboards and scoring
-- Player reconnection support
 - TSV import/export for questions
-- Responsive design
 
 ## Quick Start
 
@@ -22,8 +18,8 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
 
 1. **Clone and install**
    ```bash
-   git clone https://github.com/your-username/open-kahoot-next-ai-v2.git
-   cd open-kahoot-next-ai-v2
+   git clone https://github.com/soleilvermeil/open-kahoot.git
+   cd open-kahoot
    npm install
    ```
 
@@ -86,11 +82,25 @@ Optional environment variables you can set:
 
 ```bash
 # Base URL for sharing links
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
+NEXT_PUBLIC_APP_URL=https://www.yourdomain.com
 ```
 
 Create a `.env.local` file in the root directory to set these values.
 
----
+## Contributing
 
-**Disclaimer:** Not affiliated with Kahoot! AS. Kahoot! is a trademark of Kahoot! AS.
+Contributions are welcome! Here's how to get started:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/your-feature-name`
+3. **Make your changes** and test them locally
+4. **Commit your changes**: `git commit -m "Add your feature"`
+5. **Push to your fork**: `git push origin feature/your-feature-name`
+6. **Open a Pull Request**
+
+Please ensure your code follows the existing style and passes linting (`npm run lint`).
+
+## Disclaimer
+
+- Not affiliated with Kahoot! AS. Kahoot! is a trademark of Kahoot! AS.
+- A not negligible portion of this codebase was developed with the assistance of AI (Claude 4 Sonnet).
