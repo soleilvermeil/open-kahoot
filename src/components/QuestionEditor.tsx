@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown, Shuffle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
@@ -24,6 +24,33 @@ export default function QuestionEditor({
   onRemoveQuestion,
   onMoveQuestion
 }: QuestionEditorProps) {
+  const handleShuffleOptions = () => {
+    // Create array of options with their indices
+    const optionsWithIndices = question.options.map((option, index) => ({
+      option,
+      originalIndex: index
+    }));
+    
+    // Shuffle the array
+    for (let i = optionsWithIndices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [optionsWithIndices[i], optionsWithIndices[j]] = [optionsWithIndices[j], optionsWithIndices[i]];
+    }
+    
+    // Update each option in its new position
+    optionsWithIndices.forEach((item, newIndex) => {
+      onUpdateOption(questionIndex, newIndex, item.option);
+    });
+    
+    // Find new index of the correct answer
+    const newCorrectAnswerIndex = optionsWithIndices.findIndex(
+      item => item.originalIndex === question.correctAnswer
+    );
+    
+    // Update the correct answer index
+    onUpdateQuestion(questionIndex, 'correctAnswer', newCorrectAnswerIndex);
+  };
+
   return (
     <motion.div 
       layout
@@ -33,7 +60,16 @@ export default function QuestionEditor({
     >
       <div className="flex items-start justify-between mb-4">
         <h3 className="text-lg font-semibold text-white font-jua">Question {questionIndex + 1}</h3>
-        <div className="flex gap-1">
+        <div className="flex gap-2">
+          <Button
+            onClick={handleShuffleOptions}
+            variant="ghost"
+            size="icon"
+            icon={Shuffle}
+            className="text-white hover:text-white/70"
+            title="Shuffle options"
+          >
+          </Button>
           <Button
             onClick={() => onMoveQuestion(questionIndex, 'up')}
             disabled={questionIndex === 0}
