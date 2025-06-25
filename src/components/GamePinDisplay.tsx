@@ -32,7 +32,7 @@ export default function GamePinDisplay({
     };
   }, [showQRModal]);
 
-  // Extract domain from URL without protocol
+  // Extract domain from URL without protocol and www
   const getDomainFromUrl = (url: string) => {
     try {
       // If no protocol is provided, assume https
@@ -41,12 +41,13 @@ export default function GamePinDisplay({
         : `https://${url}`;
       
       const urlObj = new URL(urlWithProtocol);
-      return urlObj.hostname + (urlObj.port ? `:${urlObj.port}` : '');
+      const hostname = urlObj.hostname.replace(/^www\./, ''); // Remove www. from display
+      return hostname + (urlObj.port ? `:${urlObj.port}` : '');
     } catch {
       // Fallback: extract just the domain part, never include paths
       const withoutProtocol = url.replace(/^https?:\/\//, '');
       const domainOnly = withoutProtocol.split('/')[0];
-      return domainOnly;
+      return domainOnly.replace(/^www\./, ''); // Remove www. from display
     }
   };
 
