@@ -244,7 +244,7 @@ export default function HostPage() {
       <PageLayout gradient="host" maxWidth="6xl">
         <Card>
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white mb-4 font-jua">{game.title}</h2>
+            <h2 className="text-3xl text-white mb-4 font-jua">{game.title}</h2>
             
             <GamePinDisplay 
               pin={game.pin}
@@ -261,7 +261,7 @@ export default function HostPage() {
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-jua">
+              <h2 className="text-2xl text-white flex items-center gap-2 font-jua">
                 <Users className="w-6 h-6" />
                 Players ({playersOnly.length})
               </h2>
@@ -290,7 +290,7 @@ export default function HostPage() {
   return (
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
-          <h2 className="text-3xl font-bold text-white mb-8 text-center font-jua">Create Your Quiz</h2>
+          <h2 className="text-3xl text-white mb-8 text-center font-jua">Create Your Quiz</h2>
 
           {/* Quiz Title field hidden for now */}
           {/* <div className="mb-8">
@@ -308,7 +308,7 @@ export default function HostPage() {
 
           {/* Game Settings */}
           <div className="mb-8 bg-white/5 rounded-lg p-6 border border-white/20">
-            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2 font-jua">
+            <h2 className="text-2xl text-white mb-4 flex items-center gap-2 font-jua">
               <Settings className="w-6 h-6" />
               Game Settings
             </h2>
@@ -355,7 +355,7 @@ export default function HostPage() {
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-white font-jua">Questions</h2>
+              <h2 className="text-2xl text-white font-jua">Questions</h2>
             </div>
 
             {questions.length === 0 ? (

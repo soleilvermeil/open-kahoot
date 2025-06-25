@@ -1,5 +1,6 @@
 import Button from './Button';
 import { gradients } from '@/lib/palette';
+import Link from 'next/link';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -30,15 +31,7 @@ export default function PageLayout({
     <div className={`min-h-screen ${gradientClasses[gradient]} p-8`}>
       <div className={`container mx-auto ${maxWidthClasses[maxWidth]}`}>
         {showLogo && (
-          <div className="text-center mb-8">
-            <Button
-              onClick={() => window.location.href = '/'}
-              variant="ghost"
-              className="text-4xl font-galindo"
-            >
-              Open Kahoot!
-            </Button>
-          </div>
+          <Link href="/" className="text-4xl font-galindo mb-8 text-center text-white block">Open Kahoot!</Link>
         )}
         {children}
       </div>

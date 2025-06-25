@@ -254,7 +254,7 @@ export default function GamePage() {
       <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
           <AnimatedIcon icon={Hourglass} />
-          <h1 className="text-4xl font-bold text-white mb-4 font-jua">
+          <h1 className="text-4xl text-white mb-4 font-jua">
             {gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
           </h1>
           <p className="text-white/80 text-xl">Get ready to answer some questions!</p>
@@ -335,7 +335,7 @@ export default function GamePage() {
         {/* Question Display - Host Screen */}
         {isHost && (
           <Card className="mb-8">
-            <h1 className="text-5xl font-bold text-white text-center leading-tight font-jua">
+            <h1 className="text-5xl text-white text-center leading-tight font-jua">
               {currentQuestion.question}
             </h1>
           </Card>
@@ -377,7 +377,7 @@ export default function GamePage() {
           {/* Host Screen - Show question and full answer choices */}
           {isHost && (
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <h1 className="text-4xl font-bold text-white text-center leading-tight mb-8 font-jua">
+              <h1 className="text-4xl text-white text-center leading-tight mb-8 font-jua">
                 {currentQuestion.question}
               </h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -404,7 +404,7 @@ export default function GamePage() {
           {/* Player Device - Show only colored choice buttons */}
           {isPlayer && (
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <h2 className="text-3xl font-bold text-white text-center mb-8 font-jua">
+              <h2 className="text-3xl text-white text-center mb-8 font-jua">
                 Choose your answer:
               </h2>
               <div className="grid grid-cols-2 gap-6">
@@ -447,7 +447,7 @@ export default function GamePage() {
           <div className="container mx-auto max-w-4xl">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
               <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-white mb-6 font-jua">
+                <h1 className="text-4xl text-white mb-6 font-jua">
                   {questionStats.question.question}
                 </h1>
                 <p className="text-white/80 text-2xl">
@@ -521,7 +521,7 @@ export default function GamePage() {
                   icon={personalResult.wasCorrect ? Check : X }
                   size="lg"
                 />
-                <h1 className="text-5xl font-bold text-white mb-4 font-jua">
+                <h1 className="text-5xl text-white mb-4 font-jua">
                   {personalResult.wasCorrect ? 'Correct!' : 'Incorrect!'}
                 </h1>
               </div>

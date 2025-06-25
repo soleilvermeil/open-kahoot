@@ -25,7 +25,7 @@ export default function PlayerList({
   return (
     <div className={className}>
       {title && (
-        <h2 className="text-2xl font-bold text-white mb-4 font-jua">
+        <h2 className="text-2xl text-white mb-4 font-jua">
           {title} ({players.length})
         </h2>
       )}

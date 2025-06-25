@@ -20,7 +20,7 @@ export default function LoadingScreen({
   return (
     <div className="text-center">
       <div className={`animate-spin rounded-full ${classes.spinner} border-b-2 border-white mx-auto mb-4`}></div>
-      <h1 className={`${classes.title} font-bold text-white mb-2 font-jua`}>{title}</h1>
+      <h1 className={`${classes.title} text-white mb-2 font-jua`}>{title}</h1>
       {description && (
         <p className={`text-white/80 ${classes.description}`}>{description}</p>
       )}

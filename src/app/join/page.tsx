@@ -71,7 +71,7 @@ function JoinGameForm() {
         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
           <Gamepad2 className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-white mb-2 font-jua">Join Game</h1>
+        <h1 className="text-3xl text-white mb-2 font-jua">Join Game</h1>
         <p className="text-white/80">Enter the game PIN and your name to play</p>
       </div>
 

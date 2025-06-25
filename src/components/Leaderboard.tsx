@@ -51,7 +51,7 @@ export default function Leaderboard({
       {(title || subtitle) && (
         <div className="text-center mb-8">
           <Trophy className="w-16 h-16 text-yellow-300 mx-auto mb-4" />
-          <h1 className="text-4xl font-bold text-white mb-4 font-jua">{title}</h1>
+          <h1 className="text-4xl text-white mb-4 font-jua">{title}</h1>
           {subtitle && (
             <p className="text-white/80 text-xl">{subtitle}</p>
           )}
