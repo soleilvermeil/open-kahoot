@@ -68,21 +68,25 @@ function JoinGameForm() {
   return (
     <Card className="w-full max-w-md">
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+        {/* <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
           <Gamepad2 className="w-8 h-8 text-white" />
-        </div>
+        </div> */}
         <h1 className="text-3xl text-white mb-2 font-jua">Join Game</h1>
-        <p className="text-white/80">Enter the game PIN and your name to play</p>
+        {/* <p className="text-white/80">Enter the game PIN and your name to play</p> */}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="relative">
+
           <Input
             label="Game PIN"
             type="tel"
             inputMode="numeric"
             value={pin}
-            onChange={pinLocked ? undefined : (e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            onChange={pinLocked ? undefined : (e) => {
+              setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
+              setError(''); // Clear error when user starts typing
+            }}
             readOnly={pinLocked}
             variant="center"
             placeholder="000000"
@@ -98,11 +102,20 @@ function JoinGameForm() {
           label="Your Name"
           type="text"
           value={playerName}
-          onChange={(e) => setPlayerName(e.target.value.slice(0, 20))}
+          onChange={(e) => {
+            setPlayerName(e.target.value.slice(0, 20));
+            setError(''); // Clear error when user starts typing
+          }}
           placeholder="Enter your name..."
           maxLength={20}
-          error={error}
+          // error={error}
         />
+
+        {error && (
+          <div className="bg-red-500 border border-none rounded-lg p-3">
+            <p className="text-white text-sm">{error}</p>
+          </div>
+        )}
 
         <Button
           type="submit"
