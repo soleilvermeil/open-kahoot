@@ -151,9 +151,11 @@ export class EventHandlers {
         socket.join(game.id);
         console.log(`🏠 [ROOM_JOIN] Socket ${socket.id} joined room ${game.id} during validation`);
         
-        // If this is a host connecting and the game is in progress, send current state
+        // Check if this is a host or player connecting during active question
         const isHost = host && host.socketId === socket.id;
-        if (isHost && game.status === 'question') {
+        const isPlayer = !isHost && game.players.find(p => p.socketId === socket.id);
+        
+        if ((isHost || isPlayer) && game.status === 'question') {
           const currentQuestion = this.questionManager.getCurrentQuestion(game);
           if (currentQuestion) {
             // Check which phase we're currently in by looking at active timers
@@ -161,27 +163,37 @@ export class EventHandlers {
             const hasAnsweringTimer = this.timerManager.hasTimer(game.id, TimerManager.TIMER_TYPES.ANSWERING_PHASE);
             
             if (hasAnsweringTimer && game.questionStartTime) {
-              // We're in answering phase - send thinking phase first, then answering after proper delay
+              // We're in answering phase
               const elapsed = Date.now() - game.questionStartTime;
               const remaining = Math.max(0, game.settings.answerTime - Math.floor(elapsed / 1000));
               if (remaining > 0) {
-                console.log(`📤 [SYNC_HOST] Host connecting during answering phase - showing thinking phase first`);
-                socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
-                // Give enough time for thinking phase to render (2 seconds)
-                setTimeout(() => {
-                  console.log(`📤 [SYNC_HOST] Now transitioning to answering phase with ${remaining}s remaining`);
-                  socket.emit('answeringPhase', remaining);
-                }, 2000);
+                if (isHost) {
+                  // Host gets thinking phase first, then answering after delay
+                  console.log(`📤 [SYNC_HOST] Host connecting during answering phase - showing thinking phase first`);
+                  socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+                  setTimeout(() => {
+                    console.log(`📤 [SYNC_HOST] Now transitioning to answering phase with ${remaining}s remaining`);
+                    socket.emit('answeringPhase', remaining);
+                  }, 2000);
+                } else {
+                  // Player gets thinking phase first, then answering immediately after
+                  console.log(`📤 [SYNC_PLAYER] Player connecting during answering phase - syncing to current state`);
+                  socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+                  setTimeout(() => {
+                    console.log(`📤 [SYNC_PLAYER] Now transitioning to answering phase with ${remaining}s remaining`);
+                    socket.emit('answeringPhase', remaining);
+                  }, 100); // Shorter delay for players
+                }
               }
-            } else if (hasThinkingTimer) {
-              // We're still in thinking phase
-              console.log(`📤 [SYNC_HOST] Host connecting during thinking phase - sending current question`);
-              socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
-            } else {
-              // Fallback - send thinking phase
-              console.log(`📤 [SYNC_HOST] Host connecting - no active phase timer, defaulting to thinking phase`);
-              socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
-            }
+                          } else if (hasThinkingTimer) {
+                // We're still in thinking phase
+                console.log(`📤 [SYNC_${isHost ? 'HOST' : 'PLAYER'}] Connecting during thinking phase - sending current question`);
+                socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+              } else {
+                // Fallback - send thinking phase
+                console.log(`📤 [SYNC_${isHost ? 'HOST' : 'PLAYER'}] Connecting - no active phase timer, defaulting to thinking phase`);
+                socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+              }
           }
         }
         
@@ -415,15 +427,26 @@ export class EventHandlers {
     if (stats) {
       this.io.to(game.id).emit('questionEnded', stats);
       
-      // Send personal results
-      game.players.forEach((player: import('@/types/game').Player) => {
-        if (!player.isHost) {
-          const personalResult = this.questionManager.getPersonalResult(game, player.id);
-          if (personalResult) {
-            this.io.to(player.socketId).emit('personalResult', personalResult);
-          }
+      // Add 1-second delay before revealing results for fluidity
+      setTimeout(() => {
+        console.log(`📤 [RESULTS] Sending results after 1s delay for game ${game.pin}`);
+        
+        // Send host results
+        const host = this.playerManager.getHost(game);
+        if (host && host.isConnected) {
+          this.io.to(host.socketId).emit('hostResults', stats);
         }
-      });
+        
+        // Send personal results to players
+        game.players.forEach((player: import('@/types/game').Player) => {
+          if (!player.isHost) {
+            const personalResult = this.questionManager.getPersonalResult(game, player.id);
+            if (personalResult) {
+              this.io.to(player.socketId).emit('personalResult', personalResult);
+            }
+          }
+        });
+      }, 1000); // 1 second delay for fluidity
     }
   }
 

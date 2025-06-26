@@ -64,6 +64,7 @@ export interface ServerToClientEvents {
   thinkingPhase: (question: Question, thinkTime: number) => void;
   answeringPhase: (answerTime: number) => void;
   questionEnded: (stats: GameStats) => void;
+  hostResults: (stats: GameStats) => void;
   personalResult: (result: PersonalResult) => void;
   leaderboardShown: (leaderboard: Player[]) => void;
   gameFinished: (finalScores: Player[]) => void;
