@@ -14,6 +14,12 @@ import ErrorScreen from '@/components/ErrorScreen';
 import Timer from '@/components/Timer';
 import Leaderboard from '@/components/Leaderboard';
 import AnimatedIcon from '@/components/AnimatedIcon';
+import HostThinkingScreen from '@/components/host-screens/HostThinkingScreen';
+import HostAnsweringScreen from '@/components/host-screens/HostAnsweringScreen';
+import HostResultsScreen from '@/components/host-screens/HostResultsScreen';
+import PlayerThinkingScreen from '@/components/player-screens/PlayerThinkingScreen';
+import PlayerAnsweringScreen from '@/components/player-screens/PlayerAnsweringScreen';
+import PlayerResultsScreen from '@/components/player-screens/PlayerResultsScreen';
 
 export default function GamePage() {
   const params = useParams();
@@ -205,13 +211,7 @@ export default function GamePage() {
     socket.emit('showLeaderboard', gameId);
   };
 
-  // Choice button colors for players - using palette
-  const choiceColors = [
-    getChoiceColor(0), // A - Red
-    getChoiceColor(1), // B - Blue
-    getChoiceColor(2), // C - Yellow
-    getChoiceColor(3)  // D - Green
-  ];
+
 
   // Loading/Validation screen
   if (isValidating) {
@@ -268,16 +268,17 @@ export default function GamePage() {
     return (
       <PageLayout gradient="leaderboard" maxWidth="4xl" showLogo={false}>
         <Card>
-          <Leaderboard
-            players={leaderboard}
-            title="Current Leaderboard"
-            subtitle={`Question ${(game?.currentQuestionIndex ?? 0) + 2} of ${game?.questions.length ?? 0} completed`}
-            className="mb-8"
-          />
+          {/* Title */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2 font-jua">Current Leaderboard</h1>
+            <p className="text-white/80 text-xl">
+              Question {(game?.currentQuestionIndex ?? 0) + 2} of {game?.questions.length ?? 0} completed
+            </p>
+          </div>
 
           {/* Host controls */}
           {isHost && (
-            <div className="text-center">
+            <div className="text-center mb-8">
               <Button
                 onClick={nextQuestion}
                 variant="black"
@@ -290,6 +291,12 @@ export default function GamePage() {
               </Button>
             </div>
           )}
+
+          <Leaderboard
+            players={leaderboard}
+            title=""
+            subtitle=""
+          />
         </Card>
       </PageLayout>
     );
@@ -334,20 +341,12 @@ export default function GamePage() {
 
         {/* Question Display - Host Screen */}
         {isHost && (
-          <Card className="mb-8">
-            <h1 className="text-5xl text-white text-center leading-tight font-jua">
-              {currentQuestion.question}
-            </h1>
-          </Card>
+          <HostThinkingScreen currentQuestion={currentQuestion} />
         )}
 
         {/* Player Device - Waiting */}
         {isPlayer && (
-          <Card className="text-center">
-            <AnimatedIcon icon={Users} size="md" className="mb-4" iconColor="text-white/60" />
-            <h2 className="text-2xl font-bold text-white mb-4">Get Ready!</h2>
-            <p className="text-white/80 text-lg">Look at the main screen and read the question</p>
-          </Card>
+          <PlayerThinkingScreen />
         )}
       </PageLayout>
     );
@@ -376,62 +375,20 @@ export default function GamePage() {
 
           {/* Host Screen - Show question and full answer choices */}
           {isHost && (
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <h1 className="text-4xl text-white text-center leading-tight mb-8 font-jua">
-                {currentQuestion.question}
-              </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {currentQuestion.options.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`p-6 rounded-xl border-2 ${choiceColors[index].split(' ')[0]} ${choiceColors[index].split(' ')[1]} ${choiceColors[index].split(' ')[2]} text-white`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white font-bold text-2xl">
-                        {String.fromCharCode(65 + index)}
-                      </div>
-                      <span className="font-semibold text-xl">{option}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="text-center mt-6 text-white/80 text-lg">
-                Players are choosing their answers on their devices
-              </div>
-            </div>
+            <HostAnsweringScreen 
+              currentQuestion={currentQuestion}
+              timeLeft={timeLeft}
+              answerTime={game?.settings.answerTime || 30}
+            />
           )}
 
           {/* Player Device - Show only colored choice buttons */}
           {isPlayer && (
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <h2 className="text-3xl text-white text-center mb-8 font-jua">
-                Choose your answer:
-              </h2>
-              <div className="grid grid-cols-2 gap-6">
-                {['A', 'B', 'C', 'D'].map((letter, index) => (
-                  <button
-                    key={letter}
-                    onClick={() => submitAnswer(index)}
-                    disabled={hasAnswered}
-                    className={`h-24 rounded-xl font-bold text-3xl text-white transition-all transform hover:scale-105 border-4 ${
-                      hasAnswered && selectedAnswer === index
-                        ? `${choiceColors[index]} ring-4 ring-white/50`
-                        : hasAnswered
-                        ? 'bg-gray-500/50 text-white/50 cursor-not-allowed border-gray-400'
-                        : `${choiceColors[index]} hover:scale-110`
-                    }`}
-                  >
-                    {letter}
-                  </button>
-                ))}
-              </div>
-
-              {hasAnswered && (
-                <div className="text-center mt-6">
-                  <p className="text-white text-xl">Answer submitted! Waiting for others...</p>
-                </div>
-              )}
-            </div>
+            <PlayerAnsweringScreen 
+              onSubmitAnswer={submitAnswer}
+              hasAnswered={hasAnswered}
+              selectedAnswer={selectedAnswer}
+            />
           )}
         </div>
       </div>
@@ -445,65 +402,10 @@ export default function GamePage() {
       return (
         <div className={`min-h-screen ${getGradient('results')} p-8`}>
           <div className="container mx-auto max-w-4xl">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <div className="text-center mb-8">
-                <h1 className="text-4xl text-white mb-6 font-jua">
-                  {questionStats.question.question}
-                </h1>
-                <p className="text-white/80 text-2xl">
-                  {questionStats.correctAnswers} out of {questionStats.totalPlayers} players got it right!
-                </p>
-              </div>
-
-              <div className="space-y-4 mb-8">
-                {questionStats.answers.map((answer, index) => (
-                  <div key={index} className="relative">
-                    <div className={`flex items-center justify-between p-6 rounded-lg border-2 ${
-                      index === questionStats.question.correctAnswer
-                        ? 'bg-green-500/30 border-green-400 ring-2 ring-green-300'
-                        : 'bg-white/10 border-white/20'
-                    }`}>
-                      <div className="flex items-center gap-6">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl ${
-                          choiceColors[index].split(' ')[0]
-                        }`}>
-                          {String.fromCharCode(65 + index)}
-                        </div>
-                        <span className="text-white font-semibold text-xl">
-                          {questionStats.question.options[index]}
-                        </span>
-                        {index === questionStats.question.correctAnswer && (
-                          <span className="text-green-300 font-bold text-lg">✓ CORRECT</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-white font-bold text-xl">{answer.count}</span>
-                        <span className="text-white/80 text-lg">({answer.percentage}%)</span>
-                      </div>
-                    </div>
-                    <div 
-                      className={`absolute bottom-0 left-0 h-2 rounded-b-lg transition-all duration-1000 ${
-                        index === questionStats.question.correctAnswer ? correct.primary : incorrect.primary
-                      }`}
-                      style={{ width: `${answer.percentage}%` }}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-center">
-                <Button
-                  onClick={showLeaderboard}
-                  variant="black"
-                  size="xl"
-                  icon={ChevronRight}
-                  iconPosition="right"
-                  className="mx-auto"
-                >
-                  Show Leaderboard
-                </Button>
-              </div>
-            </div>
+            <HostResultsScreen 
+              questionStats={questionStats}
+              onShowLeaderboard={showLeaderboard}
+            />
           </div>
         </div>
       );
@@ -514,63 +416,7 @@ export default function GamePage() {
       return (
         <div className={`min-h-screen ${getGradient(personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
           <div className="container mx-auto max-w-2xl">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 text-center">
-              {/* Result Header */}
-              <div className="mb-8">
-                <AnimatedIcon 
-                  icon={personalResult.wasCorrect ? Check : X }
-                  size="lg"
-                />
-                <h1 className="text-5xl text-white mb-4 font-jua">
-                  {personalResult.wasCorrect ? 'Correct!' : 'Incorrect!'}
-                </h1>
-              </div>
-
-              {/* Points Earned */}
-              <div className="bg-white/10 rounded-xl p-6 mb-6 border border-white/20">
-                <p className="text-white/80 text-lg mb-2">Points Earned This Question</p>
-                <p className="text-4xl font-bold text-white">
-                  +{personalResult.pointsEarned}
-                </p>
-                <p className="text-white/80 text-lg mt-2">Total Score: {personalResult.totalScore}</p>
-              </div>
-
-              {/* Position & Competition */}
-              <div className="bg-white/10 rounded-xl p-6 mb-6 border border-white/20">
-                <p className="text-white/80 text-lg mb-2">Current Position</p>
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <span className="text-4xl font-bold text-white">#{personalResult.position}</span>
-                </div>
-                
-                {personalResult.pointsBehind > 0 ? (
-                  <div className="text-center">
-                    <p className="text-white/80 text-lg">
-                      {personalResult.pointsBehind} points behind{' '}
-                      <span className="font-bold text-white">{personalResult.nextPlayerName}</span>
-                    </p>
-                    <p className="text-yellow-300 font-semibold text-lg mt-2">
-                      Catch up on the next question!
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-yellow-300 font-semibold text-lg">
-                    You&apos;re in the lead! Keep it up!
-                  </p>
-                )}
-              </div>
-
-              {/* Waiting Message */}
-              <div className="text-center">
-                <p className="text-white/80 text-lg">Waiting for host to continue...</p>
-                <div className="flex justify-center mt-4">
-                  <div className="animate-pulse flex space-x-1">
-                    <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-                    <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-                    <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PlayerResultsScreen personalResult={personalResult} />
           </div>
         </div>
       );
