@@ -88,7 +88,7 @@ describe('GameServer Integration', () => {
       // Start game and first question
       const question = questionManager.startNextQuestion(game);
       expect(question).toEqual(mockQuestions[0]);
-      expect(game.status).toBe('question');
+      expect(game.status).toBe('preparation');
       
       // Submit answer
       const answerSubmitted = playerManager.submitAnswer(game, 'player-1', 1);

@@ -8,16 +8,17 @@ import type {
 import { GameManager } from './GameManager';
 import { PlayerManager } from './PlayerManager';
 import { QuestionManager } from './QuestionManager';
+import { TimerManager } from './TimerManager';
 
 export class GameplayLoop {
-  private activeLoops: Map<string, NodeJS.Timeout> = new Map();
   private phaseCallbacks: Map<string, (() => void) | null> = new Map();
 
   constructor(
     private io: SocketIOServer<ClientToServerEvents, ServerToClientEvents>,
     private gameManager: GameManager,
     private playerManager: PlayerManager,
-    private questionManager: QuestionManager
+    private questionManager: QuestionManager,
+    private timerManager: TimerManager
   ) {}
 
   /**
@@ -40,11 +41,8 @@ export class GameplayLoop {
    * Stops the gameplay loop for a game
    */
   stopGameLoop(gameId: string): void {
-    const timeout = this.activeLoops.get(gameId);
-    if (timeout) {
-      clearTimeout(timeout);
-      this.activeLoops.delete(gameId);
-    }
+    // Clear all timers for this game
+    this.timerManager.clearAllTimers(gameId);
     this.phaseCallbacks.delete(gameId);
     
     const game = this.gameManager.getGame(gameId);
@@ -63,11 +61,8 @@ export class GameplayLoop {
       return;
     }
 
-    // Clear any existing scheduled transition
-    const existingTimeout = this.activeLoops.get(game.id);
-    if (existingTimeout) {
-      clearTimeout(existingTimeout);
-    }
+    // Clear existing timers to prevent race conditions
+    this.timerManager.clearAllTimers(game.id);
 
     console.log(`🔄 [GAMEPLAY_LOOP] Force transitioning to ${phase} for game ${game.pin}`);
     this.schedulePhase(game, phase, 0);
@@ -77,11 +72,11 @@ export class GameplayLoop {
    * Schedules the next phase with a delay
    */
   private schedulePhase(game: Game, phase: GamePhase, delay: number): void {
-    const timeout = setTimeout(() => {
+    const timerType = `phase_${phase}`;
+    
+    this.timerManager.setTimer(game.id, timerType, () => {
       this.executePhase(game, phase);
     }, delay);
-
-    this.activeLoops.set(game.id, timeout);
     
     if (delay > 0) {
       console.log(`⏰ [GAMEPLAY_LOOP] Scheduled ${phase} phase in ${delay}ms for game ${game.pin}`);
@@ -138,8 +133,8 @@ export class GameplayLoop {
 
     console.log(`📋 [PREPARATION] Question ${game.currentQuestionIndex + 1}/${game.questions.length} prepared: "${question.question}"`);
     
-    // Immediately transition to thinking phase
-    this.schedulePhase(game, 'thinking', 500); // Small delay for smoothness
+    // Transition to thinking phase
+    this.schedulePhase(game, 'thinking', 500);
   }
 
   private executeThinkingPhase(game: Game): void {
@@ -154,9 +149,10 @@ export class GameplayLoop {
     // Emit thinking phase to all clients
     this.io.to(game.id).emit('thinkingPhase', question, game.settings.thinkTime);
     
-    // Schedule answering phase
-    const answeringDelay = game.settings.thinkTime * 1000;
-    this.schedulePhase(game, 'answering', answeringDelay);
+    // Schedule answering phase using TimerManager
+    this.timerManager.setThinkingPhaseTimer(game.id, () => {
+      this.executePhase(game, 'answering');
+    }, game.settings.thinkTime);
   }
 
   private executeAnsweringPhase(game: Game): void {
@@ -168,15 +164,22 @@ export class GameplayLoop {
     // Emit answering phase to all clients
     this.io.to(game.id).emit('answeringPhase', game.settings.answerTime);
     
-    // Schedule results phase (can be interrupted if all players answer)
-    const resultsDelay = game.settings.answerTime * 1000;
-    this.schedulePhase(game, 'results', resultsDelay);
+    // Schedule results phase using TimerManager
+    this.timerManager.setAnsweringPhaseTimer(game.id, () => {
+      this.executePhase(game, 'results');
+    }, game.settings.answerTime);
     
-    // Store callback to check if we can end early
+    // Set up callback to check if we can end early
     this.phaseCallbacks.set(game.id, () => {
-      if (this.questionManager.hasAllPlayersAnswered(game)) {
-        console.log(`⚡ [ANSWERING] All players answered - ending phase early for game ${game.pin}`);
-        this.transitionToPhase(game, 'results');
+      const activePlayers = game.players.filter(p => !p.isHost && p.isConnected);
+      const totalActivePlayers = activePlayers.length;
+      
+      // Only allow early transition if there are active players and all have answered
+      if (totalActivePlayers > 0 && this.questionManager.hasAllPlayersAnswered(game)) {
+        console.log(`⚡ [ANSWERING] All ${totalActivePlayers} players answered - ending phase early for game ${game.pin}`);
+        // Clear the answering phase timer and transition immediately
+        this.timerManager.clearTimer(game.id, TimerManager.TIMER_TYPES.ANSWERING_PHASE);
+        this.executePhase(game, 'results');
       }
     });
   }
@@ -241,7 +244,7 @@ export class GameplayLoop {
     this.stopGameLoop(game.id);
     
     // Clean up game after a delay
-    setTimeout(() => {
+    this.timerManager.setTimer(game.id, 'game_cleanup', () => {
       this.gameManager.deleteGame(game.id);
     }, 30000);
   }

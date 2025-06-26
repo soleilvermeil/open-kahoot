@@ -6,6 +6,7 @@ import type {
 import { GameManager } from './GameManager';
 import { PlayerManager } from './PlayerManager';
 import { QuestionManager } from './QuestionManager';
+import { TimerManager } from './TimerManager';
 import { GameplayLoop } from './GameplayLoop';
 import { EventHandlers } from './EventHandlers';
 
@@ -14,6 +15,7 @@ export class GameServer {
   private gameManager: GameManager;
   private playerManager: PlayerManager;
   private questionManager: QuestionManager;
+  private timerManager: TimerManager;
   private gameplayLoop: GameplayLoop;
   private eventHandlers: EventHandlers;
 
@@ -24,13 +26,15 @@ export class GameServer {
     this.gameManager = new GameManager();
     this.playerManager = new PlayerManager();
     this.questionManager = new QuestionManager();
+    this.timerManager = new TimerManager();
     
     // Initialize gameplay loop
     this.gameplayLoop = new GameplayLoop(
       this.io,
       this.gameManager,
       this.playerManager,
-      this.questionManager
+      this.questionManager,
+      this.timerManager
     );
     
     // Initialize event handlers with all the managers
@@ -62,6 +66,10 @@ export class GameServer {
 
   getQuestionManager(): QuestionManager {
     return this.questionManager;
+  }
+
+  getTimerManager(): TimerManager {
+    return this.timerManager;
   }
 
   getGameplayLoop(): GameplayLoop {
@@ -102,9 +110,10 @@ export class GameServer {
   shutdown(): void {
     console.log('🛑 [GAME_SERVER] Shutting down gracefully...');
     
-    // Stop all gameplay loops
+    // Stop all gameplay loops and clear all timers
     this.gameManager.getAllGames().forEach(game => {
       this.gameplayLoop.stopGameLoop(game.id);
+      this.timerManager.clearAllTimers(game.id);
     });
     
     console.log('✅ [GAME_SERVER] Shutdown complete');
