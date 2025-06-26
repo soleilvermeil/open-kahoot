@@ -1,0 +1,108 @@
+import { v4 as uuidv4 } from 'uuid';
+import type { Game, Question, GameSettings } from '@/types/game';
+
+export class GameManager {
+  private games: Map<string, Game> = new Map();
+  private gamesByPin: Map<string, string> = new Map(); // pin -> gameId
+
+  createGame(hostSocketId: string, title: string, questions: Question[], settings: GameSettings): Game {
+    const gameId = uuidv4();
+    const hostId = uuidv4(); // Generate persistent ID for host
+    const pin = this.generatePin();
+    
+    const game: Game = {
+      id: gameId,
+      pin,
+      hostId: hostId,
+      title,
+      questions,
+      settings,
+      currentQuestionIndex: -1,
+      status: 'waiting',
+      players: [{
+        id: hostId,
+        socketId: hostSocketId,
+        name: 'Host',
+        score: 0,
+        isHost: true,
+        isConnected: true
+      }]
+    };
+
+    this.games.set(gameId, game);
+    this.gamesByPin.set(pin, gameId);
+    
+    return game;
+  }
+
+  getGame(gameId: string): Game | undefined {
+    return this.games.get(gameId);
+  }
+
+  getGameByPin(pin: string): Game | undefined {
+    const gameId = this.gamesByPin.get(pin);
+    return gameId ? this.games.get(gameId) : undefined;
+  }
+
+  deleteGame(gameId: string): void {
+    const game = this.games.get(gameId);
+    if (game) {
+      this.gamesByPin.delete(game.pin);
+      this.games.delete(gameId);
+    }
+  }
+
+  updateGameStatus(gameId: string, status: Game['status']): void {
+    const game = this.games.get(gameId);
+    if (game) {
+      game.status = status;
+    }
+  }
+
+  updateCurrentQuestion(gameId: string, questionIndex: number): void {
+    const game = this.games.get(gameId);
+    if (game) {
+      game.currentQuestionIndex = questionIndex;
+    }
+  }
+
+  setQuestionStartTime(gameId: string, startTime: number): void {
+    const game = this.games.get(gameId);
+    if (game) {
+      game.questionStartTime = startTime;
+    }
+  }
+
+  setPhaseStartTime(gameId: string, startTime: number): void {
+    const game = this.games.get(gameId);
+    if (game) {
+      game.phaseStartTime = startTime;
+    }
+  }
+
+  getCurrentQuestion(game: Game): Question | undefined {
+    return game.questions[game.currentQuestionIndex];
+  }
+
+  isGameFinished(game: Game): boolean {
+    return game.currentQuestionIndex >= game.questions.length - 1;
+  }
+
+  private generatePin(): string {
+    const pin = Math.floor(100000 + Math.random() * 900000).toString();
+    // Ensure pin is unique
+    if (this.gamesByPin.has(pin)) {
+      return this.generatePin();
+    }
+    return pin;
+  }
+
+  // Debug methods
+  getAllGames(): Game[] {
+    return Array.from(this.games.values());
+  }
+
+  getGameCount(): number {
+    return this.games.size;
+  }
+} 

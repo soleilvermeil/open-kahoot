@@ -8,9 +8,7 @@ interface HostAnsweringScreenProps {
 }
 
 export default function HostAnsweringScreen({ 
-  currentQuestion, 
-  timeLeft, 
-  answerTime 
+  currentQuestion 
 }: HostAnsweringScreenProps) {
   // Choice button colors for players - using palette
   const choiceColors = [
