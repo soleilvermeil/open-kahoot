@@ -1,5 +1,7 @@
-import { Trophy } from 'lucide-react';
+import { Trophy, LucideIcon } from 'lucide-react';
 import type { Player } from '@/types/game';
+import Button from './Button';
+import AnimatedIcon from './AnimatedIcon';
 
 interface LeaderboardProps {
   players: Player[];
@@ -7,6 +9,12 @@ interface LeaderboardProps {
   subtitle?: string;
   showPodium?: boolean;
   className?: string;
+  button?: {
+    text: string;
+    onClick: () => void;
+    icon?: LucideIcon;
+    iconPosition?: 'left' | 'right';
+  };
 }
 
 export default function Leaderboard({ 
@@ -14,7 +22,8 @@ export default function Leaderboard({
   title = "Leaderboard",
   subtitle,
   showPodium = true,
-  className = ""
+  className = "",
+  button
 }: LeaderboardProps) {
   const getPodiumStyle = (index: number) => {
     if (!showPodium) return 'bg-white/10 border-white/20';
@@ -50,11 +59,26 @@ export default function Leaderboard({
     <div className={className}>
       {(title || subtitle) && (
         <div className="text-center mb-8">
-          <Trophy className="w-16 h-16 text-yellow-300 mx-auto mb-4" />
+          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-yellow-300" />
           <h1 className="text-4xl text-white mb-4 font-jua">{title}</h1>
           {subtitle && (
             <p className="text-white/80 text-xl">{subtitle}</p>
           )}
+        </div>
+      )}
+
+      {button && (
+        <div className="text-center mb-8">
+          <Button
+            onClick={button.onClick}
+            variant="black"
+            size="xl"
+            icon={button.icon}
+            iconPosition={button.iconPosition}
+            className="mx-auto"
+          >
+            {button.text}
+          </Button>
         </div>
       )}
 

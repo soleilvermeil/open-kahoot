@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users, Hourglass } from 'lucide-react';
+import { Clock, Trophy, ChevronRight, Users, Hourglass, LogOut } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import { getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
-import Button from '@/components/Button';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -267,34 +266,16 @@ export default function GamePage() {
     return (
       <PageLayout gradient="leaderboard" maxWidth="4xl" showLogo={false}>
         <Card>
-          {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2 font-jua">Current Leaderboard</h1>
-            <p className="text-white/80 text-xl">
-              Question {(game?.currentQuestionIndex ?? 0) + 2} of {game?.questions.length ?? 0} completed
-            </p>
-          </div>
-
-          {/* Host controls */}
-          {isHost && (
-            <div className="text-center mb-8">
-              <Button
-                onClick={nextQuestion}
-                variant="black"
-                size="xl"
-                icon={ChevronRight}
-                iconPosition="right"
-                className="mx-auto"
-              >
-                {(game?.currentQuestionIndex ?? 0) + 1 >= (game?.questions.length ?? 0) ? 'Finish Game' : 'Next Question'}
-              </Button>
-            </div>
-          )}
-
           <Leaderboard
             players={leaderboard}
-            title=""
-            subtitle=""
+            title="Current Leaderboard"
+            subtitle={`Question ${(game?.currentQuestionIndex ?? 0) + 2} of ${game?.questions.length ?? 0} completed`}
+            button={isHost ? {
+              text: (game?.currentQuestionIndex ?? 0) + 1 >= (game?.questions.length ?? 0) ? 'Finish Game' : 'Next Question',
+              onClick: nextQuestion,
+              icon: ChevronRight,
+              iconPosition: 'right'
+            } : undefined}
           />
         </Card>
       </PageLayout>
@@ -310,18 +291,13 @@ export default function GamePage() {
             players={finalScores}
             title="Game Over!"
             subtitle="Final Results"
-            className="mb-8"
+            button={{
+              text: "Back to Home",
+              onClick: () => window.location.href = '/',
+              icon: LogOut,
+              iconPosition: 'right'
+            }}
           />
-
-          <div className="text-center">
-            <Button
-              onClick={() => window.location.href = '/'}
-              variant="black"
-              size="xl"
-            >
-              Back to Home
-            </Button>
-          </div>
         </Card>
       </PageLayout>
     );
