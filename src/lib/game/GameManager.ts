@@ -32,6 +32,8 @@ export class GameManager {
     this.games.set(gameId, game);
     this.gamesByPin.set(pin, gameId);
     
+    console.log(`💾 [GAME_STORAGE] Game stored - ID: ${gameId}, PIN: ${pin}, Total games: ${this.games.size}`);
+    
     return game;
   }
 
@@ -41,7 +43,12 @@ export class GameManager {
 
   getGameByPin(pin: string): Game | undefined {
     const gameId = this.gamesByPin.get(pin);
-    return gameId ? this.games.get(gameId) : undefined;
+    const game = gameId ? this.games.get(gameId) : undefined;
+    console.log(`🔍 [GAME_LOOKUP] Looking for PIN: ${pin}, found gameId: ${gameId}, game exists: ${!!game}, total games: ${this.games.size}`);
+    if (this.games.size > 0) {
+      console.log(`📋 [AVAILABLE_PINS]`, Array.from(this.gamesByPin.keys()));
+    }
+    return game;
   }
 
   deleteGame(gameId: string): void {

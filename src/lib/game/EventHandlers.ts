@@ -25,6 +25,7 @@ export class EventHandlers {
       console.log(`🔌 [CONNECTION] Player connected: ${socket.id}`);
 
       socket.on('createGame', (title, questions, settings, callback) => {
+        console.log(`📥 [SOCKET_EVENT] Received createGame event from ${socket.id} - title: "${title}", questions: ${questions?.length || 'undefined'}, settings:`, settings);
         this.handleCreateGame(socket, title, questions, settings, callback);
       });
 
@@ -148,6 +149,42 @@ export class EventHandlers {
       
       if (isValid) {
         socket.join(game.id);
+        console.log(`🏠 [ROOM_JOIN] Socket ${socket.id} joined room ${game.id} during validation`);
+        
+        // If this is a host connecting and the game is in progress, send current state
+        const isHost = host && host.socketId === socket.id;
+        if (isHost && game.status === 'question') {
+          const currentQuestion = this.questionManager.getCurrentQuestion(game);
+          if (currentQuestion) {
+            // Check which phase we're currently in by looking at active timers
+            const hasThinkingTimer = this.timerManager.hasTimer(game.id, TimerManager.TIMER_TYPES.THINKING_PHASE);
+            const hasAnsweringTimer = this.timerManager.hasTimer(game.id, TimerManager.TIMER_TYPES.ANSWERING_PHASE);
+            
+            if (hasAnsweringTimer && game.questionStartTime) {
+              // We're in answering phase - send thinking phase first, then answering after proper delay
+              const elapsed = Date.now() - game.questionStartTime;
+              const remaining = Math.max(0, game.settings.answerTime - Math.floor(elapsed / 1000));
+              if (remaining > 0) {
+                console.log(`📤 [SYNC_HOST] Host connecting during answering phase - showing thinking phase first`);
+                socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+                // Give enough time for thinking phase to render (2 seconds)
+                setTimeout(() => {
+                  console.log(`📤 [SYNC_HOST] Now transitioning to answering phase with ${remaining}s remaining`);
+                  socket.emit('answeringPhase', remaining);
+                }, 2000);
+              }
+            } else if (hasThinkingTimer) {
+              // We're still in thinking phase
+              console.log(`📤 [SYNC_HOST] Host connecting during thinking phase - sending current question`);
+              socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+            } else {
+              // Fallback - send thinking phase
+              console.log(`📤 [SYNC_HOST] Host connecting - no active phase timer, defaulting to thinking phase`);
+              socket.emit('thinkingPhase', currentQuestion, game.settings.thinkTime);
+            }
+          }
+        }
+        
         callback(true, game);
       } else {
         callback(false);
@@ -174,6 +211,10 @@ export class EventHandlers {
         socket.emit('error', 'Not authorized');
         return;
       }
+
+      // Ensure host socket is in the game room
+      socket.join(game.id);
+      console.log(`🏠 [ROOM_JOIN] Host ${socket.id} joined room ${game.id}`);
 
       const playerCount = this.playerManager.getConnectedPlayers(game).length;
       console.log(`✅ [START_GAME] Starting game ${game.pin} with ${playerCount} players`);
@@ -347,6 +388,7 @@ export class EventHandlers {
     this.playerManager.clearAnswers(game);
     this.gameManager.setPhaseStartTime(game.id, Date.now());
     
+    console.log(`📤 [EMIT_THINKING_PHASE] Emitting thinkingPhase to room ${game.id} with question: "${question.question}"`);
     this.io.to(game.id).emit('thinkingPhase', question, game.settings.thinkTime);
     
     this.timerManager.setThinkingPhaseTimer(game.id, () => {
