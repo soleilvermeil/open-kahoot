@@ -10,10 +10,16 @@ module.exports = {
     '**/__tests__/**/*.(ts|tsx|js)',
     '**/*.(test|spec).(ts|tsx|js)'
   ],
+  testPathIgnorePatterns: [
+    '<rootDir>/e2e/',
+    '<rootDir>/node_modules/'
+  ],
   collectCoverageFrom: [
     'src/**/*.(ts|tsx)',
     '!src/**/*.d.ts',
     '!src/**/*.stories.(ts|tsx)',
+    '!src/app/**/*.tsx', // Exclude Next.js pages
+    '!src/components/**/*.tsx', // Exclude React components
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],

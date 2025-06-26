@@ -1,5 +1,5 @@
 import { PlayerManager } from '../PlayerManager';
-import type { Game, Player, GameSettings, Question } from '@/types/game';
+import type { Game, GameSettings, Question } from '@/types/game';
 
 describe('PlayerManager', () => {
   let playerManager: PlayerManager;
@@ -170,17 +170,17 @@ describe('PlayerManager', () => {
 
     it('should include time bonus for faster answers', () => {
       const now = Date.now();
-      mockGame.questionStartTime = now - 1000; // 1 second ago
+      mockGame.questionStartTime = now - 10000; // 10 seconds ago
       
       // Set up two players with correct answers but different response times
       const player1 = mockGame.players.find(p => p.name === 'Player1')!;
       const player2 = mockGame.players.find(p => p.name === 'Player2')!;
       
       player1.currentAnswer = 1;
-      player1.answerTime = now - 500; // Answered quickly
+      player1.answerTime = now - 5000; // Answered after 5 seconds
       
       player2.currentAnswer = 1;
-      player2.answerTime = now - 100; // Answered very quickly
+      player2.answerTime = now - 9000; // Answered after 1 second (faster)
       
       playerManager.updateScores(mockGame, 1);
       

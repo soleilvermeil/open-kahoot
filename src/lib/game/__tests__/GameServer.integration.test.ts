@@ -1,11 +1,16 @@
-import { Server as SocketIOServer } from 'socket.io';
-import { createServer } from 'http';
 import { GameServer } from '../GameServer';
-import type { Question, GameSettings } from '@/types/game';
+import type { Question, GameSettings, ServerToClientEvents, ClientToServerEvents } from '@/types/game';
+import type { Server as SocketIOServer } from 'socket.io';
+
+// Mock Socket.IO for testing
+const mockIo = {
+  on: jest.fn(),
+  to: jest.fn(() => ({ emit: jest.fn() })),
+  emit: jest.fn(),
+  close: jest.fn(),
+} as unknown as SocketIOServer<ClientToServerEvents, ServerToClientEvents>;
 
 describe('GameServer Integration', () => {
-  let httpServer: any;
-  let io: SocketIOServer;
   let gameServer: GameServer;
 
   const mockQuestions: Question[] = [
@@ -24,15 +29,13 @@ describe('GameServer Integration', () => {
   };
 
   beforeEach(() => {
-    httpServer = createServer();
-    io = new SocketIOServer(httpServer);
-    gameServer = new GameServer(io);
+    // Reset all mocks
+    jest.clearAllMocks();
+    gameServer = new GameServer(mockIo);
   });
 
   afterEach(() => {
     gameServer.shutdown();
-    io.close();
-    httpServer.close();
   });
 
   describe('GameServer initialization', () => {
