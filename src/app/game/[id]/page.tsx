@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users, Hourglass, Check, X } from 'lucide-react';
+import { Clock, Trophy, ChevronRight, Users, Hourglass } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
-import { correct, incorrect, getChoiceColor, getGradient } from '@/lib/palette';
+import { getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
 import Button from '@/components/Button';
 import PageLayout from '@/components/PageLayout';
@@ -99,11 +99,13 @@ export default function GamePage() {
     }
 
     socket.on('gameStarted', (gameData: Game) => {
+      console.log('🎮 [CLIENT] Received gameStarted event:', gameData);
       setGame(gameData);
       setGameStatus('started');
     });
 
     socket.on('thinkingPhase', (question: Question, thinkTime: number) => {
+      console.log('📋 [CLIENT] Received thinkingPhase event:', question.question, 'thinkTime:', thinkTime);
       setCurrentQuestion(question);
       setTimeLeft(thinkTime);
       setPhase('thinking');
@@ -112,38 +114,13 @@ export default function GamePage() {
       setQuestionStats(null);
       setPersonalResult(null);
       setGameStatus('question');
-      
-      // Timer countdown for thinking phase
-      const timer = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timer);
     });
 
     socket.on('answeringPhase', (answerTime: number) => {
+      console.log('⏰ [CLIENT] Received answeringPhase event, answerTime:', answerTime);
       setTimeLeft(answerTime);
       setPhase('answering');
       setGameStatus('question');
-      
-      // Timer countdown for answering phase
-      const timer = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timer);
     });
 
     socket.on('questionEnded', (stats: GameStats) => {
@@ -186,6 +163,28 @@ export default function GamePage() {
       socket.off('playerAnswered');
     };
   }, [gameId, isHost, router]);
+
+  // Timer effect for question countdown
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    
+    if (timeLeft > 0 && (phase === 'thinking' || phase === 'answering')) {
+      timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [timeLeft, phase]);
 
   const submitAnswer = (answerIndex: number) => {
     if (hasAnswered || !currentQuestion || phase !== 'answering') return;
@@ -330,6 +329,7 @@ export default function GamePage() {
 
   // Thinking Phase - Show only question for host, waiting message for players
   if (gameStatus === 'question' && phase === 'thinking' && currentQuestion) {
+    console.log('📋 [CLIENT] Rendering thinking phase for game status:', gameStatus, 'phase:', phase, 'hasQuestion:', !!currentQuestion);
     return (
       <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
         <Timer
@@ -434,12 +434,17 @@ export default function GamePage() {
     );
   }
 
+  console.log('🚨 [CLIENT] Falling through to waiting screen. Game status:', gameStatus, 'phase:', phase, 'hasQuestion:', !!currentQuestion, 'isHost:', isHost, 'isPlayer:', isPlayer);
+  
   return (
     <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
         <AnimatedIcon icon={Users} size="md" iconColor="text-white/60" className="mb-4" />
         <h1 className="text-3xl font-bold text-white mb-4">Waiting for the next question...</h1>
         <p className="text-white/80 text-lg">The host is preparing something exciting!</p>
+        <div className="text-white/60 text-sm mt-4">
+          Debug: status={gameStatus}, phase={phase}, hasQuestion={!!currentQuestion}
+        </div>
         <div className="flex justify-center mt-6">
           <div className="animate-pulse flex space-x-1">
             <div className="w-2 h-2 bg-white/60 rounded-full"></div>
