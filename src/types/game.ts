@@ -11,6 +11,8 @@ export interface GameSettings {
   answerTime: number; // Time allowed to answer (in seconds)
 }
 
+export type GamePhase = 'waiting' | 'preparation' | 'thinking' | 'answering' | 'results' | 'leaderboard' | 'finished';
+
 export interface Game {
   id: string;
   pin: string;
@@ -19,10 +21,13 @@ export interface Game {
   questions: Question[];
   settings: GameSettings;
   currentQuestionIndex: number;
-  status: 'waiting' | 'started' | 'question' | 'results' | 'leaderboard' | 'finished';
+  status: GamePhase;
+  phase: GamePhase; // Current gameplay phase
   players: Player[];
   questionStartTime?: number;
   phaseStartTime?: number;
+  phaseEndTime?: number;
+  gameLoopActive?: boolean; // Whether the gameplay loop is running
 }
 
 export interface Player {

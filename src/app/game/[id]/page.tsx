@@ -5,7 +5,7 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Clock, Trophy, ChevronRight, Users, Hourglass, LogOut } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import { getGradient } from '@/lib/palette';
-import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
+import type { Game, Question, GameStats, Player, PersonalResult, GamePhase } from '@/types/game';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -32,7 +32,7 @@ interface GameState {
   personalResult: PersonalResult | null;
   finalScores: Player[];
   leaderboard: Player[];
-  gameStatus: 'waiting' | 'started' | 'question' | 'waiting-results' | 'results' | 'leaderboard' | 'finished';
+  gameStatus: GamePhase | 'waiting-results';
   gameError: string | null;
   isValidating: boolean;
 }
@@ -40,7 +40,7 @@ interface GameState {
 type GameAction =
   | { type: 'SET_VALIDATING'; payload: boolean }
   | { type: 'SET_GAME_ERROR'; payload: string }
-  | { type: 'SET_GAME_DATA'; payload: { game: Game; status: Game['status'] } }
+  | { type: 'SET_GAME_DATA'; payload: { game: Game; status: GamePhase } }
   | { type: 'START_THINKING_PHASE'; payload: { question: Question; thinkTime: number } }
   | { type: 'START_ANSWERING_PHASE'; payload: { answerTime: number } }
   | { type: 'SUBMIT_ANSWER'; payload: { answerIndex: number } }
@@ -72,7 +72,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return { 
         ...state, 
         game: action.payload, 
-        gameStatus: 'started' 
+        gameStatus: 'preparation'
       };
       
     case 'START_THINKING_PHASE':
@@ -85,7 +85,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         hasAnswered: false,
         questionStats: null,
         personalResult: null,
-        gameStatus: 'question'
+        gameStatus: 'thinking'
       };
       
     case 'START_ANSWERING_PHASE':
@@ -93,7 +93,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         timeLeft: action.payload.answerTime,
         phase: 'answering',
-        gameStatus: 'question'
+        gameStatus: 'answering'
       };
       
     case 'SUBMIT_ANSWER':
@@ -107,7 +107,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         questionStats: action.payload,
-        // Host goes directly to results state
         gameStatus: 'results'
       };
       
@@ -322,6 +321,8 @@ export default function GamePage() {
     socket.emit('showLeaderboard', gameId);
   };
 
+
+
   // Loading/Validation screen
   if (state.isValidating) {
     return (
@@ -358,7 +359,7 @@ export default function GamePage() {
   }
 
   // Waiting screen
-  if (state.gameStatus === 'waiting' || state.gameStatus === 'started') {
+  if (state.gameStatus === 'waiting' || state.gameStatus === 'preparation') {
     return (
       <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
@@ -415,7 +416,7 @@ export default function GamePage() {
   }
 
   // Thinking Phase - Show only question for host, waiting message for players
-  if (state.gameStatus === 'question' && state.phase === 'thinking' && state.currentQuestion) {
+  if (state.gameStatus === 'thinking' && state.phase === 'thinking' && state.currentQuestion) {
     console.log('📋 [CLIENT] Rendering thinking phase for game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion);
     return (
       <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
@@ -464,7 +465,7 @@ export default function GamePage() {
   }
 
   // Answering Phase
-  if (state.gameStatus === 'question' && state.phase === 'answering' && state.currentQuestion) {
+  if (state.gameStatus === 'answering' && state.phase === 'answering' && state.currentQuestion) {
     return (
       <div className={`min-h-screen ${getGradient('answering')} p-8`}>
         <div className="container mx-auto max-w-4xl">

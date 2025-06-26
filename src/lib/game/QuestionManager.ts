@@ -9,12 +9,10 @@ export class QuestionManager {
     }
 
     game.currentQuestionIndex = nextIndex;
-    game.status = 'question';
-    game.questionStartTime = Date.now();
-    game.phaseStartTime = Date.now();
+    // Don't set status here - let GameplayLoop manage phases
 
     const question = game.questions[nextIndex];
-    console.log(`📋 [QUESTION_START] Starting question ${nextIndex + 1}/${game.questions.length}: "${question.question}"`);
+    console.log(`📋 [QUESTION_START] Prepared question ${nextIndex + 1}/${game.questions.length}: "${question.question}"`);
     
     return question;
   }
