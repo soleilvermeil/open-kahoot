@@ -46,7 +46,7 @@
     "supertest": "^6.3.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.1.0",
-    "tsx": "^4.7.0",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }
