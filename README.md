@@ -1,4 +1,4 @@
-# Open Kahoot! 🎯
+# ![Open Kahoot!](banner.png)
 
 A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socket.io, and TypeScript.
 
