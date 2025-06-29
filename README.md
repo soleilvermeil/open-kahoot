@@ -21,17 +21,6 @@ npm run dev
 
 The application will be available at `http://localhost:3000`.
 
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run test` - Run unit tests
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:coverage` - Run tests with coverage report
-- `npm run test:e2e` - Run end-to-end tests
-
 ## Technology Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript
