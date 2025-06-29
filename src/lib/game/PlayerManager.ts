@@ -120,6 +120,42 @@ export class PlayerManager {
     });
   }
 
+  storeAnswersToHistory(game: Game): void {
+    const question = game.questions[game.currentQuestionIndex];
+    if (!question) return;
+
+    const questionStartTime = game.questionStartTime || Date.now();
+
+    game.players.forEach(player => {
+      if (!player.isHost) {
+        const responseTime = player.answerTime ? (player.answerTime - questionStartTime) : 0;
+        const wasCorrect = player.currentAnswer === question.correctAnswer;
+        
+        // Calculate points earned for this question
+        let pointsEarned = 0;
+        if (wasCorrect && player.currentAnswer !== undefined) {
+          const answerTimeLimit = game.settings.answerTime * 1000;
+          const timeUsedRatio = responseTime / answerTimeLimit;
+          pointsEarned = Math.max(0, Math.round(1000 * (1 - timeUsedRatio)));
+        }
+
+        const answerRecord = {
+          playerId: player.id,
+          playerName: player.name,
+          questionIndex: game.currentQuestionIndex,
+          questionId: question.id,
+          answerIndex: player.currentAnswer ?? null,
+          answerTime: player.answerTime,
+          responseTime: responseTime,
+          pointsEarned: pointsEarned,
+          wasCorrect: wasCorrect && player.currentAnswer !== undefined
+        };
+
+        game.answerHistory.push(answerRecord);
+      }
+    });
+  }
+
   updateScores(game: Game, correctAnswer: number): void {
     const questionStartTime = game.questionStartTime || Date.now();
     const maxPoints = 1000;
@@ -147,5 +183,64 @@ export class PlayerManager {
 
   getFinalResults(game: Game): Player[] {
     return this.getLeaderboard(game);
+  }
+
+  generateGameLogsTSV(game: Game): string {
+    const headers = [
+      'Player Name',
+      'Question #',
+      'Question Text',
+      'Correct Answer',
+      'Player Answer',
+      'Answer Text',
+      'Was Correct',
+      'Response Time (ms)',
+      'Points Earned',
+      'Final Score'
+    ];
+
+    const rows: string[] = [headers.join('\t')];
+
+    // Sort answers by question index, then by player name
+    const sortedAnswers = [...game.answerHistory].sort((a, b) => {
+      if (a.questionIndex !== b.questionIndex) {
+        return a.questionIndex - b.questionIndex;
+      }
+      return a.playerName.localeCompare(b.playerName);
+    });
+
+    sortedAnswers.forEach(answerRecord => {
+      const question = game.questions[answerRecord.questionIndex];
+      if (!question) return;
+
+      const correctAnswerLetter = String.fromCharCode(65 + question.correctAnswer); // A, B, C, D
+      const playerAnswerLetter = answerRecord.answerIndex !== null 
+        ? String.fromCharCode(65 + answerRecord.answerIndex) 
+        : 'No Answer';
+      
+      const playerAnswerText = answerRecord.answerIndex !== null 
+        ? question.options[answerRecord.answerIndex] 
+        : 'No Answer';
+
+      const player = game.players.find(p => p.id === answerRecord.playerId);
+      const finalScore = player ? player.score : 0;
+
+      const row = [
+        answerRecord.playerName,
+        (answerRecord.questionIndex + 1).toString(),
+        question.question.replace(/\t/g, ' '), // Remove tabs from question text
+        `${correctAnswerLetter}: ${question.options[question.correctAnswer]}`.replace(/\t/g, ' '),
+        playerAnswerLetter,
+        playerAnswerText.replace(/\t/g, ' '), // Remove tabs from answer text
+        answerRecord.wasCorrect ? 'Yes' : 'No',
+        answerRecord.responseTime.toString(),
+        answerRecord.pointsEarned.toString(),
+        finalScore.toString()
+      ];
+
+      rows.push(row.join('\t'));
+    });
+
+    return rows.join('\n');
   }
 } 

@@ -120,6 +120,11 @@ export class GameplayLoop {
   private executePreprationPhase(game: Game): void {
     console.log(`🔧 [PREPARATION] Preparing next question for game ${game.pin}`);
     
+    // Store answer history before clearing answers (only if we've had at least one question)
+    if (game.currentQuestionIndex >= 0) {
+      this.playerManager.storeAnswersToHistory(game);
+    }
+    
     // Clear previous answers
     this.playerManager.clearAnswers(game);
     
@@ -235,6 +240,11 @@ export class GameplayLoop {
 
   private executeFinishedPhase(game: Game): void {
     console.log(`🏁 [FINISHED] Game ${game.pin} finished`);
+    
+    // Store final question's answer history
+    if (game.currentQuestionIndex >= 0) {
+      this.playerManager.storeAnswersToHistory(game);
+    }
     
     this.gameManager.updateGamePhase(game.id, 'finished');
     const finalResults = this.playerManager.getFinalResults(game);

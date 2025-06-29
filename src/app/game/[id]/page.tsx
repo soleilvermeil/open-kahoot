@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users, Hourglass, LogOut } from 'lucide-react';
+import { Clock, Trophy, ChevronRight, Users, Hourglass, LogOut, Download } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import { getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult, GamePhase } from '@/types/game';
@@ -268,6 +268,20 @@ export default function GamePage() {
       console.log('Player answered:', playerId);
     });
 
+    socket.on('gameLogs', (tsvData: string, filename: string) => {
+      // Create and download the TSV file
+      const blob = new Blob([tsvData], { type: 'text/tab-separated-values' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      console.log(`📄 Downloaded game logs: ${filename}`);
+    });
+
     return () => {
       socket.off('gameStarted');
       socket.off('thinkingPhase');
@@ -278,6 +292,7 @@ export default function GamePage() {
       socket.off('leaderboardShown');
       socket.off('gameFinished');
       socket.off('playerAnswered');
+      socket.off('gameLogs');
     };
   }, [gameId, isHost, router]);
 
@@ -319,6 +334,11 @@ export default function GamePage() {
   const showLeaderboard = () => {
     const socket = getSocket();
     socket.emit('showLeaderboard', gameId);
+  };
+
+  const downloadLogs = () => {
+    const socket = getSocket();
+    socket.emit('downloadGameLogs', gameId);
   };
 
 
@@ -382,12 +402,12 @@ export default function GamePage() {
             players={state.leaderboard}
             title="Current Leaderboard"
             subtitle={`Question ${(state.game?.currentQuestionIndex ?? 0) + 2} of ${state.game?.questions.length ?? 0} completed`}
-            button={{
+            buttons={[{
               text: (state.game?.currentQuestionIndex ?? 0) + 1 >= (state.game?.questions.length ?? 0) ? 'Finish Game' : 'Next Question',
               onClick: nextQuestion,
               icon: ChevronRight,
               iconPosition: 'right'
-            }}
+            }]}
           />
         </Card>
       </PageLayout>
@@ -403,12 +423,29 @@ export default function GamePage() {
             players={state.finalScores}
             title="Game Over!"
             subtitle="Final Results"
-            button={{
-              text: "Back to Home",
-              onClick: () => window.location.href = '/',
-              icon: LogOut,
-              iconPosition: 'right'
-            }}
+            buttons={isHost ? [
+              {
+                text: "Download Game Logs",
+                onClick: downloadLogs,
+                icon: Download,
+                iconPosition: 'left',
+                variant: 'black'
+              },
+              {
+                text: "Back to Home",
+                onClick: () => window.location.href = '/',
+                icon: LogOut,
+                iconPosition: 'right',
+                variant: 'black'
+              }
+            ] : [
+              {
+                text: "Back to Home",
+                onClick: () => window.location.href = '/',
+                icon: LogOut,
+                iconPosition: 'right'
+              }
+            ]}
           />
         </Card>
       </PageLayout>
