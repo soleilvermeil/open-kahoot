@@ -123,16 +123,15 @@ export class PlayerManager {
   updateScores(game: Game, correctAnswer: number): void {
     const questionStartTime = game.questionStartTime || Date.now();
     const maxPoints = 1000;
-    const timeBonus = 500;
     
     game.players.forEach(player => {
       if (!player.isHost && player.currentAnswer === correctAnswer) {
-        // Calculate time-based bonus
+        // Calculate time-based score (linear decrease from 1000 to 0)
         const responseTime = (player.answerTime || Date.now()) - questionStartTime;
         const answerTimeLimit = game.settings.answerTime * 1000;
-        const timeBonusPoints = Math.max(0, timeBonus * (1 - responseTime / answerTimeLimit));
+        const timeUsedRatio = responseTime / answerTimeLimit;
         
-        const pointsEarned = Math.round(maxPoints + timeBonusPoints);
+        const pointsEarned = Math.max(0, Math.round(maxPoints * (1 - timeUsedRatio)));
         player.score += pointsEarned;
         
         console.log(`Player ${player.name} earned ${pointsEarned} points (total: ${player.score})`);

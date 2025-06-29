@@ -77,9 +77,8 @@ export class QuestionManager {
       const responseTime = (player.answerTime || Date.now()) - questionStartTime;
       const answerTimeLimit = game.settings.answerTime * 1000;
       const maxPoints = 1000;
-      const timeBonus = 500;
-      const timeBonusPoints = Math.max(0, timeBonus * (1 - responseTime / answerTimeLimit));
-      pointsEarned = Math.round(maxPoints + timeBonusPoints);
+      const timeUsedRatio = responseTime / answerTimeLimit;
+      pointsEarned = Math.max(0, Math.round(maxPoints * (1 - timeUsedRatio)));
     }
 
     // Get leaderboard to determine position
