@@ -1,5 +1,4 @@
-# ![Open Kahoot!](banner.png)
-<img src="banner.png" alt="Open Kahoot!" width="2000"/>
+<img src="banner.png" alt="Open Kahoot!" width="300"/>
 
 A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socket.io, and TypeScript.
 
