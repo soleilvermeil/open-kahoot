@@ -187,16 +187,17 @@ export class PlayerManager {
 
   generateGameLogsTSV(game: Game): string {
     const headers = [
-      'Player Name',
-      'Question #',
-      'Question Text',
-      'Correct Answer',
-      'Player Answer',
-      'Answer Text',
-      'Was Correct',
-      'Response Time (ms)',
-      'Points Earned',
-      'Final Score'
+      'question_index',
+      'question_datetime',
+      'question_string',
+      'proposition_correct',
+      'proposition_wrong1',
+      'proposition_wrong2',
+      'proposition_wrong3',
+      'player_id',
+      'player_nickname',
+      'choice_string',
+      'choice_datetime'
     ];
 
     const rows: string[] = [headers.join('\t')];
@@ -213,29 +214,42 @@ export class PlayerManager {
       const question = game.questions[answerRecord.questionIndex];
       if (!question) return;
 
-      const correctAnswerLetter = String.fromCharCode(65 + question.correctAnswer); // A, B, C, D
-      const playerAnswerLetter = answerRecord.answerIndex !== null 
-        ? String.fromCharCode(65 + answerRecord.answerIndex) 
-        : 'No Answer';
+      // Get question start time for this specific question
+      // Since we don't store per-question start times, we'll estimate based on answer time
+      const questionStartTime = answerRecord.answerTime ? 
+        new Date(answerRecord.answerTime - answerRecord.responseTime) : 
+        new Date();
       
-      const playerAnswerText = answerRecord.answerIndex !== null 
-        ? question.options[answerRecord.answerIndex] 
-        : 'No Answer';
+      const questionDatetime = questionStartTime.toISOString();
+      const choiceDatetime = answerRecord.answerTime ? 
+        new Date(answerRecord.answerTime).toISOString() : 
+        '';
 
-      const player = game.players.find(p => p.id === answerRecord.playerId);
-      const finalScore = player ? player.score : 0;
+      // Separate correct and wrong propositions
+      const correctProposition = question.options[question.correctAnswer];
+      const wrongPropositions = question.options.filter((_, index) => index !== question.correctAnswer);
+      
+      // Pad wrong propositions to ensure we have exactly 3 (fill with empty strings if needed)
+      while (wrongPropositions.length < 3) {
+        wrongPropositions.push('');
+      }
+
+      const choiceString = answerRecord.answerIndex !== null 
+        ? question.options[answerRecord.answerIndex] 
+        : '';
 
       const row = [
-        answerRecord.playerName,
-        (answerRecord.questionIndex + 1).toString(),
+        answerRecord.questionIndex.toString(),
+        questionDatetime,
         question.question.replace(/\t/g, ' '), // Remove tabs from question text
-        `${correctAnswerLetter}: ${question.options[question.correctAnswer]}`.replace(/\t/g, ' '),
-        playerAnswerLetter,
-        playerAnswerText.replace(/\t/g, ' '), // Remove tabs from answer text
-        answerRecord.wasCorrect ? 'Yes' : 'No',
-        answerRecord.responseTime.toString(),
-        answerRecord.pointsEarned.toString(),
-        finalScore.toString()
+        correctProposition.replace(/\t/g, ' '),
+        wrongPropositions[0].replace(/\t/g, ' '),
+        wrongPropositions[1].replace(/\t/g, ' '),
+        wrongPropositions[2].replace(/\t/g, ' '),
+        answerRecord.playerId,
+        answerRecord.playerName.replace(/\t/g, ' '),
+        choiceString.replace(/\t/g, ' '),
+        choiceDatetime
       ];
 
       rows.push(row.join('\t'));
