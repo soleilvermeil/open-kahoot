@@ -6,6 +6,18 @@ export interface Question {
   timeLimit: number; // Time limit in seconds
 }
 
+export interface AnswerRecord {
+  playerId: string;
+  playerName: string;
+  questionIndex: number;
+  questionId: string;
+  answerIndex: number | null; // null if no answer was given
+  answerTime?: number;
+  responseTime: number; // milliseconds from question start
+  pointsEarned: number;
+  wasCorrect: boolean;
+}
+
 export interface GameSettings {
   thinkTime: number; // Time to show question before allowing answers (in seconds)
   answerTime: number; // Time allowed to answer (in seconds)
@@ -28,6 +40,7 @@ export interface Game {
   phaseStartTime?: number;
   phaseEndTime?: number;
   gameLoopActive?: boolean; // Whether the gameplay loop is running
+  answerHistory: AnswerRecord[]; // Historical record of all answers
 }
 
 export interface Player {
@@ -79,6 +92,7 @@ export interface ServerToClientEvents {
   playerDisconnected: (playerId: string) => void;
   error: (message: string) => void;
   playerAnswered: (playerId: string) => void;
+  gameLogs: (tsvData: string, filename: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -90,4 +104,5 @@ export interface ClientToServerEvents {
   nextQuestion: (gameId: string) => void;
   showLeaderboard: (gameId: string) => void;
   endGame: (gameId: string) => void;
+  downloadGameLogs: (gameId: string) => void;
 } 

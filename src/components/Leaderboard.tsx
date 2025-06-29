@@ -9,12 +9,13 @@ interface LeaderboardProps {
   subtitle?: string;
   showPodium?: boolean;
   className?: string;
-  button?: {
+  buttons?: {
     text: string;
     onClick: () => void;
     icon?: LucideIcon;
     iconPosition?: 'left' | 'right';
-  };
+    variant?: 'link' | 'primary' | 'secondary' | 'success' | 'danger' | 'ghost' | 'outline' | 'pill' | 'black';
+  }[];
 }
 
 export default function Leaderboard({ 
@@ -23,7 +24,7 @@ export default function Leaderboard({
   subtitle,
   showPodium = true,
   className = "",
-  button
+  buttons
 }: LeaderboardProps) {
   const getPodiumStyle = (index: number) => {
     if (!showPodium) return 'bg-white/10 border-white/20';
@@ -67,18 +68,23 @@ export default function Leaderboard({
         </div>
       )}
 
-      {button && (
+      {buttons && buttons.length > 0 && (
         <div className="text-center mb-8">
-          <Button
-            onClick={button.onClick}
-            variant="black"
-            size="xl"
-            icon={button.icon}
-            iconPosition={button.iconPosition}
-            className="mx-auto"
-          >
-            {button.text}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                onClick={button.onClick}
+                variant={button.variant || "black"}
+                size="xl"
+                icon={button.icon}
+                iconPosition={button.iconPosition}
+                className="mx-auto sm:mx-0"
+              >
+                {button.text}
+              </Button>
+            ))}
+          </div>
         </div>
       )}
 

@@ -120,6 +120,42 @@ export class PlayerManager {
     });
   }
 
+  storeAnswersToHistory(game: Game): void {
+    const question = game.questions[game.currentQuestionIndex];
+    if (!question) return;
+
+    const questionStartTime = game.questionStartTime || Date.now();
+
+    game.players.forEach(player => {
+      if (!player.isHost) {
+        const responseTime = player.answerTime ? (player.answerTime - questionStartTime) : 0;
+        const wasCorrect = player.currentAnswer === question.correctAnswer;
+        
+        // Calculate points earned for this question
+        let pointsEarned = 0;
+        if (wasCorrect && player.currentAnswer !== undefined) {
+          const answerTimeLimit = game.settings.answerTime * 1000;
+          const timeUsedRatio = responseTime / answerTimeLimit;
+          pointsEarned = Math.max(0, Math.round(1000 * (1 - timeUsedRatio)));
+        }
+
+        const answerRecord = {
+          playerId: player.id,
+          playerName: player.name,
+          questionIndex: game.currentQuestionIndex,
+          questionId: question.id,
+          answerIndex: player.currentAnswer ?? null,
+          answerTime: player.answerTime,
+          responseTime: responseTime,
+          pointsEarned: pointsEarned,
+          wasCorrect: wasCorrect && player.currentAnswer !== undefined
+        };
+
+        game.answerHistory.push(answerRecord);
+      }
+    });
+  }
+
   updateScores(game: Game, correctAnswer: number): void {
     const questionStartTime = game.questionStartTime || Date.now();
     const maxPoints = 1000;
@@ -147,5 +183,78 @@ export class PlayerManager {
 
   getFinalResults(game: Game): Player[] {
     return this.getLeaderboard(game);
+  }
+
+  generateGameLogsTSV(game: Game): string {
+    const headers = [
+      'question_index',
+      'question_datetime',
+      'question_string',
+      'proposition_correct',
+      'proposition_wrong1',
+      'proposition_wrong2',
+      'proposition_wrong3',
+      'player_id',
+      'player_nickname',
+      'choice_string',
+      'choice_datetime'
+    ];
+
+    const rows: string[] = [headers.join('\t')];
+
+    // Sort answers by question index, then by player name
+    const sortedAnswers = [...game.answerHistory].sort((a, b) => {
+      if (a.questionIndex !== b.questionIndex) {
+        return a.questionIndex - b.questionIndex;
+      }
+      return a.playerName.localeCompare(b.playerName);
+    });
+
+    sortedAnswers.forEach(answerRecord => {
+      const question = game.questions[answerRecord.questionIndex];
+      if (!question) return;
+
+      // Get question start time for this specific question
+      // Since we don't store per-question start times, we'll estimate based on answer time
+      const questionStartTime = answerRecord.answerTime ? 
+        new Date(answerRecord.answerTime - answerRecord.responseTime) : 
+        new Date();
+      
+      const questionDatetime = questionStartTime.toISOString();
+      const choiceDatetime = answerRecord.answerTime ? 
+        new Date(answerRecord.answerTime).toISOString() : 
+        '';
+
+      // Separate correct and wrong propositions
+      const correctProposition = question.options[question.correctAnswer];
+      const wrongPropositions = question.options.filter((_, index) => index !== question.correctAnswer);
+      
+      // Pad wrong propositions to ensure we have exactly 3 (fill with empty strings if needed)
+      while (wrongPropositions.length < 3) {
+        wrongPropositions.push('');
+      }
+
+      const choiceString = answerRecord.answerIndex !== null 
+        ? question.options[answerRecord.answerIndex] 
+        : '';
+
+      const row = [
+        answerRecord.questionIndex.toString(),
+        questionDatetime,
+        question.question.replace(/\t/g, ' '), // Remove tabs from question text
+        correctProposition.replace(/\t/g, ' '),
+        wrongPropositions[0].replace(/\t/g, ' '),
+        wrongPropositions[1].replace(/\t/g, ' '),
+        wrongPropositions[2].replace(/\t/g, ' '),
+        answerRecord.playerId,
+        answerRecord.playerName.replace(/\t/g, ' '),
+        choiceString.replace(/\t/g, ' '),
+        choiceDatetime
+      ];
+
+      rows.push(row.join('\t'));
+    });
+
+    return rows.join('\n');
   }
 } 

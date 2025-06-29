@@ -57,6 +57,10 @@ export class EventHandlers {
         this.handleEndGame(socket, gameId);
       });
 
+      socket.on('downloadGameLogs', (gameId) => {
+        this.handleDownloadGameLogs(socket, gameId);
+      });
+
       socket.on('disconnect', () => {
         this.handleDisconnect(socket);
       });
@@ -303,6 +307,41 @@ export class EventHandlers {
       this.gameplayLoop.transitionToPhase(game, 'finished');
     } catch (error) {
       console.error(`❌ [END_GAME] Error ending game:`, error);
+    }
+  }
+
+  private handleDownloadGameLogs(socket: Socket, gameId: string): void {
+    console.log(`📄 [DOWNLOAD_LOGS] Host ${socket.id} requesting game logs for: ${gameId}`);
+    
+    try {
+      const game = this.gameManager.getGame(gameId);
+      if (!game) {
+        console.log(`❌ [DOWNLOAD_LOGS] Game not found: ${gameId}`);
+        socket.emit('error', 'Game not found');
+        return;
+      }
+
+      if (!this.playerManager.isHost(socket.id, game)) {
+        console.log(`❌ [DOWNLOAD_LOGS] Not authorized (not host)`);
+        socket.emit('error', 'Not authorized');
+        return;
+      }
+
+      if (game.phase !== 'finished') {
+        console.log(`❌ [DOWNLOAD_LOGS] Game not finished yet (current phase: ${game.phase})`);
+        socket.emit('error', 'Game must be finished to download logs');
+        return;
+      }
+
+      const tsvData = this.playerManager.generateGameLogsTSV(game);
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `game-${game.pin}-logs-${timestamp}.tsv`;
+      
+      console.log(`✅ [DOWNLOAD_LOGS] Sending logs for game ${game.pin} (${game.answerHistory.length} answer records)`);
+      socket.emit('gameLogs', tsvData, filename);
+    } catch (error) {
+      console.error(`❌ [DOWNLOAD_LOGS] Error generating logs:`, error);
+      socket.emit('error', 'Failed to generate logs');
     }
   }
 

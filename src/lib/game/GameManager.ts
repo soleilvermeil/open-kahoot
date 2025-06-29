@@ -28,7 +28,8 @@ export class GameManager {
         isHost: true,
         isConnected: true
       }],
-      gameLoopActive: false
+      gameLoopActive: false,
+      answerHistory: []
     };
 
     this.games.set(gameId, game);
