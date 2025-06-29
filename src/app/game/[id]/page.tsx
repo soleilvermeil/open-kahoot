@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users, Hourglass } from 'lucide-react';
+import { Clock, Trophy, ChevronRight, Users, Hourglass, LogOut } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
 import { getGradient } from '@/lib/palette';
-import type { Game, Question, GameStats, Player, PersonalResult } from '@/types/game';
-import Button from '@/components/Button';
+import type { Game, Question, GameStats, Player, PersonalResult, GamePhase } from '@/types/game';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -21,6 +20,150 @@ import PlayerThinkingScreen from '@/components/player-screens/PlayerThinkingScre
 import PlayerAnsweringScreen from '@/components/player-screens/PlayerAnsweringScreen';
 import PlayerResultsScreen from '@/components/player-screens/PlayerResultsScreen';
 
+// Game state management
+interface GameState {
+  game: Game | null;
+  currentQuestion: Question | null;
+  timeLeft: number;
+  phase: 'thinking' | 'answering';
+  selectedAnswer: number | null;
+  hasAnswered: boolean;
+  questionStats: GameStats | null;
+  personalResult: PersonalResult | null;
+  finalScores: Player[];
+  leaderboard: Player[];
+  gameStatus: GamePhase | 'waiting-results';
+  gameError: string | null;
+  isValidating: boolean;
+}
+
+type GameAction =
+  | { type: 'SET_VALIDATING'; payload: boolean }
+  | { type: 'SET_GAME_ERROR'; payload: string }
+  | { type: 'SET_GAME_DATA'; payload: { game: Game; status: GamePhase } }
+  | { type: 'START_THINKING_PHASE'; payload: { question: Question; thinkTime: number } }
+  | { type: 'START_ANSWERING_PHASE'; payload: { answerTime: number } }
+  | { type: 'SUBMIT_ANSWER'; payload: { answerIndex: number } }
+  | { type: 'QUESTION_ENDED'; payload: GameStats }
+  | { type: 'WAITING_FOR_RESULTS' }
+  | { type: 'PERSONAL_RESULT'; payload: PersonalResult }
+  | { type: 'SHOW_LEADERBOARD'; payload: Player[] }
+  | { type: 'GAME_FINISHED'; payload: Player[] }
+  | { type: 'TICK_TIMER' }
+  | { type: 'GAME_STARTED'; payload: Game };
+
+function gameReducer(state: GameState, action: GameAction): GameState {
+  switch (action.type) {
+    case 'SET_VALIDATING':
+      return { ...state, isValidating: action.payload };
+      
+    case 'SET_GAME_ERROR':
+      return { ...state, gameError: action.payload, isValidating: false };
+      
+    case 'SET_GAME_DATA':
+      return { 
+        ...state, 
+        game: action.payload.game, 
+        gameStatus: action.payload.status, 
+        isValidating: false 
+      };
+      
+    case 'GAME_STARTED':
+      return { 
+        ...state, 
+        game: action.payload, 
+        gameStatus: 'preparation'
+      };
+      
+    case 'START_THINKING_PHASE':
+      return {
+        ...state,
+        currentQuestion: action.payload.question,
+        timeLeft: action.payload.thinkTime,
+        phase: 'thinking',
+        selectedAnswer: null,
+        hasAnswered: false,
+        questionStats: null,
+        personalResult: null,
+        gameStatus: 'thinking'
+      };
+      
+    case 'START_ANSWERING_PHASE':
+      return {
+        ...state,
+        timeLeft: action.payload.answerTime,
+        phase: 'answering',
+        gameStatus: 'answering'
+      };
+      
+    case 'SUBMIT_ANSWER':
+      return {
+        ...state,
+        selectedAnswer: action.payload.answerIndex,
+        hasAnswered: true
+      };
+      
+    case 'QUESTION_ENDED':
+      return {
+        ...state,
+        questionStats: action.payload,
+        gameStatus: 'results'
+      };
+      
+    case 'WAITING_FOR_RESULTS':
+      return {
+        ...state,
+        gameStatus: 'waiting-results'
+      };
+      
+    case 'PERSONAL_RESULT':
+      return {
+        ...state,
+        personalResult: action.payload,
+        gameStatus: 'results'
+      };
+      
+    case 'SHOW_LEADERBOARD':
+      return {
+        ...state,
+        leaderboard: action.payload,
+        gameStatus: 'leaderboard'
+      };
+      
+    case 'GAME_FINISHED':
+      return {
+        ...state,
+        finalScores: action.payload,
+        gameStatus: 'finished'
+      };
+      
+    case 'TICK_TIMER':
+      return {
+        ...state,
+        timeLeft: Math.max(0, state.timeLeft - 1)
+      };
+      
+    default:
+      return state;
+  }
+}
+
+const initialState: GameState = {
+  game: null,
+  currentQuestion: null,
+  timeLeft: 0,
+  phase: 'thinking',
+  selectedAnswer: null,
+  hasAnswered: false,
+  questionStats: null,
+  personalResult: null,
+  finalScores: [],
+  leaderboard: [],
+  gameStatus: 'waiting',
+  gameError: null,
+  isValidating: true,
+};
+
 export default function GamePage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -29,19 +172,7 @@ export default function GamePage() {
   const isHost = searchParams.get('host') === 'true';
   const isPlayer = searchParams.get('player') === 'true';
 
-  const [game, setGame] = useState<Game | null>(null);
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [phase, setPhase] = useState<'thinking' | 'answering'>('thinking');
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [hasAnswered, setHasAnswered] = useState(false);
-  const [questionStats, setQuestionStats] = useState<GameStats | null>(null);
-  const [personalResult, setPersonalResult] = useState<PersonalResult | null>(null);
-  const [finalScores, setFinalScores] = useState<Player[]>([]);
-  const [leaderboard, setLeaderboard] = useState<Player[]>([]);
-  const [gameStatus, setGameStatus] = useState<'waiting' | 'started' | 'question' | 'results' | 'leaderboard' | 'finished'>('waiting');
-  const [gameError, setGameError] = useState<string | null>(null);
-  const [isValidating, setIsValidating] = useState(true);
+  const [state, dispatch] = useReducer(gameReducer, initialState);
 
   useEffect(() => {
     const socket = getSocket();
@@ -63,36 +194,34 @@ export default function GamePage() {
             const playerName = gameData.players.find(p => p.id === storedId)?.name || 'Player';
             
             socket.emit('joinGame', gamePin, playerName, storedId, (success: boolean, game?: Game) => {
-              setIsValidating(false);
+              dispatch({ type: 'SET_VALIDATING', payload: false });
               if (success && game) {
-                setGame(game);
-                setGameStatus(game.status);
+                dispatch({ type: 'SET_GAME_DATA', payload: { game: game, status: game.status } });
               } else {
-                setGameError('Unable to rejoin game. You may have been removed.');
+                dispatch({ type: 'SET_GAME_ERROR', payload: 'Unable to rejoin game. You may have been removed.' });
                 setTimeout(() => router.push('/'), 3000);
               }
             });
           } else {
             // No stored player ID for this game
-            setIsValidating(false);
-            setGameError('No player data found for this game. Please join the game again.');
+            dispatch({ type: 'SET_VALIDATING', payload: false });
+            dispatch({ type: 'SET_GAME_ERROR', payload: 'No player data found for this game. Please join the game again.' });
             setTimeout(() => router.push('/'), 3000);
           }
         } else {
-          setIsValidating(false);
-          setGameError('Game not found or no longer available');
+          dispatch({ type: 'SET_VALIDATING', payload: false });
+          dispatch({ type: 'SET_GAME_ERROR', payload: 'Game not found or no longer available' });
           setTimeout(() => router.push('/'), 3000);
         }
       });
     } else {
       // Host validation - just validate game exists
       socket.emit('validateGame', gameId, (valid: boolean, gameData?: Game) => {
-        setIsValidating(false);
+        dispatch({ type: 'SET_VALIDATING', payload: false });
         if (valid && gameData) {
-          setGame(gameData);
-          setGameStatus(gameData.status);
+          dispatch({ type: 'SET_GAME_DATA', payload: { game: gameData, status: gameData.status } });
         } else {
-          setGameError('Game not found or no longer available');
+          dispatch({ type: 'SET_GAME_ERROR', payload: 'Game not found or no longer available' });
           setTimeout(() => router.push('/'), 3000);
         }
       });
@@ -100,52 +229,39 @@ export default function GamePage() {
 
     socket.on('gameStarted', (gameData: Game) => {
       console.log('🎮 [CLIENT] Received gameStarted event:', gameData);
-      setGame(gameData);
-      setGameStatus('started');
+      dispatch({ type: 'GAME_STARTED', payload: gameData });
     });
 
     socket.on('thinkingPhase', (question: Question, thinkTime: number) => {
       console.log('📋 [CLIENT] Received thinkingPhase event:', question.question, 'thinkTime:', thinkTime);
-      setCurrentQuestion(question);
-      setTimeLeft(thinkTime);
-      setPhase('thinking');
-      setSelectedAnswer(null);
-      setHasAnswered(false);
-      setQuestionStats(null);
-      setPersonalResult(null);
-      setGameStatus('question');
+      dispatch({ type: 'START_THINKING_PHASE', payload: { question, thinkTime } });
     });
 
     socket.on('answeringPhase', (answerTime: number) => {
       console.log('⏰ [CLIENT] Received answeringPhase event, answerTime:', answerTime);
-      setTimeLeft(answerTime);
-      setPhase('answering');
-      setGameStatus('question');
+      dispatch({ type: 'START_ANSWERING_PHASE', payload: { answerTime } });
     });
 
-    socket.on('questionEnded', (stats: GameStats) => {
-      setQuestionStats(stats);
-      // Add a 1-second delay before showing results to let players see their final choice
-      setTimeout(() => {
-        setGameStatus('results');
-      }, 1000);
+    socket.on('questionEnded', () => {
+      // Both host and players wait for 1 second before results are shown
+      dispatch({ type: 'WAITING_FOR_RESULTS' });
     });
 
     socket.on('personalResult', (result: PersonalResult) => {
-      setPersonalResult(result);
+      dispatch({ type: 'PERSONAL_RESULT', payload: result });
+    });
+
+    socket.on('hostResults', (stats: GameStats) => {
+      dispatch({ type: 'QUESTION_ENDED', payload: stats });
     });
 
     socket.on('leaderboardShown', (leaderboardData: Player[]) => {
-      setLeaderboard(leaderboardData);
-      if (isHost) {
-        setGameStatus('leaderboard');
-      }
+      dispatch({ type: 'SHOW_LEADERBOARD', payload: leaderboardData });
       // Players stay on their personal result screen
     });
 
     socket.on('gameFinished', (scores: Player[]) => {
-      setFinalScores(scores);
-      setGameStatus('finished');
+      dispatch({ type: 'GAME_FINISHED', payload: scores });
     });
 
     socket.on('playerAnswered', (playerId: string) => {
@@ -157,6 +273,7 @@ export default function GamePage() {
       socket.off('thinkingPhase');
       socket.off('answeringPhase');
       socket.off('questionEnded');
+      socket.off('hostResults');
       socket.off('personalResult');
       socket.off('leaderboardShown');
       socket.off('gameFinished');
@@ -168,14 +285,9 @@ export default function GamePage() {
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     
-    if (timeLeft > 0 && (phase === 'thinking' || phase === 'answering')) {
+    if (state.timeLeft > 0 && (state.phase === 'thinking' || state.phase === 'answering')) {
       timer = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            return 0;
-          }
-          return prev - 1;
-        });
+        dispatch({ type: 'TICK_TIMER' });
       }, 1000);
     }
 
@@ -184,20 +296,19 @@ export default function GamePage() {
         clearInterval(timer);
       }
     };
-  }, [timeLeft, phase]);
+  }, [state.timeLeft, state.phase]);
 
   const submitAnswer = (answerIndex: number) => {
-    if (hasAnswered || !currentQuestion || phase !== 'answering') return;
+    if (state.hasAnswered || !state.currentQuestion || state.phase !== 'answering') return;
     
-    setSelectedAnswer(answerIndex);
-    setHasAnswered(true);
+    dispatch({ type: 'SUBMIT_ANSWER', payload: { answerIndex } });
     
     // Get persistent player ID from localStorage
-    const gamePin = game?.pin;
+    const gamePin = state.game?.pin;
     const persistentId = gamePin ? localStorage.getItem(`player_id_${gamePin}`) || undefined : undefined;
     
     const socket = getSocket();
-    socket.emit('submitAnswer', gameId, currentQuestion.id, answerIndex, persistentId);
+    socket.emit('submitAnswer', gameId, state.currentQuestion.id, answerIndex, persistentId);
   };
 
   const nextQuestion = () => {
@@ -213,7 +324,7 @@ export default function GamePage() {
 
 
   // Loading/Validation screen
-  if (isValidating) {
+  if (state.isValidating) {
     return (
       <PageLayout gradient="loading" showLogo={false}>
         <div className="flex items-center justify-center min-h-[60vh]">
@@ -227,13 +338,13 @@ export default function GamePage() {
   }
 
   // Error screen
-  if (gameError) {
+  if (state.gameError) {
     return (
       <PageLayout gradient="error" showLogo={false}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <ErrorScreen
             title="Game Not Found"
-            message={gameError}
+            message={state.gameError}
             actionText="Go Home Now"
             onAction={() => router.push('/')}
             autoRedirect={{
@@ -248,13 +359,13 @@ export default function GamePage() {
   }
 
   // Waiting screen
-  if (gameStatus === 'waiting' || gameStatus === 'started') {
+  if (state.gameStatus === 'waiting' || state.gameStatus === 'preparation') {
     return (
       <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
         <div className="text-center">
           <AnimatedIcon icon={Hourglass} />
           <h1 className="text-4xl text-white mb-4 font-jua">
-            {gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
+            {state.gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
           </h1>
           <p className="text-white/80 text-xl">Get ready to answer some questions!</p>
         </div>
@@ -262,39 +373,21 @@ export default function GamePage() {
     );
   }
 
-  // Leaderboard screen
-  if (gameStatus === 'leaderboard') {
+  // Leaderboard screen - only shown to hosts, players stay on results
+  if (state.gameStatus === 'leaderboard' && isHost) {
     return (
       <PageLayout gradient="leaderboard" maxWidth="4xl" showLogo={false}>
         <Card>
-          {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2 font-jua">Current Leaderboard</h1>
-            <p className="text-white/80 text-xl">
-              Question {(game?.currentQuestionIndex ?? 0) + 2} of {game?.questions.length ?? 0} completed
-            </p>
-          </div>
-
-          {/* Host controls */}
-          {isHost && (
-            <div className="text-center mb-8">
-              <Button
-                onClick={nextQuestion}
-                variant="black"
-                size="xl"
-                icon={ChevronRight}
-                iconPosition="right"
-                className="mx-auto"
-              >
-                {(game?.currentQuestionIndex ?? 0) + 1 >= (game?.questions.length ?? 0) ? 'Finish Game' : 'Next Question'}
-              </Button>
-            </div>
-          )}
-
           <Leaderboard
-            players={leaderboard}
-            title=""
-            subtitle=""
+            players={state.leaderboard}
+            title="Current Leaderboard"
+            subtitle={`Question ${(state.game?.currentQuestionIndex ?? 0) + 2} of ${state.game?.questions.length ?? 0} completed`}
+            button={{
+              text: (state.game?.currentQuestionIndex ?? 0) + 1 >= (state.game?.questions.length ?? 0) ? 'Finish Game' : 'Next Question',
+              onClick: nextQuestion,
+              icon: ChevronRight,
+              iconPosition: 'right'
+            }}
           />
         </Card>
       </PageLayout>
@@ -302,46 +395,41 @@ export default function GamePage() {
   }
 
   // Final results screen
-  if (gameStatus === 'finished') {
+  if (state.gameStatus === 'finished') {
     return (
       <PageLayout gradient="finished" maxWidth="4xl" showLogo={false}>
         <Card>
           <Leaderboard
-            players={finalScores}
+            players={state.finalScores}
             title="Game Over!"
             subtitle="Final Results"
-            className="mb-8"
+            button={{
+              text: "Back to Home",
+              onClick: () => window.location.href = '/',
+              icon: LogOut,
+              iconPosition: 'right'
+            }}
           />
-
-          <div className="text-center">
-            <Button
-              onClick={() => window.location.href = '/'}
-              variant="black"
-              size="xl"
-            >
-              Back to Home
-            </Button>
-          </div>
         </Card>
       </PageLayout>
     );
   }
 
   // Thinking Phase - Show only question for host, waiting message for players
-  if (gameStatus === 'question' && phase === 'thinking' && currentQuestion) {
-    console.log('📋 [CLIENT] Rendering thinking phase for game status:', gameStatus, 'phase:', phase, 'hasQuestion:', !!currentQuestion);
+  if (state.gameStatus === 'thinking' && state.phase === 'thinking' && state.currentQuestion) {
+    console.log('📋 [CLIENT] Rendering thinking phase for game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion);
     return (
       <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
         <Timer
-          timeLeft={timeLeft}
-          totalTime={game?.settings.thinkTime || 5}
+          timeLeft={state.timeLeft}
+          totalTime={state.game?.settings.thinkTime || 5}
           label={isHost ? 'Players are reading the question' : 'Read the question carefully'}
           variant="thinking"
         />
 
         {/* Question Display - Host Screen */}
         {isHost && (
-          <HostThinkingScreen currentQuestion={currentQuestion} />
+          <HostThinkingScreen currentQuestion={state.currentQuestion} />
         )}
 
         {/* Player Device - Waiting */}
@@ -352,8 +440,32 @@ export default function GamePage() {
     );
   }
 
+  // Waiting for results screen - shows after question ends but before results are revealed
+  if (state.gameStatus === 'waiting-results') {
+    return (
+      <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
+        <div className="text-center">
+          <AnimatedIcon icon={Clock} size="md" iconColor="text-white/60" className="mb-4" />
+          <h1 className="text-3xl font-bold text-white mb-4">
+            {isHost ? 'Calculating results...' : 'Getting your results ready...'}
+          </h1>
+          <p className="text-white/80 text-lg">
+            {isHost ? 'Preparing the results for all players' : 'Hold tight, we\'re calculating your score!'}
+          </p>
+          <div className="flex justify-center mt-6">
+            <div className="animate-pulse flex space-x-1">
+              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Answering Phase
-  if (gameStatus === 'question' && phase === 'answering' && currentQuestion) {
+  if (state.gameStatus === 'answering' && state.phase === 'answering' && state.currentQuestion) {
     return (
       <div className={`min-h-screen ${getGradient('answering')} p-8`}>
         <div className="container mx-auto max-w-4xl">
@@ -368,7 +480,7 @@ export default function GamePage() {
             <div className="w-full bg-white/20 rounded-full h-3 mt-4">
               <div 
                 className="bg-white h-3 rounded-full transition-all duration-1000 ease-linear"
-                style={{ width: `${(timeLeft / (game?.settings.answerTime || 30)) * 100}%` }}
+                style={{ width: `${(state.timeLeft / (state.game?.settings.answerTime || 30)) * 100}%` }}
               />
             </div>
           </div>
@@ -376,9 +488,9 @@ export default function GamePage() {
           {/* Host Screen - Show question and full answer choices */}
           {isHost && (
             <HostAnsweringScreen 
-              currentQuestion={currentQuestion}
-              timeLeft={timeLeft}
-              answerTime={game?.settings.answerTime || 30}
+              currentQuestion={state.currentQuestion}
+              timeLeft={state.timeLeft}
+              answerTime={state.game?.settings.answerTime || 30}
             />
           )}
 
@@ -386,8 +498,8 @@ export default function GamePage() {
           {isPlayer && (
             <PlayerAnsweringScreen 
               onSubmitAnswer={submitAnswer}
-              hasAnswered={hasAnswered}
-              selectedAnswer={selectedAnswer}
+              hasAnswered={state.hasAnswered}
+              selectedAnswer={state.selectedAnswer}
             />
           )}
         </div>
@@ -396,14 +508,14 @@ export default function GamePage() {
   }
 
   // Results screen - Different views for host and players
-  if (gameStatus === 'results') {
+  if (state.gameStatus === 'results') {
     // Host view - Show full statistics
-    if (isHost && questionStats) {
+    if (isHost && state.questionStats) {
       return (
         <div className={`min-h-screen ${getGradient('results')} p-8`}>
           <div className="container mx-auto max-w-4xl">
             <HostResultsScreen 
-              questionStats={questionStats}
+              questionStats={state.questionStats}
               onShowLeaderboard={showLeaderboard}
             />
           </div>
@@ -412,11 +524,11 @@ export default function GamePage() {
     }
 
     // Player view - Show personal competitive results
-    if (isPlayer && personalResult) {
+    if (isPlayer && state.personalResult) {
       return (
-        <div className={`min-h-screen ${getGradient(personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
+        <div className={`min-h-screen ${getGradient(state.personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
           <div className="container mx-auto max-w-2xl">
-            <PlayerResultsScreen personalResult={personalResult} />
+            <PlayerResultsScreen personalResult={state.personalResult} />
           </div>
         </div>
       );
@@ -434,7 +546,7 @@ export default function GamePage() {
     );
   }
 
-  console.log('🚨 [CLIENT] Falling through to waiting screen. Game status:', gameStatus, 'phase:', phase, 'hasQuestion:', !!currentQuestion, 'isHost:', isHost, 'isPlayer:', isPlayer);
+  console.log('🚨 [CLIENT] Falling through to waiting screen. Game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion, 'isHost:', isHost, 'isPlayer:', isPlayer);
   
   return (
     <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
@@ -443,7 +555,7 @@ export default function GamePage() {
         <h1 className="text-3xl font-bold text-white mb-4">Waiting for the next question...</h1>
         <p className="text-white/80 text-lg">The host is preparing something exciting!</p>
         <div className="text-white/60 text-sm mt-4">
-          Debug: status={gameStatus}, phase={phase}, hasQuestion={!!currentQuestion}
+          Debug: status={state.gameStatus}, phase={state.phase}, hasQuestion={!!state.currentQuestion}
         </div>
         <div className="flex justify-center mt-6">
           <div className="animate-pulse flex space-x-1">

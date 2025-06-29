@@ -9,12 +9,11 @@ export class QuestionManager {
     }
 
     game.currentQuestionIndex = nextIndex;
-    game.status = 'question';
-    game.questionStartTime = Date.now();
-    game.phaseStartTime = Date.now();
+    // Update status to indicate a question is active - GameplayLoop will manage detailed phases
+    game.status = 'preparation';
 
     const question = game.questions[nextIndex];
-    console.log(`📋 [QUESTION_START] Starting question ${nextIndex + 1}/${game.questions.length}: "${question.question}"`);
+    console.log(`📋 [QUESTION_START] Prepared question ${nextIndex + 1}/${game.questions.length}: "${question.question}"`);
     
     return question;
   }

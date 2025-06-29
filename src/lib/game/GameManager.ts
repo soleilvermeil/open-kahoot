@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { Game, Question, GameSettings } from '@/types/game';
+import type { Game, Question, GameSettings, GamePhase } from '@/types/game';
 
 export class GameManager {
   private games: Map<string, Game> = new Map();
@@ -19,6 +19,7 @@ export class GameManager {
       settings,
       currentQuestionIndex: -1,
       status: 'waiting',
+      phase: 'waiting',
       players: [{
         id: hostId,
         socketId: hostSocketId,
@@ -26,7 +27,8 @@ export class GameManager {
         score: 0,
         isHost: true,
         isConnected: true
-      }]
+      }],
+      gameLoopActive: false
     };
 
     this.games.set(gameId, game);
@@ -59,10 +61,18 @@ export class GameManager {
     }
   }
 
-  updateGameStatus(gameId: string, status: Game['status']): void {
+  updateGameStatus(gameId: string, status: GamePhase): void {
     const game = this.games.get(gameId);
     if (game) {
       game.status = status;
+    }
+  }
+
+  updateGamePhase(gameId: string, phase: GamePhase): void {
+    const game = this.games.get(gameId);
+    if (game) {
+      game.phase = phase;
+      game.status = phase; // Keep status in sync with phase for backwards compatibility
     }
   }
 
