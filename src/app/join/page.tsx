@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { LogIn, Lock } from 'lucide-react';
+import { LogIn, Lock, Dice6 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { getSocket } from '@/lib/socket-client';
 import type { Game } from '@/types/game';
@@ -60,6 +60,12 @@ function JoinGameForm() {
     });
   };
 
+  const generateRandomNickname = () => {
+    const randomNumbers = Math.floor(100000 + Math.random() * 900000).toString();
+    setPlayerName(`player${randomNumbers}`);
+    setError(''); // Clear error when generating name
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     joinGame();
@@ -76,27 +82,22 @@ function JoinGameForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="relative">
-
-          <Input
-            label="Game PIN"
-            type="tel"
-            inputMode="numeric"
-            value={pin}
-            onChange={pinLocked ? undefined : (e) => {
-              setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
-              setError(''); // Clear error when user starts typing
-            }}
-            readOnly={pinLocked}
-            variant="center"
-            placeholder="000000"
-            maxLength={6}
-            className={pinLocked ? 'bg-white/10 border-white/20 cursor-not-allowed' : ''}
-          />
-          {pinLocked && (
-            <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
-          )}
-        </div>
+        <Input
+          label="Game PIN"
+          type="tel"
+          inputMode="numeric"
+          value={pin}
+          onChange={pinLocked ? undefined : (e) => {
+            setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
+            setError(''); // Clear error when user starts typing
+          }}
+          readOnly={pinLocked}
+          variant="center"
+          placeholder="000000"
+          maxLength={6}
+          className={pinLocked ? 'bg-white/10 border-white/20 cursor-not-allowed' : ''}
+          icon={pinLocked ? Lock : undefined}
+        />
 
         <Input
           label="Your Name"
@@ -108,6 +109,11 @@ function JoinGameForm() {
           }}
           placeholder="Enter your name..."
           maxLength={20}
+          actionButton={{
+            icon: Dice6,
+            onClick: generateRandomNickname,
+            title: "Generate random nickname"
+          }}
           // error={error}
         />
 
