@@ -2,6 +2,7 @@ import { Clock } from 'lucide-react';
 import { getGradient } from '@/lib/palette';
 import HostAnsweringScreen from '@/components/host-screens/HostAnsweringScreen';
 import PlayerAnsweringScreen from '@/components/player-screens/PlayerAnsweringScreen';
+import PlayerWaitingScreen from '@/components/player-screens/PlayerWaitingScreen';
 import type { Question, Game } from '@/types/game';
 
 interface GameAnsweringPhaseScreenProps {
@@ -53,13 +54,15 @@ export default function GameAnsweringPhaseScreen({
           />
         )}
 
-        {/* Player Device - Show only colored choice buttons */}
+        {/* Player Device - Show answer choices or waiting screen */}
         {isPlayer && (
-          <PlayerAnsweringScreen 
-            onSubmitAnswer={onSubmitAnswer}
-            hasAnswered={hasAnswered}
-            selectedAnswer={selectedAnswer}
-          />
+          <>
+            {hasAnswered ? (
+              <PlayerWaitingScreen selectedAnswer={selectedAnswer} />
+            ) : (
+              <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
+            )}
+          </>
         )}
       </div>
     </div>
