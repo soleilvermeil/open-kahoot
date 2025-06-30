@@ -406,7 +406,6 @@ export default function GamePage() {
         isPlayer={isPlayer}
         onSubmitAnswer={submitAnswer}
         hasAnswered={state.hasAnswered}
-        selectedAnswer={state.selectedAnswer}
       />
     );
   }

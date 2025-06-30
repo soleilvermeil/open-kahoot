@@ -13,7 +13,6 @@ interface GameAnsweringPhaseScreenProps {
   isPlayer: boolean;
   onSubmitAnswer: (answerIndex: number) => void;
   hasAnswered: boolean;
-  selectedAnswer: number | null;
 }
 
 export default function GameAnsweringPhaseScreen({ 
@@ -23,8 +22,7 @@ export default function GameAnsweringPhaseScreen({
   isHost, 
   isPlayer, 
   onSubmitAnswer, 
-  hasAnswered, 
-  selectedAnswer 
+  hasAnswered
 }: GameAnsweringPhaseScreenProps) {
   return (
     <div className={`min-h-screen ${getGradient('answering')} p-8`}>
@@ -58,7 +56,7 @@ export default function GameAnsweringPhaseScreen({
         {isPlayer && (
           <>
             {hasAnswered ? (
-              <PlayerWaitingScreen selectedAnswer={selectedAnswer} />
+              <PlayerWaitingScreen />
             ) : (
               <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
             )}
