@@ -6,6 +6,7 @@ import { LogIn, Lock, Dice6 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { getSocket } from '@/lib/socket-client';
 import type { Game } from '@/types/game';
+import { gameConfig, featureConfig } from '@/lib/config';
 import Button from '@/components/Button';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
@@ -20,6 +21,8 @@ function JoinGameForm() {
   const [pinLocked, setPinLocked] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  const pinLength = gameConfig.pinLength;
 
   useEffect(() => {
     // Auto-fill PIN from URL parameter
@@ -61,8 +64,24 @@ function JoinGameForm() {
   };
 
   const generateRandomNickname = () => {
-    const randomNumbers = Math.floor(100000 + Math.random() * 900000).toString();
-    setPlayerName(`player${randomNumbers}`);
+    const prefixes = [
+      'Swift', 'Mighty', 'Shadow', 'Fire', 'Ice', 'Storm', 'Wild', 'Dark', 'Bright', 'Silent',
+      'Golden', 'Silver', 'Red', 'Blue', 'Green', 'Purple', 'Cosmic', 'Lightning', 'Thunder', 'Frost',
+      'Wolf', 'Eagle', 'Tiger', 'Dragon', 'Lion', 'Bear', 'Fox', 'Hawk', 'Shark', 'Raven',
+      'Steel', 'Crystal', 'Phantom', 'Mystic', 'Savage', 'Noble', 'Royal', 'Ancient', 'Blazing', 'Frozen'
+    ];
+    
+    const suffixes = [
+      'Hunter', 'Warrior', 'Mage', 'Knight', 'Ninja', 'Master', 'Legend', 'Hero', 'Champion', 'Guardian',
+      'Blade', 'Arrow', 'Shield', 'Staff', 'Sword', 'Bow', 'Hammer', 'Axe', 'Spear', 'Dagger',
+      'Slayer', 'Breaker', 'Rider', 'Walker', 'Runner', 'Jumper', 'Striker', 'Fighter', 'Crusher', 'Bender',
+      'Wing', 'Claw', 'Fang', 'Eye', 'Heart', 'Soul', 'Spirit', 'Force', 'Power', 'Storm'
+    ];
+    
+    const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+    
+    setPlayerName(`${randomPrefix}${randomSuffix}`);
     setError(''); // Clear error when generating name
   };
 
@@ -88,13 +107,13 @@ function JoinGameForm() {
           inputMode="numeric"
           value={pin}
           onChange={pinLocked ? undefined : (e) => {
-            setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
+            setPin(e.target.value.replace(/\D/g, '').slice(0, pinLength));
             setError(''); // Clear error when user starts typing
           }}
           readOnly={pinLocked}
           variant="center"
-          placeholder="000000"
-          maxLength={6}
+          placeholder={"0".repeat(pinLength)}
+          maxLength={pinLength}
           className={pinLocked ? 'bg-white/10 border-white/20 cursor-not-allowed' : ''}
           icon={pinLocked ? Lock : undefined}
         />
@@ -109,11 +128,11 @@ function JoinGameForm() {
           }}
           placeholder="Enter your name..."
           maxLength={20}
-          actionButton={{
+          actionButton={featureConfig.showRandomNickname ? {
             icon: Dice6,
             onClick: generateRandomNickname,
             title: "Generate random nickname"
-          }}
+          } : undefined}
           // error={error}
         />
 
@@ -125,7 +144,7 @@ function JoinGameForm() {
 
         <Button
           type="submit"
-          disabled={!pin || !playerName || isJoining || pin.length !== 6}
+          disabled={!pin || !playerName || isJoining || pin.length !== pinLength}
           variant="black"
           size="lg"
           fullWidth

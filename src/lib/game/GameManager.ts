@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { Game, Question, GameSettings, GamePhase } from '@/types/game';
+import { gameConfig } from '@/lib/config';
 
 export class GameManager {
   private games: Map<string, Game> = new Map();
@@ -106,7 +107,10 @@ export class GameManager {
   }
 
   private generatePin(): string {
-    const pin = Math.floor(100000 + Math.random() * 900000).toString();
+    const pinLength = gameConfig.pinLength;
+    const min = Math.pow(10, pinLength - 1);
+    const max = Math.pow(10, pinLength) - 1;
+    const pin = Math.floor(min + Math.random() * (max - min + 1)).toString();
     // Ensure pin is unique
     if (this.gamesByPin.has(pin)) {
       return this.generatePin();
