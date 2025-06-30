@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 import { getSocket } from '@/lib/socket-client';
+import { appConfig } from '@/lib/config';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
 import Button from '@/components/Button';
 import PageLayout from '@/components/PageLayout';
@@ -231,8 +232,7 @@ export default function HostPage() {
 
   const getJoinUrl = () => {
     if (!game) return '';
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    return `${baseUrl}/join?pin=${game.pin}`;
+    return `${appConfig.url}/join?pin=${game.pin}`;
   };
 
   const downloadTSV = () => {

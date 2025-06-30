@@ -9,10 +9,20 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
 npm install
 ```
 
-2. Create a `.env.local` file in the root directory with the following variable:
+2. Create a `.env.local` file in the root directory with the following variables:
 ```
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_SHOW_RANDOM_NICKNAME=
+NEXT_PUBLIC_GAME_PIN_LENGTH=
 ```
+
+### Environment Variables
+
+The application uses a centralized configuration system (`src/lib/config.ts`) that loads and validates environment variables with proper defaults.
+
+- `NEXT_PUBLIC_APP_URL`: The base URL of your application (used for generating join links), for example `www.open-kahoot.ch`.
+- `NEXT_PUBLIC_SHOW_RANDOM_NICKNAME`: Enable/disable the random nickname generator button. Possible values are `0` and `1`.
+- `NEXT_PUBLIC_GAME_PIN_LENGTH`: Number of digits for game PINs (default: `6`). Accepts any positive integer (e.g., `4` for 4-digit PINs, `8` for 8-digit PINs). Values outside the range 3-10 will default to 6 with a console warning.
 
 3. Start the development server:
 ```bash
