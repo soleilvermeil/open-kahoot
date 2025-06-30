@@ -591,9 +591,7 @@ export default function GamePage() {
         <AnimatedIcon icon={Users} size="md" iconColor="text-white/60" className="mb-4" />
         <h1 className="text-3xl font-bold text-white mb-4">Waiting for the next question...</h1>
         <p className="text-white/80 text-lg">The host is preparing something exciting!</p>
-        <div className="text-white/60 text-sm mt-4">
-          Debug: status={state.gameStatus}, phase={state.phase}, hasQuestion={!!state.currentQuestion}
-        </div>
+
         <div className="flex justify-center mt-6">
           <div className="animate-pulse flex space-x-1">
             <div className="w-2 h-2 bg-white/60 rounded-full"></div>
