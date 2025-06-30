@@ -2,23 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Play, Users, Settings, Upload, MonitorPlay, Download } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-
-
 import { getSocket } from '@/lib/socket-client';
 import { appConfig } from '@/lib/config';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
-import Button from '@/components/Button';
-import PageLayout from '@/components/PageLayout';
-import Card from '@/components/Card';
-import GamePinDisplay from '@/components/GamePinDisplay';
-import PlayerList from '@/components/PlayerList';
-import QuestionEditor from '@/components/QuestionEditor';
-import AddQuestionButton from '@/components/AddQuestionButton';
+
+// Host Setup Components
+import HostGameLobbyScreen from '@/components/host-setup/HostGameLobbyScreen';
+import HostQuizCreationScreen from '@/components/host-setup/HostQuizCreationScreen';
 
 export default function HostPage() {
-  const [gameTitle] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     thinkTime: 5,
@@ -214,7 +207,7 @@ export default function HostPage() {
     if (questions.length === 0) return;
     
     const socket = getSocket();
-    const title = gameTitle || 'Quiz Game'; // Use default title if none provided
+    const title = 'Quiz Game'; // Default title
     socket.emit('createGame', title, questions, gameSettings, (createdGame: Game) => {
       setGame(createdGame);
     });
@@ -279,206 +272,29 @@ export default function HostPage() {
 
 
   if (game) {
-    const playersOnly = game.players.filter(p => !p.isHost);
-    
     return (
-      <PageLayout gradient="host" maxWidth="6xl">
-        <Card>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl text-white mb-4 font-jua">{game.title}</h2>
-            
-            <GamePinDisplay 
-              pin={game.pin}
-              joinUrl={getJoinUrl()}
-            />
-            
-            {/* <div className="space-y-2">
-              <p className="text-white/80">Share this PIN with players to join the game</p>
-              <div className="text-white/60 text-sm">
-                Think Time: {game.settings.thinkTime}s • Answer Time: {game.settings.answerTime}s
-              </div>
-            </div> */}
-          </div>
-
-          {/* Separator line */}
-          <div className="border-t border-white/20 mb-8"></div>
-
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl text-white flex items-center gap-2 font-jua">
-                <Users className="w-6 h-6" />
-                Players ({playersOnly.length})
-              </h2>
-              <Button
-                onClick={startGame}
-                disabled={playersOnly.length === 0}
-                variant="black"
-                size="lg"
-                icon={Play}
-              >
-                Start Game
-              </Button>
-            </div>
-            
-            <PlayerList 
-              players={playersOnly}
-              emptyMessage="Waiting for players to join..."
-              columns={3}
-            />
-          </div>
-        </Card>
-      </PageLayout>
+      <HostGameLobbyScreen 
+        game={game}
+        joinUrl={getJoinUrl()}
+        onStartGame={startGame}
+      />
     );
   }
 
   return (
-    <PageLayout gradient="host" maxWidth="4xl">
-      <Card>
-          <h2 className="text-3xl text-white mb-8 text-center font-jua">Create Your Quiz</h2>
-
-          {/* Quiz Title field hidden for now */}
-          {/* <div className="mb-8">
-            <label className="block text-white text-lg font-semibold mb-2">
-              Quiz Title
-            </label>
-            <input
-              type="text"
-              value={gameTitle}
-              onChange={(e) => setGameTitle(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-              placeholder="Enter your quiz title..."
-            />
-          </div> */}
-
-          {/* Game Settings */}
-          <div className="mb-8 bg-white/5 rounded-lg p-6 border border-white/20">
-            <h2 className="text-2xl text-white mb-4 flex items-center gap-2 font-jua">
-              <Settings className="w-6 h-6" />
-              Game Settings
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-white font-medium mb-2">
-                  Think Time (seconds)
-                </label>
-                <p className="text-white/70 text-sm mb-2">
-                  Time to show question before allowing answers
-                </p>
-                <select
-                  value={gameSettings.thinkTime}
-                  onChange={(e) => setGameSettings(prev => ({ ...prev, thinkTime: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 [&>option]:text-black [&>option]:bg-white"
-                >
-                  <option value={5}>5 seconds</option>
-                  <option value={10}>10 seconds</option>
-                  <option value={20}>20 seconds</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-white font-medium mb-2">
-                  Answer Time (seconds)
-                </label>
-                <p className="text-white/70 text-sm mb-2">
-                  Time allowed to submit answers
-                </p>
-                <select
-                  value={gameSettings.answerTime}
-                  onChange={(e) => setGameSettings(prev => ({ ...prev, answerTime: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 [&>option]:text-black [&>option]:bg-white"
-                >
-                  <option value={20}>20 seconds</option>
-                  <option value={30}>30 seconds</option>
-                  <option value={60}>60 seconds</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl text-white font-jua">Questions</h2>
-            </div>
-
-            {questions.length === 0 ? (
-              <div className="bg-white/5 rounded-lg p-8 border border-white/20 text-center">
-                <p className="text-white/80 text-lg mb-4 font-jua">Create Your First Question</p>
-                <p className="text-white/60 mb-6">Choose how you&apos;d like to add questions to your quiz:</p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <Button
-                    onClick={() => addQuestion(0)}
-                    variant="black"
-                    size="lg"
-                    icon={Plus}
-                  >
-                    Create Question
-                  </Button>
-                  
-                  <div className="text-white/40 text-sm">or</div>
-                  
-                  <div className="relative">
-                    <input
-                      type="file"
-                      accept=".tsv,.txt"
-                      onChange={handleFileImport}
-                      className="absolute inset-0 w-full h-full opacity-0"
-                    />
-                    <Button variant="black" size="lg" icon={Upload}>
-                      Import TSV File
-                    </Button>
-                  </div>
-                </div>
-                
-                <p className="text-white/40 text-sm mt-4">
-                  TSV files should contain columns: question, correct, wrong1, wrong2, wrong3
-                </p>
-              </div>
-            ) : (
-              <div>
-                <AddQuestionButton onAddQuestion={addQuestion} onAppendTSV={handleAppendTSV} index={0} />
-                
-                {questions.map((question, questionIndex) => (
-                  <div key={question.id}>
-                    <QuestionEditor
-                      question={question}
-                      questionIndex={questionIndex}
-                      totalQuestions={questions.length}
-                      onUpdateQuestion={updateQuestion}
-                      onUpdateOption={updateOption}
-                      onRemoveQuestion={removeQuestion}
-                      onMoveQuestion={moveQuestion}
-                    />
-                    <AddQuestionButton onAddQuestion={addQuestion} onAppendTSV={handleAppendTSV} index={questionIndex + 1} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {questions.length > 0 && (
-            <div className="text-center">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button
-                  onClick={downloadTSV}
-                  variant="black"
-                  size="lg"
-                  icon={Download}
-                >
-                  Download TSV
-                </Button>
-                <Button
-                  onClick={createGame}
-                  disabled={questions.some(q => !q.question || q.options.some(o => !o))}
-                  variant="black"
-                  size="lg"
-                  icon={MonitorPlay}
-                >
-                  Create Game
-                </Button>
-              </div>
-            </div>
-          )}
-        </Card>
-      </PageLayout>
-    );
+    <HostQuizCreationScreen
+      questions={questions}
+      gameSettings={gameSettings}
+      onUpdateSettings={setGameSettings}
+      onAddQuestion={addQuestion}
+      onAppendTSV={handleAppendTSV}
+      onFileImport={handleFileImport}
+      onUpdateQuestion={updateQuestion}
+      onUpdateOption={updateOption}
+      onRemoveQuestion={removeQuestion}
+      onMoveQuestion={moveQuestion}
+      onDownloadTSV={downloadTSV}
+      onCreateGame={createGame}
+    />
+  );
 } 

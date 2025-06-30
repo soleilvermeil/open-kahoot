@@ -49,9 +49,6 @@ export class GameServer {
     // Set up event handling
     this.eventHandlers.setupEventHandlers();
     
-    // Set up periodic logging for debugging
-    this.setupPeriodicLogging();
-    
     console.log('🚀 [GAME_SERVER] GameServer initialized with GameplayLoop architecture');
   }
 
@@ -91,19 +88,6 @@ export class GameServer {
         totalQuestions: game.questions.length
       }))
     };
-  }
-
-  private setupPeriodicLogging(): void {
-    // Log server stats every 30 seconds
-    setInterval(() => {
-      const stats = this.getStats();
-      if (stats.totalGames > 0) {
-        console.log(`📊 [SERVER_STATS] ${stats.totalGames} active games`);
-        stats.games.forEach(game => {
-          console.log(`  Game ${game.pin}: ${game.playerCount} players, phase: ${game.phase}, loop: ${game.gameLoopActive ? 'ACTIVE' : 'INACTIVE'}, question: ${game.currentQuestion}/${game.totalQuestions}`);
-        });
-      }
-    }, 30000);
   }
 
   // Graceful shutdown

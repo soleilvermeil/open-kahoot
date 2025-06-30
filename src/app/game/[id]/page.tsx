@@ -2,23 +2,19 @@
 
 import { useEffect, useReducer } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Clock, Trophy, ChevronRight, Users, Hourglass, LogOut, Download } from 'lucide-react';
 import { getSocket } from '@/lib/socket-client';
-import { getGradient } from '@/lib/palette';
 import type { Game, Question, GameStats, Player, PersonalResult, GamePhase } from '@/types/game';
-import PageLayout from '@/components/PageLayout';
-import Card from '@/components/Card';
-import LoadingScreen from '@/components/LoadingScreen';
-import ErrorScreen from '@/components/ErrorScreen';
-import Timer from '@/components/Timer';
-import Leaderboard from '@/components/Leaderboard';
-import AnimatedIcon from '@/components/AnimatedIcon';
-import HostThinkingScreen from '@/components/host-screens/HostThinkingScreen';
-import HostAnsweringScreen from '@/components/host-screens/HostAnsweringScreen';
-import HostResultsScreen from '@/components/host-screens/HostResultsScreen';
-import PlayerThinkingScreen from '@/components/player-screens/PlayerThinkingScreen';
-import PlayerAnsweringScreen from '@/components/player-screens/PlayerAnsweringScreen';
-import PlayerResultsScreen from '@/components/player-screens/PlayerResultsScreen';
+// Game Screen Components
+import GameValidationScreen from '@/components/game-screens/GameValidationScreen';
+import GameErrorScreen from '@/components/game-screens/GameErrorScreen';
+import GameWaitingScreen from '@/components/game-screens/GameWaitingScreen';
+import GameLeaderboardScreen from '@/components/game-screens/GameLeaderboardScreen';
+import GameFinalResultsScreen from '@/components/game-screens/GameFinalResultsScreen';
+import GameThinkingPhaseScreen from '@/components/game-screens/GameThinkingPhaseScreen';
+import GameWaitingForResultsScreen from '@/components/game-screens/GameWaitingForResultsScreen';
+import GameAnsweringPhaseScreen from '@/components/game-screens/GameAnsweringPhaseScreen';
+import GameResultsPhaseScreen from '@/components/game-screens/GameResultsPhaseScreen';
+import GameFallbackScreen from '@/components/game-screens/GameFallbackScreen';
 
 // Game state management
 interface GameState {
@@ -345,110 +341,38 @@ export default function GamePage() {
 
   // Loading/Validation screen
   if (state.isValidating) {
-    return (
-      <PageLayout gradient="loading" showLogo={false}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <LoadingScreen 
-            title="Validating game..." 
-            description="Please wait while we check the game status"
-          />
-        </div>
-      </PageLayout>
-    );
+    return <GameValidationScreen />;
   }
 
   // Error screen
   if (state.gameError) {
-    return (
-      <PageLayout gradient="error" showLogo={false}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <ErrorScreen
-            title="Game Not Found"
-            message={state.gameError}
-            actionText="Go Home Now"
-            onAction={() => router.push('/')}
-            autoRedirect={{
-              url: '/',
-              delay: 3000,
-              message: 'Redirecting to home page...'
-            }}
-          />
-        </div>
-      </PageLayout>
-    );
+    return <GameErrorScreen error={state.gameError} />;
   }
 
   // Waiting screen
   if (state.gameStatus === 'waiting' || state.gameStatus === 'preparation') {
-    return (
-      <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
-        <div className="text-center">
-          <AnimatedIcon icon={Hourglass} />
-          <h1 className="text-4xl text-white mb-4 font-jua">
-            {state.gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
-          </h1>
-          <p className="text-white/80 text-xl">Get ready to answer some questions!</p>
-        </div>
-      </div>
-    );
+    return <GameWaitingScreen gameStatus={state.gameStatus} />;
   }
 
   // Leaderboard screen - only shown to hosts, players stay on results
   if (state.gameStatus === 'leaderboard' && isHost) {
     return (
-      <PageLayout gradient="leaderboard" maxWidth="4xl" showLogo={false}>
-        <Card>
-          <Leaderboard
-            players={state.leaderboard}
-            title="Current Leaderboard"
-            subtitle={`Question ${(state.game?.currentQuestionIndex ?? 0) + 2} of ${state.game?.questions.length ?? 0} completed`}
-            buttons={[{
-              text: (state.game?.currentQuestionIndex ?? 0) + 1 >= (state.game?.questions.length ?? 0) ? 'Finish Game' : 'Next Question',
-              onClick: nextQuestion,
-              icon: ChevronRight,
-              iconPosition: 'right'
-            }]}
-          />
-        </Card>
-      </PageLayout>
+      <GameLeaderboardScreen 
+        leaderboard={state.leaderboard}
+        game={state.game}
+        onNextQuestion={nextQuestion}
+      />
     );
   }
 
   // Final results screen
   if (state.gameStatus === 'finished') {
     return (
-      <PageLayout gradient="finished" maxWidth="4xl" showLogo={false}>
-        <Card>
-          <Leaderboard
-            players={state.finalScores}
-            title="Game Over!"
-            subtitle="Final Results"
-            buttons={isHost ? [
-              {
-                text: "Download Game Logs",
-                onClick: downloadLogs,
-                icon: Download,
-                iconPosition: 'left',
-                variant: 'black'
-              },
-              {
-                text: "Back to Home",
-                onClick: () => window.location.href = '/',
-                icon: LogOut,
-                iconPosition: 'right',
-                variant: 'black'
-              }
-            ] : [
-              {
-                text: "Back to Home",
-                onClick: () => window.location.href = '/',
-                icon: LogOut,
-                iconPosition: 'right'
-              }
-            ]}
-          />
-        </Card>
-      </PageLayout>
+      <GameFinalResultsScreen 
+        finalScores={state.finalScores}
+        isHost={isHost}
+        onDownloadLogs={downloadLogs}
+      />
     );
   }
 
@@ -456,150 +380,50 @@ export default function GamePage() {
   if (state.gameStatus === 'thinking' && state.phase === 'thinking' && state.currentQuestion) {
     console.log('📋 [CLIENT] Rendering thinking phase for game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion);
     return (
-      <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
-        <Timer
-          timeLeft={state.timeLeft}
-          totalTime={state.game?.settings.thinkTime || 5}
-          label={isHost ? 'Players are reading the question' : 'Read the question carefully'}
-          variant="thinking"
-        />
-
-        {/* Question Display - Host Screen */}
-        {isHost && (
-          <HostThinkingScreen currentQuestion={state.currentQuestion} />
-        )}
-
-        {/* Player Device - Waiting */}
-        {isPlayer && (
-          <PlayerThinkingScreen />
-        )}
-      </PageLayout>
+      <GameThinkingPhaseScreen 
+        currentQuestion={state.currentQuestion}
+        timeLeft={state.timeLeft}
+        game={state.game}
+        isHost={isHost}
+        isPlayer={isPlayer}
+      />
     );
   }
 
   // Waiting for results screen - shows after question ends but before results are revealed
   if (state.gameStatus === 'waiting-results') {
-    return (
-      <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
-        <div className="text-center">
-          <AnimatedIcon icon={Clock} size="md" iconColor="text-white/60" className="mb-4" />
-          <h1 className="text-3xl font-bold text-white mb-4">
-            {isHost ? 'Calculating results...' : 'Getting your results ready...'}
-          </h1>
-          <p className="text-white/80 text-lg">
-            {isHost ? 'Preparing the results for all players' : 'Hold tight, we\'re calculating your score!'}
-          </p>
-          <div className="flex justify-center mt-6">
-            <div className="animate-pulse flex space-x-1">
-              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <GameWaitingForResultsScreen isHost={isHost} />;
   }
 
   // Answering Phase
   if (state.gameStatus === 'answering' && state.phase === 'answering' && state.currentQuestion) {
     return (
-      <div className={`min-h-screen ${getGradient('answering')} p-8`}>
-        <div className="container mx-auto max-w-4xl">
-          {/* Timer */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Clock className="w-8 h-8 text-white" />
-            </div>
-            <p className="text-white/80 text-lg">
-              {isHost ? 'Players are choosing their answers' : 'Choose your answer!'}
-            </p>
-            <div className="w-full bg-white/20 rounded-full h-3 mt-4">
-              <div 
-                className="bg-white h-3 rounded-full transition-all duration-1000 ease-linear"
-                style={{ width: `${(state.timeLeft / (state.game?.settings.answerTime || 30)) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Host Screen - Show question and full answer choices */}
-          {isHost && (
-            <HostAnsweringScreen 
-              currentQuestion={state.currentQuestion}
-              timeLeft={state.timeLeft}
-              answerTime={state.game?.settings.answerTime || 30}
-            />
-          )}
-
-          {/* Player Device - Show only colored choice buttons */}
-          {isPlayer && (
-            <PlayerAnsweringScreen 
-              onSubmitAnswer={submitAnswer}
-              hasAnswered={state.hasAnswered}
-              selectedAnswer={state.selectedAnswer}
-            />
-          )}
-        </div>
-      </div>
+      <GameAnsweringPhaseScreen 
+        currentQuestion={state.currentQuestion}
+        timeLeft={state.timeLeft}
+        game={state.game}
+        isHost={isHost}
+        isPlayer={isPlayer}
+        onSubmitAnswer={submitAnswer}
+        hasAnswered={state.hasAnswered}
+      />
     );
   }
 
   // Results screen - Different views for host and players
   if (state.gameStatus === 'results') {
-    // Host view - Show full statistics
-    if (isHost && state.questionStats) {
-      return (
-        <div className={`min-h-screen ${getGradient('results')} p-8`}>
-          <div className="container mx-auto max-w-4xl">
-            <HostResultsScreen 
-              questionStats={state.questionStats}
-              onShowLeaderboard={showLeaderboard}
-            />
-          </div>
-        </div>
-      );
-    }
-
-    // Player view - Show personal competitive results
-    if (isPlayer && state.personalResult) {
-      return (
-        <div className={`min-h-screen ${getGradient(state.personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
-          <div className="container mx-auto max-w-2xl">
-            <PlayerResultsScreen personalResult={state.personalResult} />
-          </div>
-        </div>
-      );
-    }
-
-    // Fallback if data isn't ready yet
     return (
-      <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
-        <div className="text-center">
-          <AnimatedIcon icon={Trophy} size="md" iconColor="text-white/60" className="mb-4" />
-          <h1 className="text-3xl font-bold text-white mb-4">Getting your results ready...</h1>
-          <p className="text-white/80 text-lg">Hold tight, we&apos;re calculating scores!</p>
-        </div>
-      </div>
+      <GameResultsPhaseScreen 
+        isHost={isHost}
+        isPlayer={isPlayer}
+        questionStats={state.questionStats}
+        personalResult={state.personalResult}
+        onShowLeaderboard={showLeaderboard}
+      />
     );
   }
 
   console.log('🚨 [CLIENT] Falling through to waiting screen. Game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion, 'isHost:', isHost, 'isPlayer:', isPlayer);
   
-  return (
-    <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
-      <div className="text-center">
-        <AnimatedIcon icon={Users} size="md" iconColor="text-white/60" className="mb-4" />
-        <h1 className="text-3xl font-bold text-white mb-4">Waiting for the next question...</h1>
-        <p className="text-white/80 text-lg">The host is preparing something exciting!</p>
-
-        <div className="flex justify-center mt-6">
-          <div className="animate-pulse flex space-x-1">
-            <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-            <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-            <div className="w-2 h-2 bg-white/60 rounded-full"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <GameFallbackScreen />;
 } 
