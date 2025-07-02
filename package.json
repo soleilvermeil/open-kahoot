@@ -9,23 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4",
     "framer-motion": "^12.19.1",
+    "iconv-lite": "^0.6.3",
+    "jschardet": "^3.1.4",
     "lucide-react": "^0.446.0",
     "next": "15.3.3",
+    "papaparse": "^5.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-qr-code": "^2.0.15",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
-    "uuid": "^10.0.0",
-    "tsx": "^4.20.3",
-    "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.20.3",
+    "typescript": "^5",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
+    "@types/papaparse": "^5.3.16",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
