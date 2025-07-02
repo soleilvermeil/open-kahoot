@@ -81,7 +81,7 @@ export const palette = {
 
   // Timer colors
   timer: {
-    thinking: 'bg-yellow-400',
+    thinking: 'bg-white',
     answering: 'bg-white',
     progress: 'bg-white/20'
   },
