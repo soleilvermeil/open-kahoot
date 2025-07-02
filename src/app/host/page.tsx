@@ -8,6 +8,7 @@ import jschardet from 'jschardet';
 import * as iconv from 'iconv-lite';
 import { getSocket } from '@/lib/socket-client';
 import { appConfig } from '@/lib/config';
+import { useBeforeUnload } from '@/lib/hooks/useBeforeUnload';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
 
 // Host Setup Components
@@ -23,6 +24,12 @@ export default function HostPage() {
   const [game, setGame] = useState<Game | null>(null);
 
   const router = useRouter();
+  
+  // Enable beforeunload when there are questions to prevent accidental data loss
+  const { clearNavigationFlag } = useBeforeUnload({
+    enabled: questions.length > 0,
+    message: 'You have unsaved questions in your quiz. Are you sure you want to leave?'
+  });
 
   useEffect(() => {
     const socket = getSocket();
@@ -233,6 +240,7 @@ export default function HostPage() {
     const title = 'Quiz Game'; // Default title
     socket.emit('createGame', title, questions, gameSettings, (createdGame: Game) => {
       setGame(createdGame);
+      clearNavigationFlag(); // Clear flag since game is created and questions are saved
     });
   };
 
@@ -241,6 +249,7 @@ export default function HostPage() {
     
     const socket = getSocket();
     socket.emit('startGame', game.id);
+    clearNavigationFlag(); // Clear flag since this is intentional navigation
     router.push(`/game/${game.id}?host=true`);
   };
 
