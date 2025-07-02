@@ -27,7 +27,7 @@ export function useBeforeUnload({ enabled, message = 'You have unsaved changes. 
     };
 
     // Handle browser history navigation (back/forward)
-    const handlePopState = (event: PopStateEvent) => {
+    const handlePopState = () => {
       if (!showConfirmation()) {
         // Try to push the user back to the current page
         if (lastHistoryLength.current !== null && window.history.length !== lastHistoryLength.current) {
