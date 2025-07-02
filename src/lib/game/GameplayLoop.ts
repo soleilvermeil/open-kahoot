@@ -231,7 +231,7 @@ export class GameplayLoop {
     console.log(`🏆 [LEADERBOARD] Starting leaderboard phase for game ${game.pin}`);
     
     const leaderboard = this.playerManager.getLeaderboard(game);
-    this.io.to(game.id).emit('leaderboardShown', leaderboard);
+    this.io.to(game.id).emit('leaderboardShown', leaderboard, game);
     
     // Stay in leaderboard phase - host will manually trigger next question or finish game
     const isLastQuestion = this.questionManager.isLastQuestion(game);
@@ -308,7 +308,7 @@ export class GameplayLoop {
         
       case 'leaderboard':
         const leaderboard = this.playerManager.getLeaderboard(game);
-        this.io.to(socketId).emit('leaderboardShown', leaderboard);
+        this.io.to(socketId).emit('leaderboardShown', leaderboard, game);
         break;
         
       case 'finished':

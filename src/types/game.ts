@@ -84,7 +84,7 @@ export interface ServerToClientEvents {
   questionEnded: (stats: GameStats) => void;
   hostResults: (stats: GameStats) => void;
   personalResult: (result: PersonalResult) => void;
-  leaderboardShown: (leaderboard: Player[]) => void;
+  leaderboardShown: (leaderboard: Player[], game: Game) => void;
   gameFinished: (finalScores: Player[]) => void;
   playerJoined: (player: Player) => void;
   playerReconnected: (player: Player) => void;

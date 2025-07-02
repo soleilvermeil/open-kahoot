@@ -43,7 +43,7 @@ type GameAction =
   | { type: 'QUESTION_ENDED'; payload: GameStats }
   | { type: 'WAITING_FOR_RESULTS' }
   | { type: 'PERSONAL_RESULT'; payload: PersonalResult }
-  | { type: 'SHOW_LEADERBOARD'; payload: Player[] }
+  | { type: 'SHOW_LEADERBOARD'; payload: { leaderboard: Player[]; game: Game } }
   | { type: 'GAME_FINISHED'; payload: Player[] }
   | { type: 'TICK_TIMER' }
   | { type: 'GAME_STARTED'; payload: Game };
@@ -122,7 +122,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case 'SHOW_LEADERBOARD':
       return {
         ...state,
-        leaderboard: action.payload,
+        leaderboard: action.payload.leaderboard,
+        game: action.payload.game,
         gameStatus: 'leaderboard'
       };
       
@@ -251,8 +252,8 @@ export default function GamePage() {
       dispatch({ type: 'QUESTION_ENDED', payload: stats });
     });
 
-    socket.on('leaderboardShown', (leaderboardData: Player[]) => {
-      dispatch({ type: 'SHOW_LEADERBOARD', payload: leaderboardData });
+    socket.on('leaderboardShown', (leaderboardData: Player[], gameData: Game) => {
+      dispatch({ type: 'SHOW_LEADERBOARD', payload: { leaderboard: leaderboardData, game: gameData } });
       // Players stay on their personal result screen
     });
 

@@ -259,7 +259,7 @@ export class EventHandlers {
         return;
       }
 
-      console.log(`✅ [NEXT_QUESTION] Moving to next question (${game.currentQuestionIndex + 2}/${game.questions.length})`);
+      console.log(`✅ [NEXT_QUESTION] Moving to next question (${game.currentQuestionIndex + 1}/${game.questions.length})`);
       this.gameplayLoop.transitionToPhase(game, 'preparation');
     } catch (error) {
       console.error(`❌ [NEXT_QUESTION] Error moving to next question:`, error);
