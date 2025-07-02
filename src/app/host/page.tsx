@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import Papa from 'papaparse';
+import jschardet from 'jschardet';
+import * as iconv from 'iconv-lite';
 import { getSocket } from '@/lib/socket-client';
 import { appConfig } from '@/lib/config';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
@@ -55,7 +57,18 @@ export default function HostPage() {
   };
 
   const parseTsvFile = async (file: File): Promise<Question[]> => {
-    const text = await file.text();
+    // Read file as ArrayBuffer to handle encoding properly
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Detect encoding
+    const detected = jschardet.detect(buffer);
+    const encoding = detected.encoding || 'utf-8';
+    
+    console.log(`Detected encoding: ${encoding} (confidence: ${detected.confidence})`);
+    
+    // Convert to UTF-8 text
+    const text = iconv.decode(buffer, encoding);
     
     return new Promise((resolve, reject) => {
       Papa.parse(text, {
