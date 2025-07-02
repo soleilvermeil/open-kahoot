@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Question } from '@/types/game';
 import { getChoiceColor } from '@/lib/palette';
+import { useCountdownMusic } from '@/lib/useCountdownMusic';
 
 interface HostAnsweringScreenProps {
   currentQuestion: Question;
@@ -10,6 +12,18 @@ interface HostAnsweringScreenProps {
 export default function HostAnsweringScreen({ 
   currentQuestion 
 }: HostAnsweringScreenProps) {
+  const { playRandomCountdown, stopMusic } = useCountdownMusic();
+
+  // Play random countdown music when the answering phase starts (only once)
+  useEffect(() => {
+    playRandomCountdown();
+    
+    // Cleanup function to stop music when component unmounts
+    return () => {
+      stopMusic();
+    };
+  }, []); // Empty dependency array ensures this only runs once on mount
+
   // Choice button colors for players - using palette
   const choiceColors = [
     getChoiceColor(0), // A - Red
