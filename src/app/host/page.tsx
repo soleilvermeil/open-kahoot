@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import Papa from 'papaparse';
 import { getSocket } from '@/lib/socket-client';
 import { appConfig } from '@/lib/config';
 import type { Question, Game, Player, GameSettings } from '@/types/game';
@@ -55,61 +56,70 @@ export default function HostPage() {
 
   const parseTsvFile = async (file: File): Promise<Question[]> => {
     const text = await file.text();
-    const lines = text.split('\n').filter(line => line.trim());
     
-    if (lines.length < 2) {
-      throw new Error('File must contain at least a header row and one data row');
-    }
+    return new Promise((resolve, reject) => {
+      Papa.parse(text, {
+        header: true,
+        delimiter: '\t',
+        skipEmptyLines: true,
+        transformHeader: (header: string) => header.trim().toLowerCase(),
+        complete: (results) => {
+          try {
+            const data = results.data as Record<string, string>[];
+            
+            if (data.length === 0) {
+              throw new Error('File must contain at least one data row');
+            }
 
-    const headers = lines[0].split('\t').map(h => h.trim().toLowerCase());
-    const requiredColumns = ['question', 'correct', 'wrong1', 'wrong2', 'wrong3'];
-    
-    // Check if all required columns exist
-    const missingColumns = requiredColumns.filter(col => !headers.includes(col));
-    if (missingColumns.length > 0) {
-      throw new Error(`Missing required columns: ${missingColumns.join(', ')}`);
-    }
+            const requiredColumns = ['question', 'correct', 'wrong1', 'wrong2', 'wrong3'];
+            const headers = Object.keys(data[0] || {});
+            
+            // Check if all required columns exist
+            const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+            if (missingColumns.length > 0) {
+              throw new Error(`Missing required columns: ${missingColumns.join(', ')}`);
+            }
 
-    const columnIndexes = {
-      question: headers.indexOf('question'),
-      correct: headers.indexOf('correct'),
-      wrong1: headers.indexOf('wrong1'),
-      wrong2: headers.indexOf('wrong2'),
-      wrong3: headers.indexOf('wrong3')
-    };
+            const parsedQuestions: Question[] = [];
 
-    const parsedQuestions: Question[] = [];
+            for (const row of data) {
+              const questionText = row.question?.trim();
+              const correctAnswer = row.correct?.trim();
+              const wrong1 = row.wrong1?.trim();
+              const wrong2 = row.wrong2?.trim();
+              const wrong3 = row.wrong3?.trim();
 
-    for (let i = 1; i < lines.length; i++) {
-      const columns = lines[i].split('\t');
-      
-      if (columns.length < 5) continue; // Skip incomplete rows
+              if (!questionText || !correctAnswer || !wrong1 || !wrong2 || !wrong3) {
+                continue; // Skip rows with empty required fields
+              }
 
-      const questionText = columns[columnIndexes.question]?.trim();
-      const correctAnswer = columns[columnIndexes.correct]?.trim();
-      const wrong1 = columns[columnIndexes.wrong1]?.trim();
-      const wrong2 = columns[columnIndexes.wrong2]?.trim();
-      const wrong3 = columns[columnIndexes.wrong3]?.trim();
+              // Create answer array and shuffle
+              const answers = [correctAnswer, wrong1, wrong2, wrong3];
+              const shuffledAnswers = shuffleArray(answers);
+              const correctIndex = shuffledAnswers.indexOf(correctAnswer);
 
-      if (!questionText || !correctAnswer || !wrong1 || !wrong2 || !wrong3) {
-        continue; // Skip rows with empty required fields
-      }
+              parsedQuestions.push({
+                id: uuidv4(),
+                question: questionText,
+                options: shuffledAnswers,
+                correctAnswer: correctIndex,
+                timeLimit: 30 // Default time limit
+              });
+            }
 
-      // Create answer array and shuffle
-      const answers = [correctAnswer, wrong1, wrong2, wrong3];
-      const shuffledAnswers = shuffleArray(answers);
-      const correctIndex = shuffledAnswers.indexOf(correctAnswer);
-
-      parsedQuestions.push({
-        id: uuidv4(),
-        question: questionText,
-        options: shuffledAnswers,
-        correctAnswer: correctIndex,
-        timeLimit: 30 // Default time limit
+            resolve(parsedQuestions);
+          } catch (error) {
+            reject(error);
+          }
+        },
+        error: (error: unknown) => {
+          const errorMessage = error && typeof error === 'object' && 'message' in error 
+            ? String(error.message) 
+            : 'Unknown parsing error';
+          reject(new Error(`Failed to parse TSV file: ${errorMessage}`));
+        }
       });
-    }
-
-    return parsedQuestions;
+    });
   };
 
   const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
