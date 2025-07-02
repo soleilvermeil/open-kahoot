@@ -1,10 +1,13 @@
+import { useEffect } from 'react';
 import { Users, Play } from 'lucide-react';
-import type { Game } from '@/types/game';
+import type { Game, Player } from '@/types/game';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 import GamePinDisplay from '@/components/GamePinDisplay';
 import PlayerList from '@/components/PlayerList';
 import Button from '@/components/Button';
+import { useCountdownMusic } from '@/lib/useCountdownMusic';
+import { getSocket } from '@/lib/socket-client';
 
 interface HostGameLobbyScreenProps {
   game: Game;
@@ -17,7 +20,35 @@ export default function HostGameLobbyScreen({
   joinUrl, 
   onStartGame 
 }: HostGameLobbyScreenProps) {
+  const { startLobbyMusic, stopLobbyMusic, playBlup } = useCountdownMusic();
   const playersOnly = game.players.filter(p => !p.isHost);
+
+  useEffect(() => {
+    // Start lobby music when component mounts
+    startLobbyMusic();
+
+    // Listen for player join events to play blup sound
+    const socket = getSocket();
+    
+    const handlePlayerJoined = (player: Player) => {
+      console.log('Player joined:', player.name);
+      playBlup();
+    };
+
+    socket.on('playerJoined', handlePlayerJoined);
+
+    // Cleanup: stop lobby music and remove listener when component unmounts
+    return () => {
+      stopLobbyMusic();
+      socket.off('playerJoined', handlePlayerJoined);
+    };
+  }, [startLobbyMusic, stopLobbyMusic, playBlup]);
+
+  const handleStartGame = () => {
+    // Stop lobby music before starting game
+    stopLobbyMusic();
+    onStartGame();
+  };
 
   return (
     <PageLayout gradient="host" maxWidth="6xl">
@@ -41,7 +72,7 @@ export default function HostGameLobbyScreen({
               Players ({playersOnly.length})
             </h2>
             <Button
-              onClick={onStartGame}
+              onClick={handleStartGame}
               disabled={playersOnly.length === 0}
               variant="black"
               size="lg"

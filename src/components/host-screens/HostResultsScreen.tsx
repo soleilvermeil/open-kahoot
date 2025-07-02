@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { GameStats } from '@/types/game';
 import { getChoiceColor, correct, incorrect } from '@/lib/palette';
 import Button from '@/components/Button';
 import { ChevronRight } from 'lucide-react';
+import { useCountdownMusic } from '@/lib/useCountdownMusic';
 
 interface HostResultsScreenProps {
   questionStats: GameStats;
@@ -12,7 +14,14 @@ export default function HostResultsScreen({
   questionStats, 
   onShowLeaderboard 
 }: HostResultsScreenProps) {
-  // Choice button colors for players - using palette
+  const { playGong } = useCountdownMusic();
+
+  // Play gong sound when results phase starts (only once)
+  useEffect(() => {
+    playGong();
+  }, []); // Empty dependency array ensures this only runs once on mount
+
+  // Choice button colors for display
   const choiceColors = [
     getChoiceColor(0), // A - Red
     getChoiceColor(1), // B - Blue
