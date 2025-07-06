@@ -48,9 +48,14 @@ export default function HostPage() {
       } : null);
     });
 
+    socket.on('gameUpdated', (updatedGame: Game) => {
+      setGame(updatedGame);
+    });
+
     return () => {
       socket.off('playerJoined');
       socket.off('playerLeft');
+      socket.off('gameUpdated');
     };
   }, []);
 
@@ -253,7 +258,12 @@ export default function HostPage() {
     router.push(`/game/${game.id}?host=true`);
   };
 
-
+  const toggleDyslexiaSupport = (playerId: string) => {
+    if (!game) return;
+    
+    const socket = getSocket();
+    socket.emit('toggleDyslexiaSupport', game.id, playerId);
+  };
 
   const getJoinUrl = () => {
     if (!game) return '';
@@ -301,14 +311,13 @@ export default function HostPage() {
     URL.revokeObjectURL(url);
   };
 
-
-
   if (game) {
     return (
       <HostGameLobbyScreen 
         game={game}
         joinUrl={getJoinUrl()}
         onStartGame={startGame}
+        onToggleDyslexiaSupport={toggleDyslexiaSupport}
       />
     );
   }

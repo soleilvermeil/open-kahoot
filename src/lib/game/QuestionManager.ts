@@ -78,7 +78,14 @@ export class QuestionManager {
       const answerTimeLimit = game.settings.answerTime * 1000;
       const maxPoints = 1000;
       const timeUsedRatio = responseTime / answerTimeLimit;
-      pointsEarned = Math.max(0, Math.round(maxPoints * (1 - timeUsedRatio)));
+      
+      // Apply dyslexia support: 20% slower score reduction
+      let adjustedTimeUsedRatio = timeUsedRatio;
+      if (player.hasDyslexiaSupport) {
+        adjustedTimeUsedRatio = timeUsedRatio * 0.8; // 20% reduction in time penalty
+      }
+      
+      pointsEarned = Math.max(0, Math.round(maxPoints * (1 - adjustedTimeUsedRatio)));
     }
 
     // Get leaderboard to determine position
