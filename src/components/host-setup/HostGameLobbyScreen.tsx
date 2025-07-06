@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Users, Play } from 'lucide-react';
 import type { Game, Player } from '@/types/game';
 import PageLayout from '@/components/PageLayout';
@@ -24,27 +24,37 @@ export default function HostGameLobbyScreen({
 }: HostGameLobbyScreenProps) {
   const { startLobbyMusic, stopLobbyMusic, playBlup } = useCountdownMusic();
   const playersOnly = game.players.filter(p => !p.isHost);
+  const musicStartedRef = useRef(false);
 
+  // Start lobby music only once when component mounts
   useEffect(() => {
-    // Start lobby music when component mounts
-    startLobbyMusic();
+    if (!musicStartedRef.current) {
+      startLobbyMusic();
+      musicStartedRef.current = true;
+    }
 
-    // Listen for player join events to play blup sound
+    // Cleanup: stop lobby music when component unmounts
+    return () => {
+      stopLobbyMusic();
+      musicStartedRef.current = false;
+    };
+  }, []); // Empty dependency array - only run once
+
+  // Handle socket events for player interactions
+  useEffect(() => {
     const socket = getSocket();
     
     const handlePlayerJoined = (player: Player) => {
       console.log('Player joined:', player.name);
       playBlup();
     };
-
+    
     socket.on('playerJoined', handlePlayerJoined);
 
-    // Cleanup: stop lobby music and remove listener when component unmounts
     return () => {
-      stopLobbyMusic();
       socket.off('playerJoined', handlePlayerJoined);
     };
-  }, [startLobbyMusic, stopLobbyMusic, playBlup]);
+  }, []); // Empty dependency array - only set up once
 
   const handleStartGame = () => {
     // Stop lobby music before starting game
