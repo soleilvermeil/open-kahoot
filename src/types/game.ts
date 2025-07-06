@@ -16,6 +16,7 @@ export interface AnswerRecord {
   responseTime: number; // milliseconds from question start
   pointsEarned: number;
   wasCorrect: boolean;
+  hasDyslexiaSupport: boolean; // New field for dyslexia support tracking
 }
 
 export interface GameSettings {
@@ -52,6 +53,7 @@ export interface Player {
   currentAnswer?: number;
   answerTime?: number;
   isConnected: boolean; // Track connection status
+  hasDyslexiaSupport?: boolean; // New field for dyslexia support
 }
 
 export interface GameStats {
@@ -93,6 +95,7 @@ export interface ServerToClientEvents {
   error: (message: string) => void;
   playerAnswered: (playerId: string) => void;
   gameLogs: (tsvData: string, filename: string) => void;
+  gameUpdated: (game: Game) => void;
 }
 
 export interface ClientToServerEvents {
@@ -105,4 +108,5 @@ export interface ClientToServerEvents {
   showLeaderboard: (gameId: string) => void;
   endGame: (gameId: string) => void;
   downloadGameLogs: (gameId: string) => void;
+  toggleDyslexiaSupport: (gameId: string, playerId: string) => void;
 } 

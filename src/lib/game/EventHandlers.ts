@@ -61,6 +61,10 @@ export class EventHandlers {
         this.handleDownloadGameLogs(socket, gameId);
       });
 
+      socket.on('toggleDyslexiaSupport', (gameId, playerId) => {
+        this.handleToggleDyslexiaSupport(socket, gameId, playerId);
+      });
+
       socket.on('disconnect', () => {
         this.handleDisconnect(socket);
       });
@@ -311,7 +315,7 @@ export class EventHandlers {
   }
 
   private handleDownloadGameLogs(socket: Socket, gameId: string): void {
-    console.log(`📄 [DOWNLOAD_LOGS] Host ${socket.id} requesting game logs for: ${gameId}`);
+    console.log(`📋 [DOWNLOAD_LOGS] Host ${socket.id} requesting game logs for: ${gameId}`);
     
     try {
       const game = this.gameManager.getGame(gameId);
@@ -327,21 +331,56 @@ export class EventHandlers {
         return;
       }
 
-      if (game.phase !== 'finished') {
-        console.log(`❌ [DOWNLOAD_LOGS] Game not finished yet (current phase: ${game.phase})`);
-        socket.emit('error', 'Game must be finished to download logs');
-        return;
-      }
-
+      // Generate the TSV logs
       const tsvData = this.playerManager.generateGameLogsTSV(game);
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-      const filename = `game-${game.pin}-logs-${timestamp}.tsv`;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `game_${game.pin}_${timestamp}.tsv`;
       
-      console.log(`✅ [DOWNLOAD_LOGS] Sending logs for game ${game.pin} (${game.answerHistory.length} answer records)`);
+      console.log(`✅ [DOWNLOAD_LOGS] Sending logs file: ${filename}`);
       socket.emit('gameLogs', tsvData, filename);
     } catch (error) {
       console.error(`❌ [DOWNLOAD_LOGS] Error generating logs:`, error);
       socket.emit('error', 'Failed to generate logs');
+    }
+  }
+
+  private handleToggleDyslexiaSupport(socket: Socket, gameId: string, playerId: string): void {
+    console.log(`🧠 [TOGGLE_DYSLEXIA] Host ${socket.id} toggling dyslexia support for player ${playerId} in game: ${gameId}`);
+    
+    try {
+      const game = this.gameManager.getGame(gameId);
+      if (!game) {
+        console.log(`❌ [TOGGLE_DYSLEXIA] Game not found: ${gameId}`);
+        socket.emit('error', 'Game not found');
+        return;
+      }
+
+      if (!this.playerManager.isHost(socket.id, game)) {
+        console.log(`❌ [TOGGLE_DYSLEXIA] Not authorized (not host)`);
+        socket.emit('error', 'Not authorized');
+        return;
+      }
+
+      // Only allow toggling in waiting phase
+      if (game.status !== 'waiting') {
+        console.log(`❌ [TOGGLE_DYSLEXIA] Game not in waiting phase: ${game.status}`);
+        socket.emit('error', 'Can only toggle dyslexia support in lobby');
+        return;
+      }
+
+      const success = this.playerManager.toggleDyslexiaSupport(game, playerId);
+      if (success) {
+        const player = this.playerManager.getPlayerById(playerId, game);
+        console.log(`✅ [TOGGLE_DYSLEXIA] Dyslexia support toggled for player ${player?.name}: ${player?.hasDyslexiaSupport}`);
+        // Broadcast updated game state to all players in the room
+        this.io.to(game.id).emit('gameUpdated', game);
+      } else {
+        console.log(`❌ [TOGGLE_DYSLEXIA] Failed to toggle dyslexia support for player ${playerId}`);
+        socket.emit('error', 'Failed to toggle dyslexia support');
+      }
+    } catch (error) {
+      console.error(`❌ [TOGGLE_DYSLEXIA] Error toggling dyslexia support:`, error);
+      socket.emit('error', 'Failed to toggle dyslexia support');
     }
   }
 

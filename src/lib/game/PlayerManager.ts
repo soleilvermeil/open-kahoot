@@ -136,7 +136,14 @@ export class PlayerManager {
         if (wasCorrect && player.currentAnswer !== undefined) {
           const answerTimeLimit = game.settings.answerTime * 1000;
           const timeUsedRatio = responseTime / answerTimeLimit;
-          pointsEarned = Math.max(0, Math.round(1000 * (1 - timeUsedRatio)));
+          
+          // Apply dyslexia support: 20% slower score reduction
+          let adjustedTimeUsedRatio = timeUsedRatio;
+          if (player.hasDyslexiaSupport) {
+            adjustedTimeUsedRatio = timeUsedRatio * 0.8; // 20% reduction in time penalty
+          }
+          
+          pointsEarned = Math.max(0, Math.round(1000 * (1 - adjustedTimeUsedRatio)));
         }
 
         const answerRecord = {
@@ -148,7 +155,8 @@ export class PlayerManager {
           answerTime: player.answerTime,
           responseTime: responseTime,
           pointsEarned: pointsEarned,
-          wasCorrect: wasCorrect && player.currentAnswer !== undefined
+          wasCorrect: wasCorrect && player.currentAnswer !== undefined,
+          hasDyslexiaSupport: player.hasDyslexiaSupport || false
         };
 
         game.answerHistory.push(answerRecord);
@@ -167,10 +175,17 @@ export class PlayerManager {
         const answerTimeLimit = game.settings.answerTime * 1000;
         const timeUsedRatio = responseTime / answerTimeLimit;
         
-        const pointsEarned = Math.max(0, Math.round(maxPoints * (1 - timeUsedRatio)));
+        // Apply dyslexia support: 20% slower score reduction
+        let adjustedTimeUsedRatio = timeUsedRatio;
+        if (player.hasDyslexiaSupport) {
+          adjustedTimeUsedRatio = timeUsedRatio * 0.8; // 20% reduction in time penalty
+        }
+        
+        const pointsEarned = Math.max(0, Math.round(maxPoints * (1 - adjustedTimeUsedRatio)));
         player.score += pointsEarned;
         
-        console.log(`Player ${player.name} earned ${pointsEarned} points (total: ${player.score})`);
+        const supportStatus = player.hasDyslexiaSupport ? ' (with dyslexia support)' : '';
+        console.log(`Player ${player.name}${supportStatus} earned ${pointsEarned} points (total: ${player.score})`);
       }
     });
   }
@@ -197,7 +212,8 @@ export class PlayerManager {
       'player_id',
       'player_nickname',
       'choice_string',
-      'choice_datetime'
+      'choice_datetime',
+      'has_dyslexia_support'
     ];
 
     const rows: string[] = [headers.join('\t')];
@@ -249,12 +265,25 @@ export class PlayerManager {
         answerRecord.playerId,
         answerRecord.playerName.replace(/\t/g, ' '),
         choiceString.replace(/\t/g, ' '),
-        choiceDatetime
+        choiceDatetime,
+        answerRecord.hasDyslexiaSupport ? 'true' : 'false'
       ];
 
       rows.push(row.join('\t'));
     });
 
     return rows.join('\n');
+  }
+
+  // New method to toggle dyslexia support for a player
+  toggleDyslexiaSupport(game: Game, playerId: string): boolean {
+    const player = this.getPlayerById(playerId, game);
+    if (!player || player.isHost) {
+      return false;
+    }
+
+    player.hasDyslexiaSupport = !player.hasDyslexiaSupport;
+    console.log(`Player ${player.name} dyslexia support: ${player.hasDyslexiaSupport ? 'enabled' : 'disabled'}`);
+    return true;
   }
 } 

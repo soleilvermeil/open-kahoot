@@ -13,12 +13,14 @@ interface HostGameLobbyScreenProps {
   game: Game;
   joinUrl: string;
   onStartGame: () => void;
+  onToggleDyslexiaSupport: (playerId: string) => void;
 }
 
 export default function HostGameLobbyScreen({ 
   game, 
   joinUrl, 
-  onStartGame 
+  onStartGame,
+  onToggleDyslexiaSupport
 }: HostGameLobbyScreenProps) {
   const { startLobbyMusic, stopLobbyMusic, playBlup } = useCountdownMusic();
   const playersOnly = game.players.filter(p => !p.isHost);
@@ -86,6 +88,8 @@ export default function HostGameLobbyScreen({
             players={playersOnly}
             emptyMessage="Waiting for players to join..."
             columns={3}
+            showDyslexiaControls={true}
+            onToggleDyslexiaSupport={onToggleDyslexiaSupport}
           />
         </div>
       </Card>
