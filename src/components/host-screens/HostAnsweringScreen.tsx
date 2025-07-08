@@ -22,7 +22,7 @@ export default function HostAnsweringScreen({
     return () => {
       stopMusic();
     };
-  }, []); // Empty dependency array ensures this only runs once on mount
+  }, [playRandomCountdown, stopMusic]); // Add missing dependencies
 
   // Choice button colors for players - using palette
   const choiceColors = [
