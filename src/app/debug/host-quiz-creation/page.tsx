@@ -14,10 +14,25 @@ export default function DebugHostQuizCreationPage() {
   };
 
   const handleAddQuestion = (index?: number) => {
-    console.log('Add question at index:', index);
+    const newQuestion: Question = {
+      id: crypto.randomUUID(),
+      question: 'New Question',
+      timeLimit: 30,
+      options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+      correctAnswer: 0
+    };
+    
+    setQuestions(prevQuestions => {
+      if (typeof index === 'number') {
+        const newQuestions = [...prevQuestions];
+        newQuestions.splice(index, 0, newQuestion);
+        return newQuestions;
+      }
+      return [...prevQuestions, newQuestion];
+    });
   };
 
-  const handleAppendTSV = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAppendTSV = (index: number) => {
     console.log('Append TSV at index:', index);
   };
 
