@@ -38,7 +38,7 @@ export default function HostGameLobbyScreen({
       stopLobbyMusic();
       musicStartedRef.current = false;
     };
-  }, []); // Empty dependency array - only run once
+  }, [startLobbyMusic, stopLobbyMusic]); // Add missing dependencies
 
   // Handle socket events for player interactions
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function HostGameLobbyScreen({
     return () => {
       socket.off('playerJoined', handlePlayerJoined);
     };
-  }, []); // Empty dependency array - only set up once
+  }, [playBlup]); // Add missing dependency
 
   const handleStartGame = () => {
     // Stop lobby music before starting game

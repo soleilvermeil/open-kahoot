@@ -10,11 +10,16 @@ export default function DebugHostLobbyPage() {
     console.log('Start game');
   };
 
+  const handleToggleDyslexiaSupport = (playerId: string) => {
+    console.log('Toggle dyslexia support for player:', playerId);
+  };
+
   return (
     <HostGameLobbyScreen
       game={mockGame}
       joinUrl={joinUrl}
       onStartGame={handleStartGame}
+      onToggleDyslexiaSupport={handleToggleDyslexiaSupport}
     />
   );
 } 
