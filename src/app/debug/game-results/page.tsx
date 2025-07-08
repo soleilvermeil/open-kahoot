@@ -1,10 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import GameResultsPhaseScreen from '@/components/game-screens/GameResultsPhaseScreen';
 import { mockGameStats, mockPersonalResultCorrect, mockPersonalResultIncorrect } from '@/lib/debug-data';
 
-export default function DebugGameResultsPage() {
+function GameResultsContent() {
   const searchParams = useSearchParams();
   const view = searchParams.get('view') || 'host';
   const result = searchParams.get('result') || 'correct';
@@ -26,5 +27,13 @@ export default function DebugGameResultsPage() {
       personalResult={isPlayer ? personalResult : null}
       onShowLeaderboard={handleShowLeaderboard}
     />
+  );
+}
+
+export default function DebugGameResultsPage() {
+  return (
+    <Suspense fallback={<GameResultsPhaseScreen isHost={true} isPlayer={false} questionStats={null} personalResult={null} onShowLeaderboard={() => {}} />}>
+      <GameResultsContent />
+    </Suspense>
   );
 } 

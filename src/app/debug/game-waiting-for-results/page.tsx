@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import GameWaitingForResultsScreen from '@/components/game-screens/GameWaitingForResultsScreen';
 
-export default function DebugGameWaitingForResultsPage() {
+function GameWaitingForResultsContent() {
   const searchParams = useSearchParams();
   const view = searchParams.get('view') || 'host';
   
@@ -11,5 +12,13 @@ export default function DebugGameWaitingForResultsPage() {
 
   return (
     <GameWaitingForResultsScreen isHost={isHost} />
+  );
+}
+
+export default function DebugGameWaitingForResultsPage() {
+  return (
+    <Suspense fallback={<GameWaitingForResultsScreen isHost={true} />}>
+      <GameWaitingForResultsContent />
+    </Suspense>
   );
 } 

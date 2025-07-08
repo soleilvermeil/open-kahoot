@@ -1,10 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import GameAnsweringPhaseScreen from '@/components/game-screens/GameAnsweringPhaseScreen';
 import { mockGame, mockQuestions } from '@/lib/debug-data';
 
-export default function DebugGameAnsweringPage() {
+function GameAnsweringContent() {
   const searchParams = useSearchParams();
   const view = searchParams.get('view') || 'host';
   
@@ -25,5 +26,13 @@ export default function DebugGameAnsweringPage() {
       onSubmitAnswer={handleSubmitAnswer}
       hasAnswered={false}
     />
+  );
+}
+
+export default function DebugGameAnsweringPage() {
+  return (
+    <Suspense fallback={<GameAnsweringPhaseScreen currentQuestion={mockQuestions[0]} timeLeft={15} game={mockGame} isHost={true} isPlayer={false} onSubmitAnswer={() => {}} hasAnswered={false} />}>
+      <GameAnsweringContent />
+    </Suspense>
   );
 } 
