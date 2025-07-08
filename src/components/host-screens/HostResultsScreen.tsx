@@ -19,7 +19,7 @@ export default function HostResultsScreen({
   // Play gong sound when results phase starts (only once)
   useEffect(() => {
     playGong();
-  }, []); // Empty dependency array ensures this only runs once on mount
+  }, [playGong]); // Add missing dependency
 
   // Choice button colors for display
   const choiceColors = [
