@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Question } from '@/types/game';
 import { getChoiceColor } from '@/lib/palette';
 import { useCountdownMusic } from '@/lib/useCountdownMusic';
+import GlassPanel from '../GlassPanel';
 
 interface HostAnsweringScreenProps {
   currentQuestion: Question;
@@ -33,7 +34,7 @@ export default function HostAnsweringScreen({
   ];
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+    <GlassPanel>
       <h1 className="text-4xl text-white text-center leading-tight mb-8 font-jua">
         {currentQuestion.question}
       </h1>
@@ -55,6 +56,6 @@ export default function HostAnsweringScreen({
       <div className="text-center mt-6 text-white/80 text-lg">
         Players are choosing their answers on their devices
       </div>
-    </div>
+    </GlassPanel>
   );
 } 

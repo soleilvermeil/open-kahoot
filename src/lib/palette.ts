@@ -117,14 +117,6 @@ export const palette = {
   },
 
 
-  // Glass morphism and transparency effects
-  glass: {
-    primary: 'bg-white/10 backdrop-blur-lg border border-white/20',
-    secondary: 'bg-white/20 backdrop-blur-lg border border-white/30',
-    hover: 'hover:bg-white/20',
-    strong: 'bg-white/30 backdrop-blur-lg border border-white/40'
-  },
-
   // Text colors
   text: {
     primary: 'text-white',
@@ -167,4 +159,4 @@ export const getButtonStyle = (variant: keyof typeof palette.buttons): string =>
 };
 
 // Export individual palettes for easier imports
-export const { correct, incorrect, buttons, gradients, glass, text, choices, actionCards } = palette; 
+export const { correct, incorrect, buttons, gradients, text, choices, actionCards } = palette; 

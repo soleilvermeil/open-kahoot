@@ -1,4 +1,5 @@
 import { getChoiceColor } from '@/lib/palette';
+import GlassPanel from '../GlassPanel';
 
 interface PlayerAnsweringScreenProps {
   onSubmitAnswer: (answerIndex: number) => void;
@@ -8,7 +9,7 @@ export default function PlayerAnsweringScreen({
   onSubmitAnswer
 }: PlayerAnsweringScreenProps) {
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+    <GlassPanel>
       <h2 className="text-3xl text-white text-center mb-8 font-jua">
         Choose your answer:
       </h2>
@@ -23,6 +24,6 @@ export default function PlayerAnsweringScreen({
           </button>
         ))}
       </div>
-    </div>
+    </GlassPanel>
   );
 } 
