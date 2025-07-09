@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2, ChevronUp, ChevronDown, Shuffle } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown, Shuffle, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
@@ -121,12 +121,7 @@ export default function QuestionEditor({
         />
       </div>
       <div className="flex gap-4 mb-4">
-        {question.image && (
-          <div className="w-1/3">
-            <img src={question.image} alt="Question image" className="rounded-lg object-cover w-full h-full" />
-          </div>
-        )}
-        <div className={`grid grid-cols-1 ${question.image ? 'w-2/3' : 'w-full'} md:grid-cols-2 gap-4`}>
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-2 gap-4">
           {question.options.map((option, optionIndex) => (
             <div 
               key={optionIndex} 
@@ -153,6 +148,39 @@ export default function QuestionEditor({
             </div>
           ))}
         </div>
+        <div className="relative w-28 h-28">
+          <input
+            type="file"
+            id={`image-upload-${question.id}`}
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
+          <label
+            htmlFor={`image-upload-${question.id}`}
+            className="cursor-pointer flex items-center justify-center w-full h-full bg-white/10 rounded-lg border-2 border-dashed border-white/30 hover:bg-white/20 transition-colors"
+          >
+            {!question.image && (
+              <div className="text-center">
+                <Upload className="mx-auto h-8 w-8 text-white/60" />
+                <span className="mt-2 text-sm text-white/80">Upload Image</span>
+              </div>
+            )}
+            {question.image && (
+              <img src={question.image} alt="Question" className="object-cover w-full h-full rounded-lg" />
+            )}
+          </label>
+          {question.image && (
+            <Button
+              onClick={() => onUpdateQuestion(questionIndex, 'image', '')}
+              variant="ghost"
+              size="icon"
+              icon={Trash2}
+              className="absolute top-2 right-2 text-white bg-black/50 hover:bg-black/70 rounded-full"
+              title="Remove image"
+            />
+          )}
+        </div>
       </div>
       <div className="mb-4">
         <textarea
@@ -161,33 +189,6 @@ export default function QuestionEditor({
           className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
           placeholder="Enter an optional explanation for the answer..."
         />
-      </div>
-      <div className="flex items-center gap-4">
-        <input
-          type="file"
-          id={`image-upload-${question.id}`}
-          className="hidden"
-          accept="image/*"
-          onChange={handleImageUpload}
-        />
-        {!question.image && (
-          <label
-            htmlFor={`image-upload-${question.id}`}
-            className="cursor-pointer bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-          >
-            Upload Image
-          </label>
-        )}
-        {question.image && (
-          <Button
-            onClick={() => onUpdateQuestion(questionIndex, 'image', '')}
-            variant="ghost"
-            size="sm"
-            className="text-red-500 hover:text-red-400"
-          >
-            Remove Image
-          </Button>
-        )}
       </div>
     </motion.div>
   );
