@@ -35,6 +35,11 @@ export default function HostResultsScreen({
         <h1 className="text-4xl text-white mb-6 font-jua">
           {questionStats.question.question}
         </h1>
+        {questionStats.question.explanation && (
+          <p className="text-white/80 text-xl mb-6 bg-black/20 p-4 rounded-lg">
+            {questionStats.question.explanation}
+          </p>
+        )}
         <p className="text-white/80 text-2xl">
           {questionStats.correctAnswers} out of {questionStats.totalPlayers} players got it right!
         </p>

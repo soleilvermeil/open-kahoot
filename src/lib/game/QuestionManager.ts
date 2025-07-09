@@ -111,7 +111,8 @@ export class QuestionManager {
       totalScore: player.score,
       position,
       pointsBehind,
-      nextPlayerName
+      nextPlayerName,
+      explanation: question.explanation
     };
   }
 
