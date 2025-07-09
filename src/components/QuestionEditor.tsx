@@ -4,7 +4,7 @@ import { Trash2, ChevronUp, ChevronDown, Shuffle, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { compressImage } from '@/lib/compressImage';
 import Image from 'next/image';
 
@@ -69,6 +69,41 @@ export default function QuestionEditor({
     } catch (err) {
       console.error('Image compression failed', err);
       // Fallback to original image if compression fails
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onUpdateQuestion(questionIndex, 'image', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [questionIndex, onUpdateQuestion]);
+
+  // Drag & drop handlers
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+
+    try {
+      const compressed = await compressImage(file, {
+        maxWidth: 1024,
+        maxHeight: 1024,
+        quality: 0.8,
+      });
+      onUpdateQuestion(questionIndex, 'image', compressed);
+    } catch (err) {
+      console.error('Image compression failed', err);
       const reader = new FileReader();
       reader.onloadend = () => {
         onUpdateQuestion(questionIndex, 'image', reader.result as string);
@@ -172,7 +207,12 @@ export default function QuestionEditor({
           />
           <label
             htmlFor={`image-upload-${question.id}`}
-            className="cursor-pointer flex items-center justify-center w-full h-full bg-white/10 rounded-lg border-2 border-dashed border-white/30 hover:bg-white/20 transition-colors"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`cursor-pointer flex items-center justify-center w-full h-full rounded-lg border-2 border-dashed transition-colors ${
+              isDragOver ? 'bg-white/20 border-white' : 'bg-white/10 border-white/30 hover:bg-white/20'
+            }`}
           >
             {!question.image && (
               <div className="text-center">
