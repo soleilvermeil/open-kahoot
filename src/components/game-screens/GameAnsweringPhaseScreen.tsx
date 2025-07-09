@@ -58,10 +58,7 @@ export default function GameAnsweringPhaseScreen({
             {hasAnswered ? (
               <PlayerWaitingScreen />
             ) : (
-              <PlayerAnsweringScreen 
-                onSubmitAnswer={onSubmitAnswer} 
-                currentQuestion={currentQuestion} 
-              />
+              <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
             )}
           </>
         )}
