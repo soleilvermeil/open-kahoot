@@ -136,6 +136,14 @@ export default function QuestionEditor({
           </div>
         ))}
       </div>
+      <div className="mb-4">
+        <textarea
+          value={question.explanation || ''}
+          onChange={(e) => onUpdateQuestion(questionIndex, 'explanation', e.target.value)}
+          className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
+          placeholder="Enter an optional explanation for the answer..."
+        />
+      </div>
     </motion.div>
   );
 } 

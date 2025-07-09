@@ -6,35 +6,39 @@ export const mockQuestions: Question[] = [
     question: 'What is the capital of France?',
     options: ['London', 'Berlin', 'Paris', 'Madrid'],
     correctAnswer: 2,
-    timeLimit: 30
+    timeLimit: 30,
+    explanation: 'Paris is the capital of France, known for its art, fashion, and culture.'
   },
   {
     id: '2',
     question: 'Which planet is known as the Red Planet?',
     options: ['Venus', 'Mars', 'Jupiter', 'Saturn'],
     correctAnswer: 1,
-    timeLimit: 30
+    timeLimit: 30,
+    explanation: 'Mars is called the Red Planet because of its reddish appearance, caused by iron oxide on its surface.'
   },
   {
     id: '3',
     question: 'Who painted the Mona Lisa?',
     options: ['Vincent van Gogh', 'Pablo Picasso', 'Leonardo da Vinci', 'Claude Monet'],
     correctAnswer: 2,
-    timeLimit: 30
+    timeLimit: 30,
+    explanation: 'The Mona Lisa was painted by the Italian artist Leonardo da Vinci, who was born in 1452 in the town of Vinci, Italy.'
   },
   {
     id: '4',
     question: 'What is the largest ocean on Earth?',
     options: ['Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean', 'Pacific Ocean'],
     correctAnswer: 3,
-    timeLimit: 30
+    timeLimit: 30,
+    explanation: 'The Pacific Ocean is the largest and deepest of the world\'s five oceans.'
   },
   {
     id: '5',
     question: 'Which programming language is known for its simplicity and readability?',
     options: ['JavaScript', 'Python', 'C++', 'Assembly'],
     correctAnswer: 1,
-    timeLimit: 30
+    timeLimit: 30,
   }
 ];
 
@@ -127,7 +131,8 @@ export const mockPersonalResultCorrect: PersonalResult = {
   totalScore: 2100,
   position: 1,
   pointsBehind: 0,
-  nextPlayerName: null
+  nextPlayerName: null,
+  explanation: 'Paris is the capital of France, known for its art, fashion, and culture.'
 };
 
 export const mockPersonalResultIncorrect: PersonalResult = {
@@ -136,7 +141,8 @@ export const mockPersonalResultIncorrect: PersonalResult = {
   totalScore: 1250,
   position: 3,
   pointsBehind: 200,
-  nextPlayerName: 'Bob'
+  nextPlayerName: 'Bob',
+  explanation: 'The Mona Lisa was painted by the Italian artist Leonardo da Vinci, who was born in 1452 in the town of Vinci, Italy.'
 };
 
 export const mockLeaderboard: Player[] = [

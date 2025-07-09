@@ -113,6 +113,7 @@ export default function HostPage() {
               const wrong1 = row.wrong1?.trim();
               const wrong2 = row.wrong2?.trim();
               const wrong3 = row.wrong3?.trim();
+              const explanation = row.explanation?.trim();
 
               if (!questionText || !correctAnswer || !wrong1 || !wrong2 || !wrong3) {
                 continue; // Skip rows with empty required fields
@@ -128,7 +129,8 @@ export default function HostPage() {
                 question: questionText,
                 options: shuffledAnswers,
                 correctAnswer: correctIndex,
-                timeLimit: 30 // Default time limit
+                timeLimit: 30, // Default time limit
+                explanation: explanation || undefined,
               });
             }
 
@@ -274,7 +276,7 @@ export default function HostPage() {
     if (questions.length === 0) return;
 
     // Create TSV content
-    const headers = ['question', 'correct', 'wrong1', 'wrong2', 'wrong3'];
+    const headers = ['question', 'correct', 'wrong1', 'wrong2', 'wrong3', 'explanation'];
     const tsvContent = [
       headers.join('\t'), // Header row
       ...questions.map(q => {
@@ -292,7 +294,8 @@ export default function HostPage() {
           correctAnswer,
           wrongAnswers[0],
           wrongAnswers[1],
-          wrongAnswers[2]
+          wrongAnswers[2],
+          q.explanation || ''
         ].join('\t');
       })
     ].join('\n');

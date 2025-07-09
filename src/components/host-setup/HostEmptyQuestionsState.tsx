@@ -41,7 +41,7 @@ export default function HostEmptyQuestionsState({
       </div>
       
       <p className="text-white/40 text-sm mt-4">
-        TSV files should contain columns: question, correct, wrong1, wrong2, wrong3
+        TSV files should contain columns: question, correct, wrong1, wrong2, wrong3, and optionally explanation.
       </p>
     </div>
   );

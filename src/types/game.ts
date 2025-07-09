@@ -4,6 +4,7 @@ export interface Question {
   options: string[];
   correctAnswer: number; // Index of correct answer (0-3)
   timeLimit: number; // Time limit in seconds
+  explanation?: string;
 }
 
 export interface AnswerRecord {
@@ -74,6 +75,7 @@ export interface PersonalResult {
   position: number;
   pointsBehind: number;
   nextPlayerName: string | null;
+  explanation?: string;
 }
 
 // Socket Events
@@ -109,4 +111,4 @@ export interface ClientToServerEvents {
   endGame: (gameId: string) => void;
   downloadGameLogs: (gameId: string) => void;
   toggleDyslexiaSupport: (gameId: string, playerId: string) => void;
-} 
+}
