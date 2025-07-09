@@ -53,13 +53,6 @@ export default function PlayerResultsScreen({ personalResult }: PlayerResultsScr
         )}
       </div>
 
-      {personalResult.explanation && (
-        <div className="bg-white/10 rounded-xl p-6 mb-6 border border-white/20">
-          <p className="text-white/80 text-lg mb-2">Explanation</p>
-          <p className="text-white text-lg">{personalResult.explanation}</p>
-        </div>
-      )}
-
       {/* Waiting Message */}
       <div className="text-center">
         <p className="text-white/80 text-lg">Waiting for host to continue...</p>

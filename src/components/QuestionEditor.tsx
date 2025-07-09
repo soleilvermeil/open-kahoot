@@ -1,9 +1,12 @@
 'use client';
 
-import { Trash2, ChevronUp, ChevronDown, Shuffle } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown, Shuffle, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
+import { useCallback, useState } from 'react';
+import { compressImage } from '@/lib/compressImage';
+import Image from 'next/image';
 
 interface QuestionEditorProps {
   question: Question;
@@ -50,6 +53,64 @@ export default function QuestionEditor({
     // Update the correct answer index
     onUpdateQuestion(questionIndex, 'correctAnswer', newCorrectAnswerIndex);
   };
+
+  const handleImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Compress / resize the image before storing it
+      const compressed = await compressImage(file, {
+        maxWidth: 1024,
+        maxHeight: 1024,
+        quality: 0.8
+      });
+      onUpdateQuestion(questionIndex, 'image', compressed);
+    } catch (err) {
+      console.error('Image compression failed', err);
+      // Fallback to original image if compression fails
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onUpdateQuestion(questionIndex, 'image', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [questionIndex, onUpdateQuestion]);
+
+  // Drag & drop handlers
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+
+    try {
+      const compressed = await compressImage(file, {
+        maxWidth: 1024,
+        maxHeight: 1024,
+        quality: 0.8,
+      });
+      onUpdateQuestion(questionIndex, 'image', compressed);
+    } catch (err) {
+      console.error('Image compression failed', err);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onUpdateQuestion(questionIndex, 'image', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [questionIndex, onUpdateQuestion]);
 
   return (
     <motion.div 
@@ -108,33 +169,72 @@ export default function QuestionEditor({
           placeholder="Enter your question..."
         />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        {question.options.map((option, optionIndex) => (
-          <div 
-            key={optionIndex} 
-            className="flex items-center gap-2"
+      <div className="flex gap-4 mb-4">
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-2 gap-4">
+          {question.options.map((option, optionIndex) => (
+            <div 
+              key={optionIndex} 
+              className="flex items-center gap-2"
+            >
+              <input
+                type="radio"
+                name={`correct-${questionIndex}`}
+                checked={question.correctAnswer === optionIndex}
+                onChange={() => onUpdateQuestion(questionIndex, 'correctAnswer', optionIndex)}
+                className="text-green-500 focus:ring-green-500"
+              />
+              <input
+                type="text"
+                value={option}
+                onChange={(e) => onUpdateOption(questionIndex, optionIndex, e.target.value)}
+                className={`flex-1 px-3 py-2 rounded-lg border text-white placeholder-white/60 focus:outline-none focus:ring-2 transition-all ${
+                  question.correctAnswer === optionIndex
+                    ? 'bg-green-300/20 border-green-400 focus:ring-green-400 focus:border-green-300'
+                    : 'bg-white/20 border-white/30 focus:ring-white/50 focus:border-white/50'
+                }`}
+                placeholder={`Option ${optionIndex + 1}...`}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="relative w-28 h-28">
+          <input
+            type="file"
+            id={`image-upload-${question.id}`}
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
+          <label
+            htmlFor={`image-upload-${question.id}`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`cursor-pointer flex items-center justify-center w-full h-full rounded-lg border-2 border-dashed transition-colors ${
+              isDragOver ? 'bg-white/20 border-white' : 'bg-white/10 border-white/30 hover:bg-white/20'
+            }`}
           >
-            <input
-              type="radio"
-              name={`correct-${questionIndex}`}
-              checked={question.correctAnswer === optionIndex}
-              onChange={() => onUpdateQuestion(questionIndex, 'correctAnswer', optionIndex)}
-              className="text-green-500 focus:ring-green-500"
+            {!question.image && (
+              <div className="text-center">
+                <Upload className="mx-auto h-8 w-8 text-white/60" />
+                <span className="mt-2 text-sm text-white/80">Upload Image</span>
+              </div>
+            )}
+            {question.image && (
+              <Image src={question.image} alt="Question" fill className="object-cover rounded-lg" />
+            )}
+          </label>
+          {question.image && (
+            <Button
+              onClick={() => onUpdateQuestion(questionIndex, 'image', '')}
+              variant="ghost"
+              size="icon"
+              icon={Trash2}
+              className="absolute top-2 right-2 text-white bg-black/50 hover:bg-black/70 rounded-full"
+              title="Remove image"
             />
-            <input
-              type="text"
-              value={option}
-              onChange={(e) => onUpdateOption(questionIndex, optionIndex, e.target.value)}
-              className={`flex-1 px-3 py-2 rounded-lg border text-white placeholder-white/60 focus:outline-none focus:ring-2 transition-all ${
-                question.correctAnswer === optionIndex
-                  ? 'bg-green-300/20 border-green-400 focus:ring-green-400 focus:border-green-300'
-                  : 'bg-white/20 border-white/30 focus:ring-white/50 focus:border-white/50'
-              }`}
-              placeholder={`Option ${optionIndex + 1}...`}
-            />
-          </div>
-        ))}
+          )}
+        </div>
       </div>
       <div className="mb-4">
         <textarea
