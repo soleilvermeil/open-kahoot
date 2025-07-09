@@ -114,6 +114,7 @@ export default function HostPage() {
               const wrong2 = row.wrong2?.trim();
               const wrong3 = row.wrong3?.trim();
               const explanation = row.explanation?.trim();
+              const image = row.image?.trim();
 
               if (!questionText || !correctAnswer || !wrong1 || !wrong2 || !wrong3) {
                 continue; // Skip rows with empty required fields
@@ -131,6 +132,7 @@ export default function HostPage() {
                 correctAnswer: correctIndex,
                 timeLimit: 30, // Default time limit
                 explanation: explanation || undefined,
+                image: image || undefined
               });
             }
 
@@ -273,45 +275,40 @@ export default function HostPage() {
   };
 
   const downloadTSV = () => {
-    if (questions.length === 0) return;
+    if (questions.length === 0) {
+      alert('There are no questions to export.');
+      return;
+    }
 
     // Create TSV content
-    const headers = ['question', 'correct', 'wrong1', 'wrong2', 'wrong3', 'explanation'];
-    const tsvContent = [
-      headers.join('\t'), // Header row
-      ...questions.map(q => {
-        // Get correct answer and wrong answers
-        const correctAnswer = q.options[q.correctAnswer];
-        const wrongAnswers = q.options.filter((_, index) => index !== q.correctAnswer);
-        
-        // Ensure we have exactly 3 wrong answers by padding with empty strings if needed
-        while (wrongAnswers.length < 3) {
-          wrongAnswers.push('');
-        }
-        
-        return [
-          q.question,
-          correctAnswer,
-          wrongAnswers[0],
-          wrongAnswers[1],
-          wrongAnswers[2],
-          q.explanation || ''
-        ].join('\t');
+    const tsvContent = Papa.unparse({
+      fields: ['question', 'correct', 'wrong1', 'wrong2', 'wrong3', 'explanation', 'image'],
+      data: questions.map(q => {
+        const wrongOptions = q.options.filter((_, i) => i !== q.correctAnswer);
+        return {
+          question: q.question,
+          correct: q.options[q.correctAnswer],
+          wrong1: wrongOptions[0] || '',
+          wrong2: wrongOptions[1] || '',
+          wrong3: wrongOptions[2] || '',
+          explanation: q.explanation || '',
+          image: q.image || ''
+        };
       })
-    ].join('\n');
+    }, {
+      delimiter: '\t'
+    });
 
-    // Create and trigger download
-    const blob = new Blob([tsvContent], { type: 'text/tab-separated-values' });
-    const url = URL.createObjectURL(blob);
+    // Create a blob and download link
+    const blob = new Blob([`\ufeff${tsvContent}`], { type: 'text/tab-separated-values;charset=utf-8;' });
     const link = document.createElement('a');
-    link.href = url;
+    link.href = URL.createObjectURL(blob);
     const now = new Date();
     const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
     link.download = `quiz-${timestamp}.tsv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   };
 
   if (game) {
