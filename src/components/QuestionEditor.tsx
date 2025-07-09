@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
 import { useCallback } from 'react';
+import Image from 'next/image';
 
 interface QuestionEditorProps {
   question: Question;
@@ -167,7 +168,7 @@ export default function QuestionEditor({
               </div>
             )}
             {question.image && (
-              <img src={question.image} alt="Question" className="object-cover w-full h-full rounded-lg" />
+              <Image src={question.image} alt="Question" fill className="object-cover rounded-lg" />
             )}
           </label>
           {question.image && (
