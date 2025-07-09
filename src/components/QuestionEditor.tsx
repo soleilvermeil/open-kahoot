@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
 import { useCallback } from 'react';
+import { compressImage } from '@/lib/compressImage';
 import Image from 'next/image';
 
 interface QuestionEditorProps {
@@ -53,9 +54,21 @@ export default function QuestionEditor({
     onUpdateQuestion(questionIndex, 'correctAnswer', newCorrectAnswerIndex);
   };
 
-  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    try {
+      // Compress / resize the image before storing it
+      const compressed = await compressImage(file, {
+        maxWidth: 1024,
+        maxHeight: 1024,
+        quality: 0.8
+      });
+      onUpdateQuestion(questionIndex, 'image', compressed);
+    } catch (err) {
+      console.error('Image compression failed', err);
+      // Fallback to original image if compression fails
       const reader = new FileReader();
       reader.onloadend = () => {
         onUpdateQuestion(questionIndex, 'image', reader.result as string);

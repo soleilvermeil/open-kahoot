@@ -23,7 +23,10 @@ app.prepare().then(() => {
     }
   });
 
+  // Allow larger payloads (e.g. base64-encoded images) by raising the default 1 MB limit
   const io = new SocketIOServer(httpServer, {
+    // 100 MB – adjust as needed but keep a sensible upper bound
+    maxHttpBufferSize: 1e8,
     cors: {
       origin: "*",
       methods: ["GET", "POST"]
