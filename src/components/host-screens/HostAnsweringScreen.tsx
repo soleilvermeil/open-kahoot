@@ -34,6 +34,11 @@ export default function HostAnsweringScreen({
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+      {currentQuestion.image && (
+        <div className="mb-8">
+          <img src={currentQuestion.image} alt="Question" className="max-h-96 w-auto mx-auto rounded-lg" />
+        </div>
+      )}
       <h1 className="text-4xl text-white text-center leading-tight mb-8 font-jua">
         {currentQuestion.question}
       </h1>

@@ -5,6 +5,7 @@ export interface Question {
   correctAnswer: number; // Index of correct answer (0-3)
   timeLimit: number; // Time limit in seconds
   explanation?: string;
+  image?: string;
 }
 
 export interface AnswerRecord {

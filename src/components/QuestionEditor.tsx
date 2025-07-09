@@ -4,6 +4,7 @@ import { Trash2, ChevronUp, ChevronDown, Shuffle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
+import { useCallback } from 'react';
 
 interface QuestionEditorProps {
   question: Question;
@@ -50,6 +51,17 @@ export default function QuestionEditor({
     // Update the correct answer index
     onUpdateQuestion(questionIndex, 'correctAnswer', newCorrectAnswerIndex);
   };
+
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onUpdateQuestion(questionIndex, 'image', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [questionIndex, onUpdateQuestion]);
 
   return (
     <motion.div 
@@ -108,33 +120,39 @@ export default function QuestionEditor({
           placeholder="Enter your question..."
         />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        {question.options.map((option, optionIndex) => (
-          <div 
-            key={optionIndex} 
-            className="flex items-center gap-2"
-          >
-            <input
-              type="radio"
-              name={`correct-${questionIndex}`}
-              checked={question.correctAnswer === optionIndex}
-              onChange={() => onUpdateQuestion(questionIndex, 'correctAnswer', optionIndex)}
-              className="text-green-500 focus:ring-green-500"
-            />
-            <input
-              type="text"
-              value={option}
-              onChange={(e) => onUpdateOption(questionIndex, optionIndex, e.target.value)}
-              className={`flex-1 px-3 py-2 rounded-lg border text-white placeholder-white/60 focus:outline-none focus:ring-2 transition-all ${
-                question.correctAnswer === optionIndex
-                  ? 'bg-green-300/20 border-green-400 focus:ring-green-400 focus:border-green-300'
-                  : 'bg-white/20 border-white/30 focus:ring-white/50 focus:border-white/50'
-              }`}
-              placeholder={`Option ${optionIndex + 1}...`}
-            />
+      <div className="flex gap-4 mb-4">
+        {question.image && (
+          <div className="w-1/3">
+            <img src={question.image} alt="Question image" className="rounded-lg object-cover w-full h-full" />
           </div>
-        ))}
+        )}
+        <div className={`grid grid-cols-1 ${question.image ? 'w-2/3' : 'w-full'} md:grid-cols-2 gap-4`}>
+          {question.options.map((option, optionIndex) => (
+            <div 
+              key={optionIndex} 
+              className="flex items-center gap-2"
+            >
+              <input
+                type="radio"
+                name={`correct-${questionIndex}`}
+                checked={question.correctAnswer === optionIndex}
+                onChange={() => onUpdateQuestion(questionIndex, 'correctAnswer', optionIndex)}
+                className="text-green-500 focus:ring-green-500"
+              />
+              <input
+                type="text"
+                value={option}
+                onChange={(e) => onUpdateOption(questionIndex, optionIndex, e.target.value)}
+                className={`flex-1 px-3 py-2 rounded-lg border text-white placeholder-white/60 focus:outline-none focus:ring-2 transition-all ${
+                  question.correctAnswer === optionIndex
+                    ? 'bg-green-300/20 border-green-400 focus:ring-green-400 focus:border-green-300'
+                    : 'bg-white/20 border-white/30 focus:ring-white/50 focus:border-white/50'
+                }`}
+                placeholder={`Option ${optionIndex + 1}...`}
+              />
+            </div>
+          ))}
+        </div>
       </div>
       <div className="mb-4">
         <textarea
@@ -143,6 +161,33 @@ export default function QuestionEditor({
           className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
           placeholder="Enter an optional explanation for the answer..."
         />
+      </div>
+      <div className="flex items-center gap-4">
+        <input
+          type="file"
+          id={`image-upload-${question.id}`}
+          className="hidden"
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
+        {!question.image && (
+          <label
+            htmlFor={`image-upload-${question.id}`}
+            className="cursor-pointer bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            Upload Image
+          </label>
+        )}
+        {question.image && (
+          <Button
+            onClick={() => onUpdateQuestion(questionIndex, 'image', '')}
+            variant="ghost"
+            size="sm"
+            className="text-red-500 hover:text-red-400"
+          >
+            Remove Image
+          </Button>
+        )}
       </div>
     </motion.div>
   );

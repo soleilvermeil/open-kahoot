@@ -35,7 +35,7 @@ export default function GameThinkingPhaseScreen({
 
       {/* Player Device - Waiting */}
       {isPlayer && (
-        <PlayerThinkingScreen />
+        <PlayerThinkingScreen currentQuestion={currentQuestion} />
       )}
     </PageLayout>
   );
