@@ -26,11 +26,11 @@ export class GameplayLoop {
    */
   startGameLoop(game: Game): void {
     if (game.gameLoopActive) {
-      console.log(`⚠️ [GAMEPLAY_LOOP] Loop already active for game ${game.pin}`);
+      // Removed console.log
       return;
     }
 
-    console.log(`🎮 [GAMEPLAY_LOOP] Starting gameplay loop for game ${game.pin}`);
+    // Removed console.log
     this.gameManager.updateGamePhase(game.id, 'preparation');
     game.gameLoopActive = true;
     
@@ -48,7 +48,7 @@ export class GameplayLoop {
     const game = this.gameManager.getGame(gameId);
     if (game) {
       game.gameLoopActive = false;
-      console.log(`🛑 [GAMEPLAY_LOOP] Stopped gameplay loop for game ${game.pin}`);
+      // Removed console.log
     }
   }
 
@@ -57,14 +57,14 @@ export class GameplayLoop {
    */
   transitionToPhase(game: Game, phase: GamePhase): void {
     if (!game.gameLoopActive) {
-      console.log(`⚠️ [GAMEPLAY_LOOP] Cannot transition - loop not active for game ${game.pin}`);
+      // Removed console.log
       return;
     }
 
     // Clear existing timers to prevent race conditions
     this.timerManager.clearAllTimers(game.id);
 
-    console.log(`🔄 [GAMEPLAY_LOOP] Force transitioning to ${phase} for game ${game.pin}`);
+    // Removed console.log
     this.schedulePhase(game, phase, 0);
   }
 
@@ -79,7 +79,7 @@ export class GameplayLoop {
     }, delay);
     
     if (delay > 0) {
-      console.log(`⏰ [GAMEPLAY_LOOP] Scheduled ${phase} phase in ${delay}ms for game ${game.pin}`);
+      // Removed console.log
     }
   }
 
@@ -87,7 +87,7 @@ export class GameplayLoop {
    * Executes a specific game phase
    */
   private executePhase(game: Game, phase: GamePhase): void {
-    console.log(`▶️ [GAMEPLAY_LOOP] Executing ${phase} phase for game ${game.pin}`);
+    // Removed console.log
     
     this.gameManager.updateGamePhase(game.id, phase);
     const now = Date.now();
@@ -118,7 +118,7 @@ export class GameplayLoop {
   }
 
   private executePreprationPhase(game: Game): void {
-    console.log(`🔧 [PREPARATION] Preparing next question for game ${game.pin}`);
+    // Removed console.log
     
     // Store answer history before clearing answers (only if we've had at least one question)
     if (game.currentQuestionIndex >= 0) {
@@ -136,7 +136,7 @@ export class GameplayLoop {
       return;
     }
 
-    console.log(`📋 [PREPARATION] Question ${game.currentQuestionIndex + 1}/${game.questions.length} prepared: "${question.question}"`);
+    // Removed console.log
     
     // Transition to thinking phase
     this.schedulePhase(game, 'thinking', 500);
@@ -149,7 +149,7 @@ export class GameplayLoop {
       return;
     }
 
-    console.log(`💭 [THINKING] Starting thinking phase for game ${game.pin} (${game.settings.thinkTime}s)`);
+    // Removed console.log
     
     // Emit thinking phase to all clients
     this.io.to(game.id).emit('thinkingPhase', question, game.settings.thinkTime);
@@ -161,7 +161,7 @@ export class GameplayLoop {
   }
 
   private executeAnsweringPhase(game: Game): void {
-    console.log(`📝 [ANSWERING] Starting answering phase for game ${game.pin} (${game.settings.answerTime}s)`);
+    // Removed console.log
     
     // Set question start time for scoring
     this.gameManager.setQuestionStartTime(game.id, Date.now());
@@ -181,7 +181,7 @@ export class GameplayLoop {
       
       // Only allow early transition if there are active players and all have answered
       if (totalActivePlayers > 0 && this.questionManager.hasAllPlayersAnswered(game)) {
-        console.log(`⚡ [ANSWERING] All ${totalActivePlayers} players answered - ending phase early for game ${game.pin}`);
+        // Removed console.log
         // Clear the answering phase timer and transition immediately
         this.timerManager.clearTimer(game.id, TimerManager.TIMER_TYPES.ANSWERING_PHASE);
         this.executePhase(game, 'results');
@@ -190,7 +190,7 @@ export class GameplayLoop {
   }
 
   private executeResultsPhase(game: Game): void {
-    console.log(`📊 [RESULTS] Starting results phase for game ${game.pin}`);
+    // Removed console.log
     
     const currentQuestion = this.questionManager.getCurrentQuestion(game);
     if (!currentQuestion) return;
@@ -224,22 +224,22 @@ export class GameplayLoop {
     this.phaseCallbacks.set(game.id, null);
     
     // Stay in results phase - host will manually trigger leaderboard
-    console.log(`⏸️ [RESULTS] Results phase active - waiting for host to show leaderboard`);
+    // Removed console.log
   }
 
   private executeLeaderboardPhase(game: Game): void {
-    console.log(`🏆 [LEADERBOARD] Starting leaderboard phase for game ${game.pin}`);
+    // Removed console.log
     
     const leaderboard = this.playerManager.getLeaderboard(game);
     this.io.to(game.id).emit('leaderboardShown', leaderboard, game);
     
     // Stay in leaderboard phase - host will manually trigger next question or finish game
     const isLastQuestion = this.questionManager.isLastQuestion(game);
-    console.log(`⏸️ [LEADERBOARD] Leaderboard phase active - waiting for host to ${isLastQuestion ? 'finish game' : 'start next question'}`);
+    // Removed console.log
   }
 
   private executeFinishedPhase(game: Game): void {
-    console.log(`🏁 [FINISHED] Game ${game.pin} finished`);
+    // Removed console.log
     
     // Store final question's answer history
     if (game.currentQuestionIndex >= 0) {
@@ -275,7 +275,7 @@ export class GameplayLoop {
   syncPlayerToCurrentPhase(game: Game, socketId: string, isHost: boolean): void {
     if (!game.gameLoopActive) return;
 
-    console.log(`🔄 [SYNC] Syncing ${isHost ? 'host' : 'player'} to ${game.phase} phase in game ${game.pin}`);
+    // Removed console.log
 
     switch (game.phase) {
       case 'thinking':

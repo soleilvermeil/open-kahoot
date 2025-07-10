@@ -33,35 +33,35 @@ export default function DebugHostQuizCreationPage() {
   };
 
   const handleAppendTSV = (index: number) => {
-    console.log('Append TSV at index:', index);
+    // Removed console.log
   };
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('File import:', event.target.files);
+    // Removed console.log
   };
 
   const handleUpdateQuestion = (index: number, field: keyof Question, value: string | number) => {
-    console.log('Update question:', index, field, value);
+    // Removed console.log
   };
 
   const handleUpdateOption = (questionIndex: number, optionIndex: number, value: string) => {
-    console.log('Update option:', questionIndex, optionIndex, value);
+    // Removed console.log
   };
 
   const handleRemoveQuestion = (index: number) => {
-    console.log('Remove question:', index);
+    // Removed console.log
   };
 
   const handleMoveQuestion = (index: number, direction: 'up' | 'down') => {
-    console.log('Move question:', index, direction);
+    // Removed console.log
   };
 
   const handleDownloadTSV = () => {
-    console.log('Download TSV');
+    // Removed console.log
   };
 
   const handleCreateGame = () => {
-    console.log('Create game');
+    // Removed console.log
   };
 
   return (

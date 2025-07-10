@@ -5,7 +5,7 @@ import { mockGame, mockQuestions } from '@/lib/debug-data';
 
 export default function DebugGameAnsweringAnsweredPage() {
   const handleSubmitAnswer = (answerIndex: number) => {
-    console.log('Submit answer:', answerIndex);
+    // Removed console.log
   };
 
   return (

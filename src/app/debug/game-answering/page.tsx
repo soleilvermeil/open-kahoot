@@ -13,7 +13,7 @@ function GameAnsweringContent() {
   const isPlayer = view === 'player';
 
   const handleSubmitAnswer = (answerIndex: number) => {
-    console.log('Submit answer:', answerIndex);
+    // Removed console.log
   };
 
   return (

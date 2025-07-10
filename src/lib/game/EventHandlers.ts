@@ -22,10 +22,10 @@ export class EventHandlers {
 
   setupEventHandlers(): void {
     this.io.on('connection', (socket) => {
-      console.log(`🔌 [CONNECTION] Player connected: ${socket.id}`);
+      // Removed console.log
 
       socket.on('createGame', (title, questions, settings, callback) => {
-        console.log(`📥 [SOCKET_EVENT] Received createGame event from ${socket.id} - title: "${title}", questions: ${questions?.length || 'undefined'}, settings:`, settings);
+        // Removed console.log
         this.handleCreateGame(socket, title, questions, settings, callback);
       });
 
@@ -78,12 +78,12 @@ export class EventHandlers {
     settings: GameSettings,
     callback: (game: Game) => void
   ): void {
-    console.log(`🎮 [CREATE_GAME] Host ${socket.id} creating game: "${title}" with ${questions.length} questions`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.createGame(socket.id, title, questions, settings);
       socket.join(game.id);
-      console.log(`✅ [CREATE_GAME] Game created successfully - PIN: ${game.pin}, ID: ${game.id}`);
+      // Removed console.log
       callback(game);
     } catch (error) {
       console.error(`❌ [CREATE_GAME] Error creating game:`, error);
@@ -102,12 +102,12 @@ export class EventHandlers {
     const actualCallback = typeof persistentId === 'function' ? persistentId : callback;
     const actualPersistentId = typeof persistentId === 'string' ? persistentId : null;
     
-    console.log(`👤 [JOIN_GAME] Player ${socket.id} joining game PIN: ${pin} as "${playerName}" ${actualPersistentId ? `(reconnecting with ID: ${actualPersistentId})` : '(new player)'}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGameByPin(pin);
       if (!game) {
-        console.log(`❌ [JOIN_GAME] Game not found for PIN: ${pin}`);
+        // Removed console.log
         actualCallback?.(false);
         return;
       }
@@ -117,7 +117,7 @@ export class EventHandlers {
       if (result.success && result.game) {
         socket.join(result.game.id);
         const connectedPlayers = this.playerManager.getConnectedPlayers(result.game).length;
-        console.log(`✅ [JOIN_GAME] Player "${playerName}" ${result.isReconnection ? 'reconnected to' : 'joined'} game ${pin} (${connectedPlayers} connected players)`);
+        // Removed console.log
         
         const player = this.playerManager.getPlayerById(result.playerId!, result.game);
         if (result.isReconnection) {
@@ -126,7 +126,7 @@ export class EventHandlers {
           this.io.to(result.game.id).emit('playerJoined', player!);
         }
       } else {
-        console.log(`❌ [JOIN_GAME] Failed to join game PIN: ${pin} - ${game.status !== 'waiting' ? 'Game already started' : 'Unknown error'}`);
+        // Removed console.log
       }
       
       actualCallback?.(result.success, result.game, result.playerId);
@@ -141,7 +141,7 @@ export class EventHandlers {
     gameId: string,
     callback: (valid: boolean, game?: Game) => void
   ): void {
-    console.log(`🔍 [VALIDATE_GAME] Checking game: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
@@ -149,11 +149,11 @@ export class EventHandlers {
       const hasActiveHost = host?.isConnected ?? false;
       const isValid = !!game && hasActiveHost;
       
-      console.log(`${isValid ? '✅' : '❌'} [VALIDATE_GAME] Game ${gameId} validation: ${isValid ? 'VALID' : 'INVALID'} (exists: ${!!game}, active host: ${hasActiveHost})`);
+      // Removed console.log
       
       if (isValid) {
         socket.join(game.id);
-        console.log(`🏠 [ROOM_JOIN] Socket ${socket.id} joined room ${game.id} during validation`);
+        // Removed console.log
         
         // Check if this is a host or player
         const isHost = host && host.socketId === socket.id;
@@ -174,28 +174,28 @@ export class EventHandlers {
   }
 
   private handleStartGame(socket: Socket, gameId: string): void {
-    console.log(`🚀 [START_GAME] Host ${socket.id} attempting to start game: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [START_GAME] Game not found: ${gameId}`);
+        // Removed console.log
         socket.emit('error', 'Game not found');
         return;
       }
 
       if (!this.playerManager.isHost(socket.id, game)) {
-        console.log(`❌ [START_GAME] Not authorized (not host)`);
+        // Removed console.log
         socket.emit('error', 'Not authorized');
         return;
       }
 
       // Ensure host socket is in the game room
       socket.join(game.id);
-      console.log(`🏠 [ROOM_JOIN] Host ${socket.id} joined room ${game.id}`);
+      // Removed console.log
 
       const playerCount = this.playerManager.getConnectedPlayers(game).length;
-      console.log(`✅ [START_GAME] Starting game ${game.pin} with ${playerCount} players`);
+      // Removed console.log
       
       // Start the gameplay loop
       this.io.to(game.id).emit('gameStarted', game);
@@ -216,7 +216,7 @@ export class EventHandlers {
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [SUBMIT_ANSWER] Game not found: ${gameId}`);
+        // Removed console.log
         return;
       }
 
@@ -224,10 +224,10 @@ export class EventHandlers {
         ? this.playerManager.getPlayerById(persistentId, game)
         : this.playerManager.getPlayerBySocketId(socket.id, game);
 
-      console.log(`📝 [SUBMIT_ANSWER] Player "${player?.name || 'Unknown'}" (${persistentId || socket.id}) submitting answer ${answerIndex} for question ${questionId}`);
+      // Removed console.log
 
       if (game.phase !== 'answering') {
-        console.log(`❌ [SUBMIT_ANSWER] Rejected - Game phase is '${game.phase}', expected 'answering'`);
+        // Removed console.log
         return;
       }
 
@@ -244,26 +244,26 @@ export class EventHandlers {
   }
 
   private handleNextQuestion(socket: Socket, gameId: string): void {
-    console.log(`➡️ [NEXT_QUESTION] Host ${socket.id} requesting next question for game: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [NEXT_QUESTION] Game not found: ${gameId}`);
+        // Removed console.log
         return;
       }
 
       if (!this.playerManager.isHost(socket.id, game)) {
-        console.log(`❌ [NEXT_QUESTION] Not authorized (not host)`);
+        // Removed console.log
         return;
       }
 
       if (game.phase !== 'leaderboard') {
-        console.log(`❌ [NEXT_QUESTION] Failed - Game phase is '${game.phase}', expected 'leaderboard'`);
+        // Removed console.log
         return;
       }
 
-      console.log(`✅ [NEXT_QUESTION] Moving to next question (${game.currentQuestionIndex + 1}/${game.questions.length})`);
+      // Removed console.log
       this.gameplayLoop.transitionToPhase(game, 'preparation');
     } catch (error) {
       console.error(`❌ [NEXT_QUESTION] Error moving to next question:`, error);
@@ -271,21 +271,21 @@ export class EventHandlers {
   }
 
   private handleShowLeaderboard(socket: Socket, gameId: string): void {
-    console.log(`🏆 [SHOW_LEADERBOARD] Host ${socket.id} requesting leaderboard for game: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [SHOW_LEADERBOARD] Game not found: ${gameId}`);
+        // Removed console.log
         return;
       }
 
       if (!this.playerManager.isHost(socket.id, game)) {
-        console.log(`❌ [SHOW_LEADERBOARD] Not authorized (not host)`);
+        // Removed console.log
         return;
       }
 
-      console.log(`✅ [SHOW_LEADERBOARD] Transitioning to leaderboard for game ${game.pin}`);
+      // Removed console.log
       this.gameplayLoop.transitionToPhase(game, 'leaderboard');
     } catch (error) {
       console.error(`❌ [SHOW_LEADERBOARD] Error showing leaderboard:`, error);
@@ -293,21 +293,21 @@ export class EventHandlers {
   }
 
   private handleEndGame(socket: Socket, gameId: string): void {
-    console.log(`🏁 [END_GAME] Host ${socket.id} ending game: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [END_GAME] Game not found: ${gameId}`);
+        // Removed console.log
         return;
       }
 
       if (!this.playerManager.isHost(socket.id, game)) {
-        console.log(`❌ [END_GAME] Not authorized (not host)`);
+        // Removed console.log
         return;
       }
 
-      console.log(`✅ [END_GAME] Ending game ${game.pin}`);
+      // Removed console.log
       this.gameplayLoop.transitionToPhase(game, 'finished');
     } catch (error) {
       console.error(`❌ [END_GAME] Error ending game:`, error);
@@ -315,18 +315,18 @@ export class EventHandlers {
   }
 
   private handleDownloadGameLogs(socket: Socket, gameId: string): void {
-    console.log(`📋 [DOWNLOAD_LOGS] Host ${socket.id} requesting game logs for: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [DOWNLOAD_LOGS] Game not found: ${gameId}`);
+        // Removed console.log
         socket.emit('error', 'Game not found');
         return;
       }
 
       if (!this.playerManager.isHost(socket.id, game)) {
-        console.log(`❌ [DOWNLOAD_LOGS] Not authorized (not host)`);
+        // Removed console.log
         socket.emit('error', 'Not authorized');
         return;
       }
@@ -336,7 +336,7 @@ export class EventHandlers {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `game_${game.pin}_${timestamp}.tsv`;
       
-      console.log(`✅ [DOWNLOAD_LOGS] Sending logs file: ${filename}`);
+      // Removed console.log
       socket.emit('gameLogs', tsvData, filename);
     } catch (error) {
       console.error(`❌ [DOWNLOAD_LOGS] Error generating logs:`, error);
@@ -345,25 +345,25 @@ export class EventHandlers {
   }
 
   private handleToggleDyslexiaSupport(socket: Socket, gameId: string, playerId: string): void {
-    console.log(`🧠 [TOGGLE_DYSLEXIA] Host ${socket.id} toggling dyslexia support for player ${playerId} in game: ${gameId}`);
+    // Removed console.log
     
     try {
       const game = this.gameManager.getGame(gameId);
       if (!game) {
-        console.log(`❌ [TOGGLE_DYSLEXIA] Game not found: ${gameId}`);
+        // Removed console.log
         socket.emit('error', 'Game not found');
         return;
       }
 
       if (!this.playerManager.isHost(socket.id, game)) {
-        console.log(`❌ [TOGGLE_DYSLEXIA] Not authorized (not host)`);
+        // Removed console.log
         socket.emit('error', 'Not authorized');
         return;
       }
 
       // Only allow toggling in waiting phase
       if (game.status !== 'waiting') {
-        console.log(`❌ [TOGGLE_DYSLEXIA] Game not in waiting phase: ${game.status}`);
+        // Removed console.log
         socket.emit('error', 'Can only toggle dyslexia support in lobby');
         return;
       }
@@ -371,11 +371,11 @@ export class EventHandlers {
       const success = this.playerManager.toggleDyslexiaSupport(game, playerId);
       if (success) {
         const player = this.playerManager.getPlayerById(playerId, game);
-        console.log(`✅ [TOGGLE_DYSLEXIA] Dyslexia support toggled for player ${player?.name}: ${player?.hasDyslexiaSupport}`);
+        // Removed console.log
         // Broadcast updated game state to all players in the room
         this.io.to(game.id).emit('gameUpdated', game);
       } else {
-        console.log(`❌ [TOGGLE_DYSLEXIA] Failed to toggle dyslexia support for player ${playerId}`);
+        // Removed console.log
         socket.emit('error', 'Failed to toggle dyslexia support');
       }
     } catch (error) {
@@ -385,7 +385,7 @@ export class EventHandlers {
   }
 
   private handleDisconnect(socket: Socket): void {
-    console.log(`🔌 [DISCONNECT] Player disconnected: ${socket.id}`);
+    // Removed console.log
     
     try {
       // Find which game this socket was part of
@@ -396,10 +396,10 @@ export class EventHandlers {
           this.io.to(game.id).emit('playerDisconnected', player.id);
           
           if (player.isHost) {
-            console.log(`🏁 [HOST_DISCONNECT] Host disconnected, ending game ${game.pin} immediately`);
+            // Removed console.log
             this.gameplayLoop.transitionToPhase(game, 'finished');
           } else {
-            console.log(`👋 [PLAYER_DISCONNECT] Player ${player.name} disconnected from game ${game.pin}`);
+            // Removed console.log
             // Note: We could implement reconnection logic here if needed
           }
           break;

@@ -13,7 +13,7 @@ export class QuestionManager {
     game.status = 'preparation';
 
     const question = game.questions[nextIndex];
-    console.log(`📋 [QUESTION_START] Prepared question ${nextIndex + 1}/${game.questions.length}: "${question.question}"`);
+    // Removed console.log
     
     return question;
   }

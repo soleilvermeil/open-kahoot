@@ -45,7 +45,7 @@ export default function HostGameLobbyScreen({
     const socket = getSocket();
     
     const handlePlayerJoined = (player: Player) => {
-      console.log('Player joined:', player.name);
+      // Removed console.log
       playBlup();
     };
     

@@ -28,7 +28,7 @@ export class TimerManager {
     const timer = setTimeout(wrappedCallback, delay);
     gameTimers.set(timerType, timer);
     
-    console.log(`⏰ [TIMER_SET] ${gameId}:${timerType} set for ${delay}ms`);
+    // Removed console.log
   }
 
   clearTimer(gameId: string, timerType: string): boolean {
@@ -45,7 +45,7 @@ export class TimerManager {
       this.timers.delete(gameId);
     }
 
-    console.log(`⏰ [TIMER_CLEARED] ${gameId}:${timerType}`);
+    // Removed console.log
     return true;
   }
 
@@ -56,11 +56,11 @@ export class TimerManager {
     const timerCount = gameTimers.size;
     gameTimers.forEach((timer, timerType) => {
       clearTimeout(timer);
-      console.log(`⏰ [TIMER_CLEARED] ${gameId}:${timerType}`);
+      // Removed console.log
     });
 
     this.timers.delete(gameId);
-    console.log(`⏰ [ALL_TIMERS_CLEARED] Cleared ${timerCount} timers for game ${gameId}`);
+    // Removed console.log
   }
 
   hasTimer(gameId: string, timerType: string): boolean {
@@ -80,23 +80,23 @@ export class TimerManager {
   logActiveTimers(gameId: string): void {
     const activeTimers = this.getActiveTimers(gameId);
     if (activeTimers.length > 0) {
-      console.log(`⏰ [ACTIVE_TIMERS] Game ${gameId}: ${activeTimers.join(', ')}`);
+      // Removed console.log
     } else {
-      console.log(`⏰ [ACTIVE_TIMERS] Game ${gameId}: No active timers`);
+      // Removed console.log
     }
   }
 
   logAllTimers(): void {
     const allGames = Array.from(this.timers.keys());
     if (allGames.length === 0) {
-      console.log('⏰ [ALL_TIMERS] No active timers in any game');
+      // Removed console.log
       return;
     }
 
-    console.log('⏰ [ALL_TIMERS] Active timers across all games:');
+    // Removed console.log
     allGames.forEach(gameId => {
       const activeTimers = this.getActiveTimers(gameId);
-      console.log(`  Game ${gameId}: ${activeTimers.length > 0 ? activeTimers.join(', ') : 'None'}`);
+      // Removed console.log
     });
   }
 
