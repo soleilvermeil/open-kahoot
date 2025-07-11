@@ -62,7 +62,7 @@ export class PlayerManager {
     if (playerIndex !== -1) {
       const player = game.players[playerIndex];
       game.players.splice(playerIndex, 1);
-      // Removed console.log
+      console.log(`[PIN ${game.pin}] Removed player ${player.name} (${player.id})`);
       return true;
     }
     return false;
@@ -185,7 +185,7 @@ export class PlayerManager {
         player.score += pointsEarned;
         
         const supportStatus = player.hasDyslexiaSupport ? ' (with dyslexia support)' : '';
-        // Removed console.log
+        console.log(`[PIN ${game.pin}] Player ${player.name} earned ${pointsEarned} points${supportStatus} | Total: ${player.score}`);
       }
     });
   }

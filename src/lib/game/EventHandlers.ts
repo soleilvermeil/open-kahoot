@@ -117,7 +117,7 @@ export class EventHandlers {
       if (result.success && result.game) {
         socket.join(result.game.id);
         const connectedPlayers = this.playerManager.getConnectedPlayers(result.game).length;
-        // Removed console.log
+        console.log(`[PIN ${result.game.pin}] Player joined/reconnected | Connected players: ${connectedPlayers}`);
         
         const player = this.playerManager.getPlayerById(result.playerId!, result.game);
         if (result.isReconnection) {
@@ -195,7 +195,7 @@ export class EventHandlers {
       // Removed console.log
 
       const playerCount = this.playerManager.getConnectedPlayers(game).length;
-      // Removed console.log
+      console.log(`[PIN ${game.pin}] Starting game with ${playerCount} active players`);
       
       // Start the gameplay loop
       this.io.to(game.id).emit('gameStarted', game);
@@ -371,7 +371,7 @@ export class EventHandlers {
       const success = this.playerManager.toggleDyslexiaSupport(game, playerId);
       if (success) {
         const player = this.playerManager.getPlayerById(playerId, game);
-        // Removed console.log
+        console.log(`[PIN ${game.pin}] Toggled dyslexia support for player ${player?.name || playerId} | New status: ${player?.hasDyslexiaSupport ? 'enabled' : 'disabled'}`);
         // Broadcast updated game state to all players in the room
         this.io.to(game.id).emit('gameUpdated', game);
       } else {
