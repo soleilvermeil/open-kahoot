@@ -26,11 +26,11 @@ export class GameplayLoop {
    */
   startGameLoop(game: Game): void {
     if (game.gameLoopActive) {
-      // Removed console.log
+      console.log(`[PIN ${game.pin}] Game loop already active, ignoring start request`);
       return;
     }
 
-    // Removed console.log
+    console.log(`[PIN ${game.pin}] Starting game loop with ${game.players.length} players (${game.players.filter(p => !p.isHost).length} active players)`);
     this.gameManager.updateGamePhase(game.id, 'preparation');
     game.gameLoopActive = true;
     
@@ -48,7 +48,7 @@ export class GameplayLoop {
     const game = this.gameManager.getGame(gameId);
     if (game) {
       game.gameLoopActive = false;
-      // Removed console.log
+      console.log(`[PIN ${game.pin}] Game loop stopped`);
     }
   }
 
@@ -57,14 +57,14 @@ export class GameplayLoop {
    */
   transitionToPhase(game: Game, phase: GamePhase): void {
     if (!game.gameLoopActive) {
-      // Removed console.log
+      console.log(`[PIN ${game.pin}] Cannot transition - game loop not active`);
       return;
     }
 
     // Clear existing timers to prevent race conditions
     this.timerManager.clearAllTimers(game.id);
 
-    // Removed console.log
+    console.log(`[PIN ${game.pin}] Manual transition to phase: ${phase}`);
     this.schedulePhase(game, phase, 0);
   }
 
@@ -79,7 +79,7 @@ export class GameplayLoop {
     }, delay);
     
     if (delay > 0) {
-      // Removed console.log
+      console.log(`[PIN ${game.pin}] Scheduled phase ${phase} with delay ${delay}ms`);
     }
   }
 
@@ -87,7 +87,7 @@ export class GameplayLoop {
    * Executes a specific game phase
    */
   private executePhase(game: Game, phase: GamePhase): void {
-    // Removed console.log
+    console.log(`[PIN ${game.pin}] Phase: ${phase} | Question: ${game.currentQuestionIndex + 1}/${game.questions.length} | Players: ${game.players.filter(p => !p.isHost && p.isConnected).length}`);
     
     this.gameManager.updateGamePhase(game.id, phase);
     const now = Date.now();
@@ -113,16 +113,15 @@ export class GameplayLoop {
         this.executeFinishedPhase(game);
         break;
       default:
-        console.error(`❌ [GAMEPLAY_LOOP] Unknown phase: ${phase}`);
+        console.error(`❌ [PIN ${game.pin}] Unknown phase: ${phase}`);
     }
   }
 
   private executePreprationPhase(game: Game): void {
-    // Removed console.log
-    
     // Store answer history before clearing answers (only if we've had at least one question)
     if (game.currentQuestionIndex >= 0) {
       this.playerManager.storeAnswersToHistory(game);
+      console.log(`[PIN ${game.pin}] Stored answer history for question ${game.currentQuestionIndex}`);
     }
     
     // Clear previous answers
@@ -132,12 +131,11 @@ export class GameplayLoop {
     const question = this.questionManager.startNextQuestion(game);
     if (!question) {
       // No more questions - finish the game
+      console.log(`[PIN ${game.pin}] No more questions, finishing game`);
       this.schedulePhase(game, 'finished', 100);
       return;
     }
 
-    // Removed console.log
-    
     // Transition to thinking phase
     this.schedulePhase(game, 'thinking', 500);
   }
@@ -145,11 +143,11 @@ export class GameplayLoop {
   private executeThinkingPhase(game: Game): void {
     const question = this.questionManager.getCurrentQuestion(game);
     if (!question) {
-      console.error(`❌ [THINKING] No current question for game ${game.pin}`);
+      console.error(`❌ [PIN ${game.pin}] No current question for game`);
       return;
     }
 
-    // Removed console.log
+    console.log(`[PIN ${game.pin}] Thinking phase | Question: "${question.question.substring(0, 30)}${question.question.length > 30 ? '...' : ''}" | Duration: ${game.settings.thinkTime}s`);
     
     // Emit thinking phase to all clients
     this.io.to(game.id).emit('thinkingPhase', question, game.settings.thinkTime);
@@ -161,7 +159,8 @@ export class GameplayLoop {
   }
 
   private executeAnsweringPhase(game: Game): void {
-    // Removed console.log
+    const activePlayers = game.players.filter(p => !p.isHost && p.isConnected);
+    console.log(`[PIN ${game.pin}] Answering phase | Duration: ${game.settings.answerTime}s | Active players: ${activePlayers.length}`);
     
     // Set question start time for scoring
     this.gameManager.setQuestionStartTime(game.id, Date.now());
@@ -171,6 +170,7 @@ export class GameplayLoop {
     
     // Schedule results phase using TimerManager
     this.timerManager.setAnsweringPhaseTimer(game.id, () => {
+      console.log(`[PIN ${game.pin}] Answering time expired, moving to results`);
       this.executePhase(game, 'results');
     }, game.settings.answerTime);
     
@@ -178,10 +178,11 @@ export class GameplayLoop {
     this.phaseCallbacks.set(game.id, () => {
       const activePlayers = game.players.filter(p => !p.isHost && p.isConnected);
       const totalActivePlayers = activePlayers.length;
+      const answeredCount = this.questionManager.getAnsweredPlayerCount(game);
       
       // Only allow early transition if there are active players and all have answered
       if (totalActivePlayers > 0 && this.questionManager.hasAllPlayersAnswered(game)) {
-        // Removed console.log
+        console.log(`[PIN ${game.pin}] All players (${answeredCount}/${totalActivePlayers}) answered, ending answering phase early`);
         // Clear the answering phase timer and transition immediately
         this.timerManager.clearTimer(game.id, TimerManager.TIMER_TYPES.ANSWERING_PHASE);
         this.executePhase(game, 'results');
@@ -190,10 +191,11 @@ export class GameplayLoop {
   }
 
   private executeResultsPhase(game: Game): void {
-    // Removed console.log
-    
     const currentQuestion = this.questionManager.getCurrentQuestion(game);
-    if (!currentQuestion) return;
+    if (!currentQuestion) {
+      console.error(`❌ [PIN ${game.pin}] No current question for results phase`);
+      return;
+    }
 
     // Update scores
     this.playerManager.updateScores(game, currentQuestion.correctAnswer);
@@ -201,6 +203,8 @@ export class GameplayLoop {
     // Get and emit stats
     const stats = this.questionManager.getQuestionStats(game);
     if (stats) {
+      const correctAnswerCount = stats.answers.find(a => a.optionIndex === currentQuestion.correctAnswer)?.count || 0;
+      console.log(`[PIN ${game.pin}] Results | Correct: ${correctAnswerCount}/${stats.totalPlayers} | Avg score: ${Math.round(game.players.filter(p => !p.isHost).reduce((sum, p) => sum + p.score, 0) / Math.max(1, game.players.filter(p => !p.isHost).length))}`);
       this.io.to(game.id).emit('questionEnded', stats);
       
       // Send host results
@@ -224,23 +228,22 @@ export class GameplayLoop {
     this.phaseCallbacks.set(game.id, null);
     
     // Stay in results phase - host will manually trigger leaderboard
-    // Removed console.log
+    console.log(`[PIN ${game.pin}] Waiting for host to continue to leaderboard`);
   }
 
   private executeLeaderboardPhase(game: Game): void {
-    // Removed console.log
-    
     const leaderboard = this.playerManager.getLeaderboard(game);
+    const topPlayer = leaderboard.length > 0 ? leaderboard[0] : null;
+    
+    console.log(`[PIN ${game.pin}] Leaderboard | Players: ${leaderboard.length} | Top: ${topPlayer ? `${topPlayer.name} (${topPlayer.score})` : 'none'}`);
     this.io.to(game.id).emit('leaderboardShown', leaderboard, game);
     
     // Stay in leaderboard phase - host will manually trigger next question or finish game
     const isLastQuestion = this.questionManager.isLastQuestion(game);
-    // Removed console.log
+    console.log(`[PIN ${game.pin}] ${isLastQuestion ? 'Final leaderboard shown' : 'Waiting for host to continue to next question'}`);
   }
 
   private executeFinishedPhase(game: Game): void {
-    // Removed console.log
-    
     // Store final question's answer history
     if (game.currentQuestionIndex >= 0) {
       this.playerManager.storeAnswersToHistory(game);
@@ -248,6 +251,11 @@ export class GameplayLoop {
     
     this.gameManager.updateGamePhase(game.id, 'finished');
     const finalResults = this.playerManager.getFinalResults(game);
+    
+    const sortedPlayers = [...game.players].filter(p => !p.isHost).sort((a, b) => b.score - a.score);
+    const winner = sortedPlayers.length > 0 ? sortedPlayers[0] : null;
+    console.log(`[PIN ${game.pin}] Game finished | Questions: ${game.questions.length} | Winner: ${winner ? `${winner.name} (${winner.score})` : 'none'}`);
+    
     this.io.to(game.id).emit('gameFinished', finalResults);
     
     // Stop the gameplay loop
@@ -255,6 +263,7 @@ export class GameplayLoop {
     
     // Clean up game after a delay
     this.timerManager.setTimer(game.id, 'game_cleanup', () => {
+      console.log(`[PIN ${game.pin}] Cleaning up game resources after 30s delay`);
       this.gameManager.deleteGame(game.id);
     }, 30000);
   }
@@ -263,6 +272,11 @@ export class GameplayLoop {
    * Called when a player submits an answer - checks if we can end answering phase early
    */
   onPlayerAnswered(game: Game): void {
+    const answeredCount = this.questionManager.getAnsweredPlayerCount(game);
+    const totalPlayers = game.players.filter(p => !p.isHost && p.isConnected).length;
+    
+    console.log(`[PIN ${game.pin}] Player answered | Progress: ${answeredCount}/${totalPlayers}`);
+    
     const callback = this.phaseCallbacks.get(game.id);
     if (callback && game.phase === 'answering') {
       callback();
@@ -275,7 +289,11 @@ export class GameplayLoop {
   syncPlayerToCurrentPhase(game: Game, socketId: string, isHost: boolean): void {
     if (!game.gameLoopActive) return;
 
-    // Removed console.log
+    const playerType = isHost ? 'Host' : 'Player';
+    const currentQuestion = game.currentQuestionIndex >= 0 ? 
+      `Question ${game.currentQuestionIndex + 1}/${game.questions.length}` : 'No question';
+    
+    console.log(`[PIN ${game.pin}] ${playerType} reconnected | Phase: ${game.phase} | ${currentQuestion}`);
 
     switch (game.phase) {
       case 'thinking':
@@ -284,6 +302,7 @@ export class GameplayLoop {
           const elapsed = Date.now() - (game.phaseStartTime || 0);
           const remaining = Math.max(0, game.settings.thinkTime - Math.floor(elapsed / 1000));
           if (remaining > 0) {
+            console.log(`[PIN ${game.pin}] Syncing to thinking phase | Remaining: ${remaining}s`);
             this.io.to(socketId).emit('thinkingPhase', question, remaining);
           }
         }
@@ -300,6 +319,7 @@ export class GameplayLoop {
             const elapsed = Date.now() - (game.questionStartTime || 0);
             const remaining = Math.max(0, game.settings.answerTime - Math.floor(elapsed / 1000));
             if (remaining > 0) {
+              console.log(`[PIN ${game.pin}] Syncing to answering phase | Remaining: ${remaining}s`);
               this.io.to(socketId).emit('answeringPhase', remaining);
             }
           }, delay);
@@ -308,11 +328,13 @@ export class GameplayLoop {
         
       case 'leaderboard':
         const leaderboard = this.playerManager.getLeaderboard(game);
+        console.log(`[PIN ${game.pin}] Syncing to leaderboard phase`);
         this.io.to(socketId).emit('leaderboardShown', leaderboard, game);
         break;
         
       case 'finished':
         const finalResults = this.playerManager.getFinalResults(game);
+        console.log(`[PIN ${game.pin}] Syncing to finished phase`);
         this.io.to(socketId).emit('gameFinished', finalResults);
         break;
     }

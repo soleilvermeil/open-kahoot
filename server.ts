@@ -38,30 +38,30 @@ app.prepare().then(() => {
   
   // Graceful shutdown handling
   process.on('SIGTERM', () => {
-    console.log('📡 [SERVER] Received SIGTERM, shutting down gracefully...');
+    console.log('Received SIGTERM, shutting down gracefully...');
     gameServer.shutdown();
     httpServer.close(() => {
-      console.log('📡 [SERVER] HTTP server closed');
+      console.log('HTTP server closed');
       process.exit(0);
     });
   });
 
   process.on('SIGINT', () => {
-    console.log('📡 [SERVER] Received SIGINT, shutting down gracefully...');
+    console.log('Received SIGINT, shutting down gracefully...');
     gameServer.shutdown();
     httpServer.close(() => {
-      console.log('📡 [SERVER] HTTP server closed');
+      console.log('HTTP server closed');
       process.exit(0);
     });
   });
 
   httpServer
     .once('error', (err) => {
-      console.error('📡 [SERVER] Server error:', err);
+      console.error('Server error:', err);
       process.exit(1);
     })
     .listen(port, () => {
-      console.log(`📡 [SERVER] Ready on http://${hostname}:${port}`);
-      console.log(`🎮 [GAME_SERVER] Game server initialized with modular architecture`);
+      console.log(`Ready on http://${hostname}:${port}`);
+      console.log(`Game server initialized with modular architecture`);
     });
 }); 
