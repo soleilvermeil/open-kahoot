@@ -262,7 +262,7 @@ export default function GamePage() {
     });
 
     socket.on('playerAnswered', (playerId: string) => {
-      // Removed console.log
+      console.log(`[PIN ${state.game?.pin}] Player answered: ${playerId}`);
     });
 
     socket.on('gameLogs', (tsvData: string, filename: string) => {
