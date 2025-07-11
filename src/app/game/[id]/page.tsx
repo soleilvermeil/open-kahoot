@@ -225,17 +225,17 @@ export default function GamePage() {
     }
 
     socket.on('gameStarted', (gameData: Game) => {
-      console.log('🎮 [CLIENT] Received gameStarted event:', gameData);
+      // Removed console.log
       dispatch({ type: 'GAME_STARTED', payload: gameData });
     });
 
     socket.on('thinkingPhase', (question: Question, thinkTime: number) => {
-      console.log('📋 [CLIENT] Received thinkingPhase event:', question.question, 'thinkTime:', thinkTime);
+      // Removed console.log
       dispatch({ type: 'START_THINKING_PHASE', payload: { question, thinkTime } });
     });
 
     socket.on('answeringPhase', (answerTime: number) => {
-      console.log('⏰ [CLIENT] Received answeringPhase event, answerTime:', answerTime);
+      // Removed console.log
       dispatch({ type: 'START_ANSWERING_PHASE', payload: { answerTime } });
     });
 
@@ -262,7 +262,7 @@ export default function GamePage() {
     });
 
     socket.on('playerAnswered', (playerId: string) => {
-      console.log('Player answered:', playerId);
+      console.log(`[PIN ${state.game?.pin}] Player answered: ${playerId}`);
     });
 
     socket.on('gameLogs', (tsvData: string, filename: string) => {
@@ -276,7 +276,7 @@ export default function GamePage() {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-      console.log(`📄 Downloaded game logs: ${filename}`);
+      // Removed console.log
     });
 
     return () => {
@@ -379,7 +379,7 @@ export default function GamePage() {
 
   // Thinking Phase - Show only question for host, waiting message for players
   if (state.gameStatus === 'thinking' && state.phase === 'thinking' && state.currentQuestion) {
-    console.log('📋 [CLIENT] Rendering thinking phase for game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion);
+    // Removed console.log
     return (
       <GameThinkingPhaseScreen 
         currentQuestion={state.currentQuestion}
@@ -424,7 +424,7 @@ export default function GamePage() {
     );
   }
 
-  console.log('🚨 [CLIENT] Falling through to waiting screen. Game status:', state.gameStatus, 'phase:', state.phase, 'hasQuestion:', !!state.currentQuestion, 'isHost:', isHost, 'isPlayer:', isPlayer);
+  // Removed console.log
   
   return <GameFallbackScreen />;
 } 

@@ -5,7 +5,7 @@ import { mockGame, mockLeaderboard } from '@/lib/debug-data';
 
 export default function DebugGameLeaderboardPage() {
   const handleNextQuestion = () => {
-    console.log('Next question');
+    // Removed console.log
   };
 
   return (

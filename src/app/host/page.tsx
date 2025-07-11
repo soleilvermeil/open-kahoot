@@ -77,7 +77,7 @@ export default function HostPage() {
     const detected = jschardet.detect(buffer);
     const encoding = detected.encoding || 'utf-8';
     
-    console.log(`Detected encoding: ${encoding} (confidence: ${detected.confidence})`);
+    // Removed console.log
     
     // Convert to UTF-8 text
     const text = iconv.decode(buffer, encoding);
@@ -163,7 +163,7 @@ export default function HostPage() {
       event.target.value = '';
       
       // Show success message (you could add a toast notification here)
-      console.log(`Successfully imported ${importedQuestions.length} questions`);
+      // Removed console.log
     } catch (error) {
       console.error('Import error:', error);
       alert(`Error importing file: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -187,7 +187,7 @@ export default function HostPage() {
       event.target.value = '';
       
       // Show success message
-      console.log(`Successfully appended ${importedQuestions.length} questions at position ${index}`);
+      // Removed console.log
     } catch (error) {
       console.error('Append error:', error);
       alert(`Error appending file: ${error instanceof Error ? error.message : 'Unknown error'}`);

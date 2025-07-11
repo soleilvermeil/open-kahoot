@@ -17,7 +17,7 @@ export class PlayerManager {
         // Reconnection: update socket ID and connection status
         existingPlayer.socketId = socketId;
         existingPlayer.isConnected = true;
-        console.log(`Player ${existingPlayer.name} reconnected to game ${game.pin}`);
+        // Removed console.log
         return { success: true, game, playerId: persistentId, isReconnection: true };
       }
     }
@@ -51,7 +51,7 @@ export class PlayerManager {
     const player = game.players.find(p => p.socketId === socketId);
     if (player) {
       player.isConnected = false;
-      console.log(`Player ${player.name} disconnected from game ${game.pin}`);
+      // Removed console.log
       return player;
     }
     return undefined;
@@ -62,7 +62,7 @@ export class PlayerManager {
     if (playerIndex !== -1) {
       const player = game.players[playerIndex];
       game.players.splice(playerIndex, 1);
-      console.log(`Player ${player.name} removed from game ${game.pin}`);
+      console.log(`[PIN ${game.pin}] Removed player ${player.name} (${player.id})`);
       return true;
     }
     return false;
@@ -100,14 +100,14 @@ export class PlayerManager {
 
     // Don't allow duplicate answers
     if (player.currentAnswer !== undefined) {
-      console.log(`Player ${player.name} already answered question`);
+      // Removed console.log
       return false;
     }
 
     player.currentAnswer = answerIndex;
     player.answerTime = Date.now();
     
-    console.log(`✅ [ANSWER_RECORDED] Player "${player.name}" answered ${answerIndex}`);
+    // Removed console.log
     return true;
   }
 
@@ -185,7 +185,7 @@ export class PlayerManager {
         player.score += pointsEarned;
         
         const supportStatus = player.hasDyslexiaSupport ? ' (with dyslexia support)' : '';
-        console.log(`Player ${player.name}${supportStatus} earned ${pointsEarned} points (total: ${player.score})`);
+        console.log(`[PIN ${game.pin}] Player ${player.name} earned ${pointsEarned} points${supportStatus} | Total: ${player.score}`);
       }
     });
   }
@@ -285,7 +285,7 @@ export class PlayerManager {
     }
 
     player.hasDyslexiaSupport = !player.hasDyslexiaSupport;
-    console.log(`Player ${player.name} dyslexia support: ${player.hasDyslexiaSupport ? 'enabled' : 'disabled'}`);
+    // Removed console.log
     return true;
   }
 } 

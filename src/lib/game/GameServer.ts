@@ -49,7 +49,7 @@ export class GameServer {
     // Set up event handling
     this.eventHandlers.setupEventHandlers();
     
-    console.log('🚀 [GAME_SERVER] GameServer initialized with GameplayLoop architecture');
+    // Removed console.log
   }
 
   // Public API methods for external access if needed
@@ -92,7 +92,7 @@ export class GameServer {
 
   // Graceful shutdown
   shutdown(): void {
-    console.log('🛑 [GAME_SERVER] Shutting down gracefully...');
+    // Removed console.log
     
     // Stop all gameplay loops and clear all timers
     this.gameManager.getAllGames().forEach(game => {
@@ -100,6 +100,6 @@ export class GameServer {
       this.timerManager.clearAllTimers(game.id);
     });
     
-    console.log('✅ [GAME_SERVER] Shutdown complete');
+    // Removed console.log
   }
 } 

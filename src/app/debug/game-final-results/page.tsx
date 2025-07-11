@@ -12,7 +12,7 @@ function GameFinalResultsContent() {
   const isHost = view === 'host';
 
   const handleDownloadLogs = () => {
-    console.log('Download logs');
+    // Removed console.log
   };
 
   return (

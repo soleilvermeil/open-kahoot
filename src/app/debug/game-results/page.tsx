@@ -14,7 +14,7 @@ function GameResultsContent() {
   const isPlayer = view === 'player';
 
   const handleShowLeaderboard = () => {
-    console.log('Show leaderboard');
+    // Removed console.log
   };
 
   const personalResult = result === 'correct' ? mockPersonalResultCorrect : mockPersonalResultIncorrect;

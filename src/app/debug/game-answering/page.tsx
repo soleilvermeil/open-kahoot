@@ -12,10 +12,6 @@ function GameAnsweringContent() {
   const isHost = view === 'host';
   const isPlayer = view === 'player';
 
-  const handleSubmitAnswer = (answerIndex: number) => {
-    console.log('Submit answer:', answerIndex);
-  };
-
   return (
     <GameAnsweringPhaseScreen
       currentQuestion={mockQuestions[2]}
@@ -23,7 +19,7 @@ function GameAnsweringContent() {
       game={mockGame}
       isHost={isHost}
       isPlayer={isPlayer}
-      onSubmitAnswer={handleSubmitAnswer}
+      onSubmitAnswer={() => {}}
       hasAnswered={false}
     />
   );
