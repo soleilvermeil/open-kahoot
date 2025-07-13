@@ -28,8 +28,8 @@ export default function GameAnsweringPhaseScreen({
     <div className={`min-h-dvh overflow-hidden ${getGradient('answering')}`}>
       <div className="container mx-auto max-w-4xl p-8 h-screen flex flex-col sm:block">
         {/* Timer */}
-        <div className="hidden sm:block text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
+        <div className="text-center mb-8">
+          <div className="hidden sm:flex items-center justify-center gap-2 mb-4">
             <Clock className="w-8 h-8 text-white" />
           </div>
           <p className="text-white/80 text-lg">
