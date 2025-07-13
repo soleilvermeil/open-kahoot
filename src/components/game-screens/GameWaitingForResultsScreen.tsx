@@ -8,7 +8,7 @@ interface GameWaitingForResultsScreenProps {
 
 export default function GameWaitingForResultsScreen({ isHost }: GameWaitingForResultsScreenProps) {
   return (
-    <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
+    <div className={`min-h-dvh overflow-hidden ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
         <AnimatedIcon icon={Clock} size="md" iconColor="text-white/60" className="mb-4" />
         <h1 className="text-3xl font-bold text-white mb-4">

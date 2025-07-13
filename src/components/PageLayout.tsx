@@ -38,7 +38,7 @@ export default function PageLayout({
   };
 
   return (
-    <div className={`min-h-screen ${gradientClasses[gradient]} ${diagonalPatternClasses[diagonalPattern]} p-8`}>
+    <div className={`min-h-dvh overflow-hidden ${gradientClasses[gradient]} ${diagonalPatternClasses[diagonalPattern]} p-8`}>
       <div className={`container mx-auto ${maxWidthClasses[maxWidth]}`}>
         {showLogo && (
           <Link href="/" className="text-4xl font-galindo mb-8 text-center text-white block">Open Kahoot!</Link>

@@ -9,7 +9,7 @@ interface GameWaitingScreenProps {
 
 export default function GameWaitingScreen({ gameStatus }: GameWaitingScreenProps) {
   return (
-    <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
+    <div className={`min-h-dvh overflow-hidden ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
         <AnimatedIcon icon={Hourglass} />
         <h1 className="text-4xl text-white mb-4 font-jua">

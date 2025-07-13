@@ -11,7 +11,7 @@ export default function GameErrorScreen({ error }: GameErrorScreenProps) {
 
   return (
     <PageLayout gradient="error" showLogo={false}>
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60dvh]">
         <ErrorScreen
           title="Game Not Found"
           message={error}

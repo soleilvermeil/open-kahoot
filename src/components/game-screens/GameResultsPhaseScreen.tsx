@@ -23,7 +23,7 @@ export default function GameResultsPhaseScreen({
   // Host view - Show full statistics
   if (isHost && questionStats) {
     return (
-      <div className={`min-h-screen ${getGradient('results')} p-8`}>
+      <div className={`min-h-dvh overflow-hidden ${getGradient('results')} p-8`}>
         <div className="container mx-auto max-w-4xl">
           <HostResultsScreen 
             questionStats={questionStats}
@@ -37,7 +37,7 @@ export default function GameResultsPhaseScreen({
   // Player view - Show personal competitive results
   if (isPlayer && personalResult) {
     return (
-      <div className={`min-h-screen ${getGradient(personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
+      <div className={`min-h-dvh overflow-hidden ${getGradient(personalResult.wasCorrect ? 'correct' : 'incorrect')} p-8`}>
         <div className="container mx-auto max-w-2xl">
           <PlayerResultsScreen personalResult={personalResult} />
         </div>
@@ -47,7 +47,7 @@ export default function GameResultsPhaseScreen({
 
   // Fallback if data isn't ready yet
   return (
-    <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
+    <div className={`min-h-dvh overflow-hidden ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
         <AnimatedIcon icon={Trophy} size="md" iconColor="text-white/60" className="mb-4" />
         <h1 className="text-3xl font-bold text-white mb-4">Getting your results ready...</h1>
