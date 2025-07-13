@@ -25,8 +25,8 @@ export default function GameAnsweringPhaseScreen({
   hasAnswered
 }: GameAnsweringPhaseScreenProps) {
   return (
-    <div className={`min-h-dvh overflow-hidden ${getGradient('answering')} p-8`}>
-      <div className="container mx-auto max-w-4xl">
+    <div className={`min-h-dvh overflow-hidden ${getGradient('answering')}`}>
+      <div className="container mx-auto max-w-4xl p-8 h-screen flex flex-col sm:block">
         {/* Timer */}
         <div className="hidden sm:block text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
