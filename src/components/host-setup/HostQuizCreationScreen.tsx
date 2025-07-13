@@ -17,6 +17,7 @@ interface HostQuizCreationScreenProps {
   onUpdateOption: (questionIndex: number, optionIndex: number, value: string) => void;
   onRemoveQuestion: (index: number) => void;
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
+  onCopyQuestion: (index: number) => void;
   onDownloadTSV: () => void;
   onCreateGame: () => void;
 }
@@ -32,6 +33,7 @@ export default function HostQuizCreationScreen({
   onUpdateOption,
   onRemoveQuestion,
   onMoveQuestion,
+  onCopyQuestion,
   onDownloadTSV,
   onCreateGame
 }: HostQuizCreationScreenProps) {
@@ -56,6 +58,7 @@ export default function HostQuizCreationScreen({
           onUpdateOption={onUpdateOption}
           onRemoveQuestion={onRemoveQuestion}
           onMoveQuestion={onMoveQuestion}
+          onCopyQuestion={onCopyQuestion}
         />
 
         {questions.length > 0 && (

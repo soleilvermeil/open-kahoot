@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2, ChevronUp, ChevronDown, Shuffle, Upload } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown, Shuffle, Upload, Copy } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
 import Button from '@/components/Button';
@@ -16,6 +16,7 @@ interface QuestionEditorProps {
   onUpdateOption: (questionIndex: number, optionIndex: number, value: string) => void;
   onRemoveQuestion: (index: number) => void;
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
+  onCopyQuestion: (index: number) => void;
 }
 
 export default function QuestionEditor({
@@ -25,7 +26,8 @@ export default function QuestionEditor({
   onUpdateQuestion,
   onUpdateOption,
   onRemoveQuestion,
-  onMoveQuestion
+  onMoveQuestion,
+  onCopyQuestion
 }: QuestionEditorProps) {
   const handleShuffleOptions = () => {
     // Create array of options with their indices
@@ -122,6 +124,15 @@ export default function QuestionEditor({
       <div className="flex items-start justify-between mb-4">
         <h3 className="text-lg font-semibold text-white font-jua">Question {questionIndex + 1}</h3>
         <div className="flex gap-2">
+          <Button
+            onClick={() => onCopyQuestion(questionIndex)}
+            variant="ghost"
+            size="icon"
+            icon={Copy}
+            className="text-white hover:text-white/70"
+            title="Copy question"
+          >
+          </Button>
           <Button
             onClick={handleShuffleOptions}
             variant="ghost"

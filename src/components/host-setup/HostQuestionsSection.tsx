@@ -12,6 +12,7 @@ interface HostQuestionsSectionProps {
   onUpdateOption: (questionIndex: number, optionIndex: number, value: string) => void;
   onRemoveQuestion: (index: number) => void;
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
+  onCopyQuestion: (index: number) => void;
 }
 
 export default function HostQuestionsSection({
@@ -22,7 +23,8 @@ export default function HostQuestionsSection({
   onUpdateQuestion,
   onUpdateOption,
   onRemoveQuestion,
-  onMoveQuestion
+  onMoveQuestion,
+  onCopyQuestion
 }: HostQuestionsSectionProps) {
   return (
     <div className="mb-8">
@@ -49,6 +51,7 @@ export default function HostQuestionsSection({
                 onUpdateOption={onUpdateOption}
                 onRemoveQuestion={onRemoveQuestion}
                 onMoveQuestion={onMoveQuestion}
+                onCopyQuestion={onCopyQuestion}
               />
               <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} index={questionIndex + 1} />
             </div>

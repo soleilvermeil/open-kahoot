@@ -242,6 +242,22 @@ export default function HostPage() {
     setQuestions(newQuestions);
   };
 
+  const copyQuestion = (index: number) => {
+    const questionToCopy = questions[index];
+    if (!questionToCopy) return;
+    
+    // Create a deep copy of the question with a new ID
+    const copiedQuestion: Question = {
+      ...JSON.parse(JSON.stringify(questionToCopy)),
+      id: uuidv4() // Generate a new unique ID for the copy
+    };
+    
+    // Insert the copied question after the original
+    const newQuestions = [...questions];
+    newQuestions.splice(index + 1, 0, copiedQuestion);
+    setQuestions(newQuestions);
+  };
+
   const createGame = () => {
     if (questions.length === 0) return;
     
@@ -311,18 +327,14 @@ export default function HostPage() {
     document.body.removeChild(link);
   };
 
-  if (game) {
-    return (
-      <HostGameLobbyScreen 
-        game={game}
-        joinUrl={getJoinUrl()}
-        onStartGame={startGame}
-        onToggleDyslexiaSupport={toggleDyslexiaSupport}
-      />
-    );
-  }
-
-  return (
+  return game ? (
+    <HostGameLobbyScreen
+      game={game}
+      joinUrl={getJoinUrl()}
+      onStartGame={startGame}
+      onToggleDyslexiaSupport={toggleDyslexiaSupport}
+    />
+  ) : (
     <HostQuizCreationScreen
       questions={questions}
       gameSettings={gameSettings}
@@ -334,6 +346,7 @@ export default function HostPage() {
       onUpdateOption={updateOption}
       onRemoveQuestion={removeQuestion}
       onMoveQuestion={moveQuestion}
+      onCopyQuestion={copyQuestion}
       onDownloadTSV={downloadTSV}
       onCreateGame={createGame}
     />
