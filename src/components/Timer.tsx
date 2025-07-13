@@ -22,7 +22,7 @@ export default function Timer({
 
   return (
     <div className={`text-center mb-8 ${className}`}>
-      <div className="flex items-center justify-center gap-2 mb-4">
+      <div className="hidden sm:flex items-center justify-center gap-2 mb-4">
         <Icon className="w-8 h-8 text-white" />
       </div>
       <p className="text-white/80 text-lg">{label}</p>
