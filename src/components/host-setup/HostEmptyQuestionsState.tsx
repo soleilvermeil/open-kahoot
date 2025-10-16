@@ -13,7 +13,7 @@ export default function HostEmptyQuestionsState({
   return (
     <div className="bg-white/5 rounded-lg p-8 border border-white/20 text-center">
       <p className="text-white/80 text-lg mb-4 font-jua">Create Your First Question</p>
-      <p className="text-white/60 mb-6">Choose how you&apos;d like to add questions to your quiz:</p>
+      <p className="text-white/60 mb-6">You can also manually create or import questions:</p>
       
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Button
@@ -32,7 +32,7 @@ export default function HostEmptyQuestionsState({
             type="file"
             accept=".tsv,.txt"
             onChange={onFileImport}
-            className="absolute inset-0 w-full h-full opacity-0"
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
           <Button variant="black" size="lg" icon={Upload}>
             Import TSV File

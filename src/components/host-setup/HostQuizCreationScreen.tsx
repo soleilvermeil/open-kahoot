@@ -19,6 +19,7 @@ interface HostQuizCreationScreenProps {
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
   onDownloadTSV: () => void;
   onCreateGame: () => void;
+  onGenerateAIQuestions: (subject: string, language: 'english' | 'french') => void;
 }
 
 export default function HostQuizCreationScreen({
@@ -33,7 +34,8 @@ export default function HostQuizCreationScreen({
   onRemoveQuestion,
   onMoveQuestion,
   onDownloadTSV,
-  onCreateGame
+  onCreateGame,
+  onGenerateAIQuestions
 }: HostQuizCreationScreenProps) {
   const isFormValid = !questions.some(q => !q.question || q.options.some(o => !o));
 
@@ -56,6 +58,7 @@ export default function HostQuizCreationScreen({
           onUpdateOption={onUpdateOption}
           onRemoveQuestion={onRemoveQuestion}
           onMoveQuestion={onMoveQuestion}
+          onGenerateAIQuestions={onGenerateAIQuestions}
         />
 
         {questions.length > 0 && (

@@ -311,6 +311,15 @@ export default function HostPage() {
     document.body.removeChild(link);
   };
 
+  const handleGenerateAIQuestions = async (subject: string, language: 'english' | 'french') => {
+    // TODO: Implement AI question generation
+    // For now, just log the inputs
+    console.log('AI Generation requested:', { subject, language });
+    
+    // Placeholder alert to show functionality
+    alert(`AI generation requested!\nSubject: ${subject}\nLanguage: ${language}\n\n(AI logic not yet implemented)`);
+  };
+
   if (game) {
     return (
       <HostGameLobbyScreen 
@@ -336,6 +345,7 @@ export default function HostPage() {
       onMoveQuestion={moveQuestion}
       onDownloadTSV={downloadTSV}
       onCreateGame={createGame}
+      onGenerateAIQuestions={handleGenerateAIQuestions}
     />
   );
 } 

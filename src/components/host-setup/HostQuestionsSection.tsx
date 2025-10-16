@@ -2,6 +2,7 @@ import type { Question } from '@/types/game';
 import AddQuestionButton from '@/components/AddQuestionButton';
 import QuestionEditor from '@/components/QuestionEditor';
 import HostEmptyQuestionsState from './HostEmptyQuestionsState';
+import HostAIGenerationSection from './HostAIGenerationSection';
 
 interface HostQuestionsSectionProps {
   questions: Question[];
@@ -12,6 +13,7 @@ interface HostQuestionsSectionProps {
   onUpdateOption: (questionIndex: number, optionIndex: number, value: string) => void;
   onRemoveQuestion: (index: number) => void;
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
+  onGenerateAIQuestions: (subject: string, language: 'english' | 'french') => void;
 }
 
 export default function HostQuestionsSection({
@@ -22,13 +24,16 @@ export default function HostQuestionsSection({
   onUpdateQuestion,
   onUpdateOption,
   onRemoveQuestion,
-  onMoveQuestion
+  onMoveQuestion,
+  onGenerateAIQuestions
 }: HostQuestionsSectionProps) {
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl text-white font-jua">Questions</h2>
       </div>
+
+      <HostAIGenerationSection onGenerateQuestions={onGenerateAIQuestions} />
 
       {questions.length === 0 ? (
         <HostEmptyQuestionsState 
