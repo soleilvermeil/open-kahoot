@@ -312,40 +312,60 @@ export default function HostPage() {
   };
 
   const handleGenerateAIQuestions = async (subject: string, language: 'english' | 'french') => {
-    // Generate the prompt based on language
-    const prompts = {
-      english: `Create 5 multiple-choice quiz questions about "${subject}".
+    try {
+      // Call the API endpoint
+      const response = await fetch('/api/generate-questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subject, language }),
+      });
 
-For each question, provide:
-- The question text
-- 4 answer options (1 correct, 3 incorrect)
-- The correct answer
-- An optional explanation
+      const data = await response.json();
 
-Format the response as a TSV (tab-separated values) with columns: question, correct, wrong1, wrong2, wrong3, explanation
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate questions');
+      }
 
-Make the questions engaging, educational, and appropriate for a quiz game.`,
-      french: `Créez 5 questions de quiz à choix multiples sur "${subject}".
+      if (!data.success || !data.questions) {
+        throw new Error('Invalid response from API');
+      }
 
-Pour chaque question, fournissez :
-- Le texte de la question
-- 4 options de réponse (1 correcte, 3 incorrectes)
-- La réponse correcte
-- Une explication optionnelle
+      // Convert AI response to Question objects
+      const newQuestions: Question[] = data.questions.map((q: {
+        question: string;
+        correct: string;
+        wrong1: string;
+        wrong2: string;
+        wrong3: string;
+        explanation?: string;
+      }) => {
+        // Create answer array and shuffle
+        const answers = [q.correct, q.wrong1, q.wrong2, q.wrong3];
+        const shuffledAnswers = shuffleArray(answers);
+        const correctIndex = shuffledAnswers.indexOf(q.correct);
 
-Formatez la réponse en TSV (valeurs séparées par des tabulations) avec les colonnes : question, correct, wrong1, wrong2, wrong3, explanation
+        return {
+          id: uuidv4(),
+          question: q.question,
+          options: shuffledAnswers,
+          correctAnswer: correctIndex,
+          timeLimit: 30,
+          explanation: q.explanation || undefined
+        };
+      });
 
-Rendez les questions engageantes, éducatives et appropriées pour un jeu de quiz.`
-    };
+      // Append the new questions to existing ones
+      setQuestions([...questions, ...newQuestions]);
 
-    const prompt = prompts[language];
-    
-    // Log to console for debugging
-    console.log('AI Generation requested:', { subject, language });
-    console.log('Prompt:', prompt);
-    
-    // Display the prompt for debugging
-    alert(`AI generation requested!\n\nSubject: ${subject}\nLanguage: ${language}\n\n--- PROMPT ---\n${prompt}\n\n(AI logic not yet implemented)`);
+      // Show success message
+      alert(`Successfully generated ${newQuestions.length} questions!`);
+      
+    } catch (error) {
+      console.error('Error generating questions:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to generate questions'}`);
+    }
   };
 
   if (game) {

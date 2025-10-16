@@ -14,6 +14,7 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
    NEXT_PUBLIC_APP_URL=
    NEXT_PUBLIC_SHOW_RANDOM_NICKNAME=
    NEXT_PUBLIC_GAME_PIN_LENGTH=
+   OPENAI_API_KEY=
    ```
 
    Variables are :
@@ -21,6 +22,7 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
    - `NEXT_PUBLIC_APP_URL`: The base URL of your application used for generating join links, for example `www.open-kahoot.ch`. Default is `http://localhost:3000`.
    - `NEXT_PUBLIC_SHOW_RANDOM_NICKNAME`: Enable/disable the random nickname generator button. Possible values are `0` and `1`. Default is `0`.
    - `NEXT_PUBLIC_GAME_PIN_LENGTH`: Number of digits for game PINs. Accepts any positive integer between `3` and `10`. Default is `6`.
+   - `OPENAI_API_KEY`: Your OpenAI API key for AI-powered quiz generation. Get one at https://platform.openai.com/api-keys (optional, only needed for AI features).
 
 3. Start the development server:
    ```bash
@@ -29,10 +31,24 @@ A real-time multiplayer quiz game inspired by Kahoot!, built with Next.js, Socke
 
    The application will be available at `http://localhost:3000`.
 
+## Features
+
+- **Real-time Multiplayer**: Host and join quiz games with real-time synchronization
+- **Custom Quizzes**: Create your own questions manually or import from TSV files
+- **AI-Powered Quiz Generation**: Generate quiz questions automatically using OpenAI's GPT models
+  - Support for English and French languages
+  - Structured output using Zod schemas for reliable question format
+  - Generates 5 questions per request with multiple-choice answers and explanations
+- **Game Modes**: Think phase, answer phase, and results with leaderboards
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Dyslexia Support**: Optional font designed for better readability
+
 ## Technology Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript
 - **Real-time Communication**: Socket.io
+- **AI Integration**: OpenAI GPT-4o with structured outputs
+- **Schema Validation**: Zod
 - **Styling**: Tailwind CSS 4
 - **Animation**: Framer Motion
 - **Testing**: Jest, Playwright

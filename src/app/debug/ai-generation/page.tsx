@@ -6,40 +6,48 @@ import Card from '@/components/Card';
 
 export default function AIGenerationDebugPage() {
   const handleGenerateQuestions = async (subject: string, language: 'english' | 'french') => {
-    // Generate the prompt based on language
-    const prompts = {
-      english: `Create 5 multiple-choice quiz questions about "${subject}".
+    try {
+      console.log('AI Generation requested:', { subject, language });
+      
+      // Call the API endpoint
+      const response = await fetch('/api/generate-questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subject, language }),
+      });
 
-For each question, provide:
-- The question text
-- 4 answer options (1 correct, 3 incorrect)
-- The correct answer
-- An optional explanation
+      const data = await response.json();
 
-Format the response as a TSV (tab-separated values) with columns: question, correct, wrong1, wrong2, wrong3, explanation
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate questions');
+      }
 
-Make the questions engaging, educational, and appropriate for a quiz game.`,
-      french: `Créez 5 questions de quiz à choix multiples sur "${subject}".
+      if (!data.success || !data.questions) {
+        throw new Error('Invalid response from API');
+      }
 
-Pour chaque question, fournissez :
-- Le texte de la question
-- 4 options de réponse (1 correcte, 3 incorrectes)
-- La réponse correcte
-- Une explication optionnelle
+      // Display the generated questions
+      console.log('Generated questions:', data.questions);
+      
+      const questionsText = data.questions.map((q: {
+        question: string;
+        correct: string;
+        wrong1: string;
+        wrong2: string;
+        wrong3: string;
+        explanation?: string;
+      }, i: number) => 
+        `\n${i + 1}. ${q.question}\n   ✓ ${q.correct}\n   ✗ ${q.wrong1}\n   ✗ ${q.wrong2}\n   ✗ ${q.wrong3}${q.explanation ? `\n   💡 ${q.explanation}` : ''}`
+      ).join('\n');
 
-Formatez la réponse en TSV (valeurs séparées par des tabulations) avec les colonnes : question, correct, wrong1, wrong2, wrong3, explanation
-
-Rendez les questions engageantes, éducatives et appropriées pour un jeu de quiz.`
-    };
-
-    const prompt = prompts[language];
-    
-    // Log to console for debugging
-    console.log('AI Generation requested:', { subject, language });
-    console.log('Prompt:', prompt);
-    
-    // Display the prompt for debugging
-    alert(`AI generation requested!\n\nSubject: ${subject}\nLanguage: ${language}\n\n--- PROMPT ---\n${prompt}\n\n(AI logic not yet implemented)`);
+      alert(`Successfully generated ${data.questions.length} questions!${questionsText}`);
+      
+    } catch (error) {
+      console.error('Error generating questions:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to generate questions'}`);
+    }
   };
 
   return (
