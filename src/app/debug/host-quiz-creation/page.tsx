@@ -19,6 +19,9 @@ export default function DebugHostQuizCreationPage() {
       onMoveQuestion={() => {}}
       onDownloadTSV={() => {}}
       onCreateGame={() => {}}
+      onGenerateAIQuestions={async () => {
+        console.log('AI generation in debug mode');
+      }}
     />
   );
 } 
