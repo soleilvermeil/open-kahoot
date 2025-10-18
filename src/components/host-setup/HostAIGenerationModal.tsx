@@ -74,7 +74,7 @@ export default function HostAIGenerationModal({
         onChange={(e) => setAccessKey(e.target.value)}
         disabled={isGenerating}
         />
-        
+
         <div className="space-y-2">
           <label className="block text-white text-sm font-medium">
             Language
@@ -113,7 +113,7 @@ export default function HostAIGenerationModal({
           />
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-center pt-2">
           <Button
             onClick={handleGenerate}
             disabled={!subject.trim() || !accessKey.trim() || isGenerating}
@@ -127,8 +127,8 @@ export default function HostAIGenerationModal({
         </div>
       </div>
 
-      <p className="text-white/40 text-sm mt-6 text-center">
-        The AI will generate multiple-choice questions based on your subject and preferences.
+      <p className="text-white/40 text-sm mt-4 text-center">
+        ⚠️ AI-generated content may contain inaccuracies. Please review and verify all questions before use.
       </p>
     </Modal>
   );
