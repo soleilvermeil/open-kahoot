@@ -6,7 +6,7 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 
 interface HostAIGenerationSectionProps {
-  onGenerateQuestions: (subject: string, language: 'english' | 'french') => void;
+  onGenerateQuestions: (subject: string, language: 'english' | 'french', password: string) => void;
 }
 
 const subjectPlaceholders = {
@@ -19,6 +19,7 @@ export default function HostAIGenerationSection({
 }: HostAIGenerationSectionProps) {
   const [subject, setSubject] = useState('');
   const [language, setLanguage] = useState<'english' | 'french'>('english');
+  const [password, setPassword] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
@@ -27,9 +28,14 @@ export default function HostAIGenerationSection({
       return;
     }
 
+    if (!password.trim()) {
+      alert('Please enter the AI generation password.');
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      await onGenerateQuestions(subject, language);
+      await onGenerateQuestions(subject, language, password);
     } finally {
       setIsGenerating(false);
     }
@@ -70,10 +76,19 @@ export default function HostAIGenerationSection({
           disabled={isGenerating}
         />
 
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Enter AI generation password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isGenerating}
+        />
+
         <div className="flex justify-center pt-2">
           <Button
             onClick={handleGenerate}
-            disabled={!subject.trim() || isGenerating}
+            disabled={!subject.trim() || !password.trim() || isGenerating}
             loading={isGenerating}
             variant="black"
             size="lg"

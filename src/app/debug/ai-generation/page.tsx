@@ -5,9 +5,9 @@ import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 
 export default function AIGenerationDebugPage() {
-  const handleGenerateQuestions = async (subject: string, language: 'english' | 'french') => {
+  const handleGenerateQuestions = async (subject: string, language: 'english' | 'french', password: string) => {
     try {
-      console.log('AI Generation requested:', { subject, language });
+      console.log('AI Generation requested:', { subject, language, password });
       
       // Call the API endpoint
       const response = await fetch('/api/generate-questions', {
@@ -15,7 +15,7 @@ export default function AIGenerationDebugPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ subject, language }),
+        body: JSON.stringify({ subject, language, password }),
       });
 
       const data = await response.json();

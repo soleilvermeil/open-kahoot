@@ -18,12 +18,38 @@ const QuizResponseSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, language } = await request.json();
+    const { subject, language, password } = await request.json();
 
     if (!subject || !language) {
       return NextResponse.json(
         { error: 'Subject and language are required' },
         { status: 400 }
+      );
+    }
+
+    // Check if password is provided
+    if (!password) {
+      return NextResponse.json(
+        { error: 'Password is required' },
+        { status: 401 }
+      );
+    }
+
+    // Validate password against allowed passwords list
+    const allowedPasswords = process.env.AI_GENERATION_PASSWORDS;
+    if (!allowedPasswords) {
+      return NextResponse.json(
+        { error: 'AI generation passwords not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Parse the comma-separated list of passwords
+    const passwordList = allowedPasswords.split(',').map(p => p.trim());
+    if (!passwordList.includes(password)) {
+      return NextResponse.json(
+        { error: 'Invalid password' },
+        { status: 403 }
       );
     }
 
