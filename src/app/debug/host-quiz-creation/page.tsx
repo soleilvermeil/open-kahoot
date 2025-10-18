@@ -19,8 +19,8 @@ export default function DebugHostQuizCreationPage() {
       onMoveQuestion={() => {}}
       onDownloadTSV={() => {}}
       onCreateGame={() => {}}
-      onGenerateAIQuestions={async (subject: string, language: 'english' | 'french', password: string) => {
-        console.log('AI generation in debug mode', { subject, language, password });
+      onGenerateAIQuestions={async (subject: string, language: 'english' | 'french', accessKey: string) => {
+        console.log('AI generation in debug mode', { subject, language, accessKey });
       }}
     />
   );

@@ -6,7 +6,7 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 
 interface HostAIGenerationSectionProps {
-  onGenerateQuestions: (subject: string, language: 'english' | 'french', password: string) => void;
+  onGenerateQuestions: (subject: string, language: 'english' | 'french', accessKey: string) => void;
 }
 
 const subjectPlaceholders = {
@@ -19,7 +19,7 @@ export default function HostAIGenerationSection({
 }: HostAIGenerationSectionProps) {
   const [subject, setSubject] = useState('');
   const [language, setLanguage] = useState<'english' | 'french'>('english');
-  const [password, setPassword] = useState('');
+  const [accessKey, setAccessKey] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
@@ -28,14 +28,14 @@ export default function HostAIGenerationSection({
       return;
     }
 
-    if (!password.trim()) {
-      alert('Please enter the AI generation password.');
+    if (!accessKey.trim()) {
+      alert('Please enter the AI generation access key.');
       return;
     }
 
     setIsGenerating(true);
     try {
-      await onGenerateQuestions(subject, language, password);
+      await onGenerateQuestions(subject, language, accessKey);
     } finally {
       setIsGenerating(false);
     }
@@ -77,18 +77,18 @@ export default function HostAIGenerationSection({
         />
 
         <Input
-          label="Password"
+          label="Access Key"
           type="password"
-          placeholder="Enter AI generation password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter AI generation access key"
+          value={accessKey}
+          onChange={(e) => setAccessKey(e.target.value)}
           disabled={isGenerating}
         />
 
         <div className="flex justify-center pt-2">
           <Button
             onClick={handleGenerate}
-            disabled={!subject.trim() || !password.trim() || isGenerating}
+            disabled={!subject.trim() || !accessKey.trim() || isGenerating}
             loading={isGenerating}
             variant="black"
             size="lg"

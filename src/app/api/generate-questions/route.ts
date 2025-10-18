@@ -18,7 +18,7 @@ const QuizResponseSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, language, password } = await request.json();
+    const { subject, language, accessKey } = await request.json();
 
     if (!subject || !language) {
       return NextResponse.json(
@@ -27,28 +27,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if password is provided
-    if (!password) {
+    // Check if access key is provided
+    if (!accessKey) {
       return NextResponse.json(
-        { error: 'Password is required' },
+        { error: 'Access key is required' },
         { status: 401 }
       );
     }
 
-    // Validate password against allowed passwords list
-    const allowedPasswords = process.env.AI_GENERATION_PASSWORDS;
-    if (!allowedPasswords) {
+    // Validate access key against allowed keys list
+    const allowedKeys = process.env.AI_GENERATION_KEYS;
+    if (!allowedKeys) {
       return NextResponse.json(
-        { error: 'AI generation passwords not configured' },
+        { error: 'AI generation keys not configured' },
         { status: 500 }
       );
     }
 
-    // Parse the comma-separated list of passwords
-    const passwordList = allowedPasswords.split(',').map(p => p.trim());
-    if (!passwordList.includes(password)) {
+    // Parse the comma-separated list of access keys
+    const keyList = allowedKeys.split(',').map(k => k.trim());
+    if (!keyList.includes(accessKey)) {
       return NextResponse.json(
-        { error: 'Invalid password' },
+        { error: 'Invalid access key' },
         { status: 403 }
       );
     }
