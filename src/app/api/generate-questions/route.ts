@@ -18,11 +18,19 @@ const QuizResponseSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, language, accessKey } = await request.json();
+    const { subject, language, accessKey, questionCount = 5 } = await request.json();
 
     if (!subject || !language) {
       return NextResponse.json(
         { error: 'Subject and language are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate question count
+    if (questionCount < 1 || questionCount > 20) {
+      return NextResponse.json(
+        { error: 'Question count must be between 1 and 20' },
         { status: 400 }
       );
     }
@@ -67,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     // Generate the prompt based on language
     const prompts = {
-      english: `Create 5 multiple-choice quiz questions about "${subject}".
+      english: `Create ${questionCount} multiple-choice quiz questions about "${subject}".
 
 For each question, provide:
 - The question text
@@ -76,7 +84,7 @@ For each question, provide:
 - An optional explanation
 
 Make the questions engaging, educational, and appropriate for a quiz game.`,
-      french: `Créez 5 questions de quiz à choix multiples sur "${subject}".
+      french: `Créez ${questionCount} questions de quiz à choix multiples sur "${subject}".
 
 Pour chaque question, fournissez :
 - Le texte de la question

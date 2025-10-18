@@ -311,7 +311,7 @@ export default function HostPage() {
     document.body.removeChild(link);
   };
 
-  const handleGenerateAIQuestions = async (subject: string, language: 'english' | 'french', accessKey: string) => {
+  const handleGenerateAIQuestions = async (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number = 5) => {
     try {
       // Call the API endpoint
       const response = await fetch('/api/generate-questions', {
@@ -319,7 +319,7 @@ export default function HostPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ subject, language, accessKey }),
+        body: JSON.stringify({ subject, language, accessKey, questionCount }),
       });
 
       const data = await response.json();

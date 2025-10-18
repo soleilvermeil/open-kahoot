@@ -9,7 +9,7 @@ import Modal from '@/components/Modal';
 interface HostAIGenerationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerateQuestions: (subject: string, language: 'english' | 'french', accessKey: string) => Promise<void>;
+  onGenerateQuestions: (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number) => Promise<void>;
 }
 
 const subjectPlaceholders = {
@@ -25,6 +25,7 @@ export default function HostAIGenerationModal({
   const [subject, setSubject] = useState('');
   const [language, setLanguage] = useState<'english' | 'french'>('english');
   const [accessKey, setAccessKey] = useState('');
+  const [questionCount, setQuestionCount] = useState(5);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
@@ -40,10 +41,11 @@ export default function HostAIGenerationModal({
 
     setIsGenerating(true);
     try {
-      await onGenerateQuestions(subject, language, accessKey);
+      await onGenerateQuestions(subject, language, accessKey, questionCount);
       // Reset form and close modal on success
       setSubject('');
       setAccessKey('');
+      setQuestionCount(5);
       onClose();
     } finally {
       setIsGenerating(false);
@@ -63,6 +65,16 @@ export default function HostAIGenerationModal({
       </p>
 
       <div className="space-y-4">
+
+        <Input
+        label="Access Key"
+        type="password"
+        placeholder="Enter AI generation access key"
+        value={accessKey}
+        onChange={(e) => setAccessKey(e.target.value)}
+        disabled={isGenerating}
+        />
+        
         <div className="space-y-2">
           <label className="block text-white text-sm font-medium">
             Language
@@ -86,14 +98,20 @@ export default function HostAIGenerationModal({
           disabled={isGenerating}
         />
 
-        <Input
-          label="Access Key"
-          type="password"
-          placeholder="Enter AI generation access key"
-          value={accessKey}
-          onChange={(e) => setAccessKey(e.target.value)}
-          disabled={isGenerating}
-        />
+        <div className="space-y-2">
+          <label className="block text-white text-sm font-medium">
+            Number of Questions
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="20"
+            value={questionCount}
+            onChange={(e) => setQuestionCount(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
+            disabled={isGenerating}
+            className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+        </div>
 
         <div className="flex justify-end pt-2">
           <Button
@@ -110,7 +128,7 @@ export default function HostAIGenerationModal({
       </div>
 
       <p className="text-white/40 text-sm mt-6 text-center">
-        The AI will generate 5 multiple-choice questions based on your subject.
+        The AI will generate multiple-choice questions based on your subject and preferences.
       </p>
     </Modal>
   );

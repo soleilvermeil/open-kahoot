@@ -23,7 +23,7 @@ interface HostQuizCreationScreenProps {
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
   onDownloadTSV: () => void;
   onCreateGame: () => void;
-  onGenerateAIQuestions: (subject: string, language: 'english' | 'french', accessKey: string) => Promise<void>;
+  onGenerateAIQuestions: (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number) => Promise<void>;
 }
 
 export default function HostQuizCreationScreen({

@@ -10,9 +10,9 @@ import HostAIGenerationModal from '@/components/host-setup/HostAIGenerationModal
 export default function AIGenerationDebugPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleGenerateQuestions = async (subject: string, language: 'english' | 'french', accessKey: string) => {
+  const handleGenerateQuestions = async (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number) => {
     try {
-      console.log('AI Generation requested:', { subject, language, accessKey });
+      console.log('AI Generation requested:', { subject, language, accessKey, questionCount });
       
       // Call the API endpoint
       const response = await fetch('/api/generate-questions', {
@@ -20,7 +20,7 @@ export default function AIGenerationDebugPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ subject, language, accessKey }),
+        body: JSON.stringify({ subject, language, accessKey, questionCount }),
       });
 
       const data = await response.json();
