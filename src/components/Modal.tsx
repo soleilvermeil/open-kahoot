@@ -42,9 +42,9 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       />
       
       {/* Modal */}
-      <div className="relative bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-white/20">
         {/* Header */}
-        <div className="sticky top-0 bg-black/20 backdrop-blur-sm px-6 py-4 flex items-center justify-between border-b border-white/20">
+        <div className="sticky top-0 bg-white/5 backdrop-blur-lg px-6 py-4 flex items-center justify-between border-b border-white/20">
           <h2 className="text-2xl text-white font-jua">{title}</h2>
           <button
             onClick={onClose}
