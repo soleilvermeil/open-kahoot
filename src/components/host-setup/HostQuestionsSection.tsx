@@ -2,7 +2,6 @@ import type { Question } from '@/types/game';
 import AddQuestionButton from '@/components/AddQuestionButton';
 import QuestionEditor from '@/components/QuestionEditor';
 import HostEmptyQuestionsState from './HostEmptyQuestionsState';
-import HostAIGenerationSection from './HostAIGenerationSection';
 
 interface HostQuestionsSectionProps {
   questions: Question[];
@@ -13,7 +12,7 @@ interface HostQuestionsSectionProps {
   onUpdateOption: (questionIndex: number, optionIndex: number, value: string) => void;
   onRemoveQuestion: (index: number) => void;
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
-  onGenerateAIQuestions: (subject: string, language: 'english' | 'french') => void;
+  onOpenAIModal: () => void;
 }
 
 export default function HostQuestionsSection({
@@ -25,7 +24,7 @@ export default function HostQuestionsSection({
   onUpdateOption,
   onRemoveQuestion,
   onMoveQuestion,
-  onGenerateAIQuestions
+  onOpenAIModal
 }: HostQuestionsSectionProps) {
   return (
     <div className="mb-8">
@@ -33,16 +32,15 @@ export default function HostQuestionsSection({
         <h2 className="text-2xl text-white font-jua">Questions</h2>
       </div>
 
-      <HostAIGenerationSection onGenerateQuestions={onGenerateAIQuestions} />
-
       {questions.length === 0 ? (
         <HostEmptyQuestionsState 
           onAddQuestion={onAddQuestion}
           onFileImport={onFileImport}
+          onOpenAIModal={onOpenAIModal}
         />
       ) : (
         <div>
-          <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} index={0} />
+          <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} onOpenAIModal={onOpenAIModal} index={0} />
           
           {questions.map((question, questionIndex) => (
             <div key={question.id}>
@@ -55,7 +53,7 @@ export default function HostQuestionsSection({
                 onRemoveQuestion={onRemoveQuestion}
                 onMoveQuestion={onMoveQuestion}
               />
-              <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} index={questionIndex + 1} />
+              <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} onOpenAIModal={onOpenAIModal} index={questionIndex + 1} />
             </div>
           ))}
         </div>

@@ -4,9 +4,12 @@ import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import Modal from '@/components/Modal';
 
-interface HostAIGenerationSectionProps {
-  onGenerateQuestions: (subject: string, language: 'english' | 'french', accessKey: string) => void;
+interface HostAIGenerationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onGenerateQuestions: (subject: string, language: 'english' | 'french', accessKey: string) => Promise<void>;
 }
 
 const subjectPlaceholders = {
@@ -14,9 +17,11 @@ const subjectPlaceholders = {
   french: 'ex: Seconde Guerre mondiale, Photosynthèse, Bases de JavaScript...'
 };
 
-export default function HostAIGenerationSection({ 
+export default function HostAIGenerationModal({ 
+  isOpen,
+  onClose,
   onGenerateQuestions 
-}: HostAIGenerationSectionProps) {
+}: HostAIGenerationModalProps) {
   const [subject, setSubject] = useState('');
   const [language, setLanguage] = useState<'english' | 'french'>('english');
   const [accessKey, setAccessKey] = useState('');
@@ -36,19 +41,24 @@ export default function HostAIGenerationSection({
     setIsGenerating(true);
     try {
       await onGenerateQuestions(subject, language, accessKey);
+      // Reset form and close modal on success
+      setSubject('');
+      setAccessKey('');
+      onClose();
     } finally {
       setIsGenerating(false);
     }
   };
 
-  return (
-    <div className="bg-white/5 rounded-lg p-6 border border-white/20 mb-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="w-5 h-5 text-white" />
-        <h3 className="text-xl text-white font-jua">AI Quiz Generation</h3>
-      </div>
+  const handleClose = () => {
+    if (!isGenerating) {
+      onClose();
+    }
+  };
 
-      <p className="text-white/80 text-sm mb-4">
+  return (
+    <Modal isOpen={isOpen} onClose={handleClose} title="AI Quiz Generation">
+      <p className="text-white/80 text-sm mb-6">
         Let AI create quiz questions for you! Select a language and enter a subject.
       </p>
 
@@ -61,7 +71,7 @@ export default function HostAIGenerationSection({
             value={language}
             onChange={(e) => setLanguage(e.target.value as 'english' | 'french')}
             disabled={isGenerating}
-            className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer"
+            className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="english" className="bg-slate-800">English</option>
             <option value="french" className="bg-slate-800">Français</option>
@@ -85,24 +95,32 @@ export default function HostAIGenerationSection({
           disabled={isGenerating}
         />
 
-        <div className="flex justify-center pt-2">
+        <div className="flex justify-end gap-3 pt-2">
+          <Button
+            onClick={handleClose}
+            disabled={isGenerating}
+            variant="pill"
+            size="md"
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleGenerate}
             disabled={!subject.trim() || !accessKey.trim() || isGenerating}
             loading={isGenerating}
             variant="black"
-            size="lg"
+            size="md"
             icon={Sparkles}
           >
-            {isGenerating ? 'Generating...' : 'Ask AI'}
+            {isGenerating ? 'Generating...' : 'Generate Questions'}
           </Button>
         </div>
       </div>
 
-      <p className="text-white/40 text-sm mt-4 text-center">
-        The AI will generate multiple-choice questions based on your subject.
+      <p className="text-white/40 text-sm mt-6 text-center">
+        The AI will generate 5 multiple-choice questions based on your subject.
       </p>
-    </div>
+    </Modal>
   );
 }
 
