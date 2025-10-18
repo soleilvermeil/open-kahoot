@@ -95,15 +95,7 @@ export default function HostAIGenerationModal({
           disabled={isGenerating}
         />
 
-        <div className="flex justify-end gap-3 pt-2">
-          <Button
-            onClick={handleClose}
-            disabled={isGenerating}
-            variant="pill"
-            size="md"
-          >
-            Cancel
-          </Button>
+        <div className="flex justify-end pt-2">
           <Button
             onClick={handleGenerate}
             disabled={!subject.trim() || !accessKey.trim() || isGenerating}
