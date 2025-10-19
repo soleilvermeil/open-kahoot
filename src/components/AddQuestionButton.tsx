@@ -1,15 +1,16 @@
 'use client';
 
-import { Plus, Upload } from 'lucide-react';
+import { Plus, Upload, Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 
 interface AddQuestionButtonProps {
   onAddQuestion: (index: number) => void;
   onAppendTSV: (index: number, event: React.ChangeEvent<HTMLInputElement>) => void;
+  onOpenAIModal: () => void;
   index: number;
 }
 
-export default function AddQuestionButton({ onAddQuestion, onAppendTSV, index }: AddQuestionButtonProps) {
+export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAIModal, index }: AddQuestionButtonProps) {
   return (
     <div className="flex items-center py-2 gap-4">
       <div className="flex-1 h-px bg-white/20"></div>
@@ -39,6 +40,15 @@ export default function AddQuestionButton({ onAddQuestion, onAppendTSV, index }:
             Append TSV
           </Button>
         </div>
+
+        <Button
+          onClick={onOpenAIModal}
+          variant="pill"
+          size="sm"
+          icon={Sparkles}
+        >
+          Ask AI
+        </Button>
       </div>
       
       <div className="flex-1 h-px bg-white/20"></div>

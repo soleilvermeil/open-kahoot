@@ -311,6 +311,63 @@ export default function HostPage() {
     document.body.removeChild(link);
   };
 
+  const handleGenerateAIQuestions = async (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number = 5) => {
+    try {
+      // Call the API endpoint
+      const response = await fetch('/api/generate-questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subject, language, accessKey, questionCount }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate questions');
+      }
+
+      if (!data.success || !data.questions) {
+        throw new Error('Invalid response from API');
+      }
+
+      // Convert AI response to Question objects
+      const newQuestions: Question[] = data.questions.map((q: {
+        question: string;
+        correct: string;
+        wrong1: string;
+        wrong2: string;
+        wrong3: string;
+        explanation?: string;
+      }) => {
+        // Create answer array and shuffle
+        const answers = [q.correct, q.wrong1, q.wrong2, q.wrong3];
+        const shuffledAnswers = shuffleArray(answers);
+        const correctIndex = shuffledAnswers.indexOf(q.correct);
+
+        return {
+          id: uuidv4(),
+          question: q.question,
+          options: shuffledAnswers,
+          correctAnswer: correctIndex,
+          timeLimit: 30,
+          explanation: q.explanation || undefined
+        };
+      });
+
+      // Append the new questions to existing ones
+      setQuestions([...questions, ...newQuestions]);
+
+      // Show success message
+      alert(`Successfully generated ${newQuestions.length} questions!`);
+      
+    } catch (error) {
+      console.error('Error generating questions:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to generate questions'}`);
+    }
+  };
+
   if (game) {
     return (
       <HostGameLobbyScreen 
@@ -336,6 +393,7 @@ export default function HostPage() {
       onMoveQuestion={moveQuestion}
       onDownloadTSV={downloadTSV}
       onCreateGame={createGame}
+      onGenerateAIQuestions={handleGenerateAIQuestions}
     />
   );
 } 

@@ -12,6 +12,7 @@ interface HostQuestionsSectionProps {
   onUpdateOption: (questionIndex: number, optionIndex: number, value: string) => void;
   onRemoveQuestion: (index: number) => void;
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
+  onOpenAIModal: () => void;
 }
 
 export default function HostQuestionsSection({
@@ -22,7 +23,8 @@ export default function HostQuestionsSection({
   onUpdateQuestion,
   onUpdateOption,
   onRemoveQuestion,
-  onMoveQuestion
+  onMoveQuestion,
+  onOpenAIModal
 }: HostQuestionsSectionProps) {
   return (
     <div className="mb-8">
@@ -34,10 +36,11 @@ export default function HostQuestionsSection({
         <HostEmptyQuestionsState 
           onAddQuestion={onAddQuestion}
           onFileImport={onFileImport}
+          onOpenAIModal={onOpenAIModal}
         />
       ) : (
         <div>
-          <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} index={0} />
+          <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} onOpenAIModal={onOpenAIModal} index={0} />
           
           {questions.map((question, questionIndex) => (
             <div key={question.id}>
@@ -50,7 +53,7 @@ export default function HostQuestionsSection({
                 onRemoveQuestion={onRemoveQuestion}
                 onMoveQuestion={onMoveQuestion}
               />
-              <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} index={questionIndex + 1} />
+              <AddQuestionButton onAddQuestion={onAddQuestion} onAppendTSV={onAppendTSV} onOpenAIModal={onOpenAIModal} index={questionIndex + 1} />
             </div>
           ))}
         </div>

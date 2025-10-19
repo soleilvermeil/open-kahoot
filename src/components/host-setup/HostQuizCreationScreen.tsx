@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { Download, MonitorPlay } from 'lucide-react';
 import type { Question, GameSettings } from '@/types/game';
 import PageLayout from '@/components/PageLayout';
@@ -5,6 +8,7 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import HostGameSettingsSection from './HostGameSettingsSection';
 import HostQuestionsSection from './HostQuestionsSection';
+import HostAIGenerationModal from './HostAIGenerationModal';
 
 interface HostQuizCreationScreenProps {
   questions: Question[];
@@ -19,6 +23,7 @@ interface HostQuizCreationScreenProps {
   onMoveQuestion: (index: number, direction: 'up' | 'down') => void;
   onDownloadTSV: () => void;
   onCreateGame: () => void;
+  onGenerateAIQuestions: (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number) => Promise<void>;
 }
 
 export default function HostQuizCreationScreen({
@@ -33,8 +38,10 @@ export default function HostQuizCreationScreen({
   onRemoveQuestion,
   onMoveQuestion,
   onDownloadTSV,
-  onCreateGame
+  onCreateGame,
+  onGenerateAIQuestions
 }: HostQuizCreationScreenProps) {
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const isFormValid = !questions.some(q => !q.question || q.options.some(o => !o));
 
   return (
@@ -56,6 +63,7 @@ export default function HostQuizCreationScreen({
           onUpdateOption={onUpdateOption}
           onRemoveQuestion={onRemoveQuestion}
           onMoveQuestion={onMoveQuestion}
+          onOpenAIModal={() => setIsAIModalOpen(true)}
         />
 
         {questions.length > 0 && (
@@ -82,6 +90,12 @@ export default function HostQuizCreationScreen({
           </div>
         )}
       </Card>
+
+      <HostAIGenerationModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        onGenerateQuestions={onGenerateAIQuestions}
+      />
     </PageLayout>
   );
 } 

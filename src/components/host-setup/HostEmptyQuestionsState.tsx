@@ -1,19 +1,21 @@
-import { Plus, Upload } from 'lucide-react';
+import { Plus, Upload, Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 
 interface HostEmptyQuestionsStateProps {
   onAddQuestion: (index: number) => void;
   onFileImport: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onOpenAIModal: () => void;
 }
 
 export default function HostEmptyQuestionsState({ 
   onAddQuestion, 
-  onFileImport 
+  onFileImport,
+  onOpenAIModal 
 }: HostEmptyQuestionsStateProps) {
   return (
     <div className="bg-white/5 rounded-lg p-8 border border-white/20 text-center">
       <p className="text-white/80 text-lg mb-4 font-jua">Create Your First Question</p>
-      <p className="text-white/60 mb-6">Choose how you&apos;d like to add questions to your quiz:</p>
+      <p className="text-white/60 mb-6">Choose how you want to get started:</p>
       
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Button
@@ -32,12 +34,23 @@ export default function HostEmptyQuestionsState({
             type="file"
             accept=".tsv,.txt"
             onChange={onFileImport}
-            className="absolute inset-0 w-full h-full opacity-0"
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
           <Button variant="black" size="lg" icon={Upload}>
             Import TSV File
           </Button>
         </div>
+
+        <div className="text-white/40 text-sm">or</div>
+
+        <Button
+          onClick={onOpenAIModal}
+          variant="black"
+          size="lg"
+          icon={Sparkles}
+        >
+          Ask AI
+        </Button>
       </div>
       
       <p className="text-white/40 text-sm mt-4">
