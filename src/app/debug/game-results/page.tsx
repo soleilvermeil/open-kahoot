@@ -7,8 +7,8 @@ import { mockGameStats, mockPersonalResultCorrect, mockPersonalResultIncorrect }
 
 function GameResultsContent() {
   const searchParams = useSearchParams();
-  const view = searchParams.get('view') || 'host';
-  const result = searchParams.get('result') || 'correct';
+  const view = searchParams?.get('view') || 'host';
+  const result = searchParams?.get('result') || 'correct';
   
   const isHost = view === 'host';
   const isPlayer = view === 'player';

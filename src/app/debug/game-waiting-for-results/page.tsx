@@ -6,7 +6,7 @@ import GameWaitingForResultsScreen from '@/components/game-screens/GameWaitingFo
 
 function GameWaitingForResultsContent() {
   const searchParams = useSearchParams();
-  const view = searchParams.get('view') || 'host';
+  const view = searchParams?.get('view') || 'host';
   
   const isHost = view === 'host';
 

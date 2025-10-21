@@ -6,7 +6,7 @@ import GameErrorScreen from '@/components/game-screens/GameErrorScreen';
 
 function GameErrorContent() {
   const searchParams = useSearchParams();
-  const error = searchParams.get('error') || 'Game not found or no longer available';
+  const error = searchParams?.get('error') || 'Game not found or no longer available';
 
   return (
     <GameErrorScreen error={error} />

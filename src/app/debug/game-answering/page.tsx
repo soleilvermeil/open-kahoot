@@ -7,7 +7,7 @@ import { mockGame, mockQuestions } from '@/lib/debug-data';
 
 function GameAnsweringContent() {
   const searchParams = useSearchParams();
-  const view = searchParams.get('view') || 'host';
+  const view = searchParams?.get('view') || 'host';
   
   const isHost = view === 'host';
   const isPlayer = view === 'player';
