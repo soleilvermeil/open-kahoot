@@ -162,17 +162,23 @@ const initialState: GameState = {
 };
 
 export default function GamePage() {
-  const params = useParams();
+  const params = useParams<{ id?: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const gameId = params.id as string;
-  const isHost = searchParams.get('host') === 'true';
-  const isPlayer = searchParams.get('player') === 'true';
+  const gameId = params?.id ?? null;
+  const isHost = searchParams?.get('host') === 'true';
+  const isPlayer = searchParams?.get('player') === 'true';
 
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
   useEffect(() => {
     const socket = getSocket();
+
+    if (!gameId) {
+      dispatch({ type: 'SET_VALIDATING', payload: false });
+      dispatch({ type: 'SET_GAME_ERROR', payload: 'Game not found or no longer available' });
+      return;
+    }
 
     // Check if this is a player trying to rejoin a game
     const urlParams = new URLSearchParams(window.location.search);
@@ -320,21 +326,26 @@ export default function GamePage() {
     const persistentId = gamePin ? localStorage.getItem(`player_id_${gamePin}`) || undefined : undefined;
     
     const socket = getSocket();
+    if (!gameId) return;
+
     socket.emit('submitAnswer', gameId, state.currentQuestion.id, answerIndex, persistentId);
   };
 
   const nextQuestion = () => {
     const socket = getSocket();
+    if (!gameId) return;
     socket.emit('nextQuestion', gameId);
   };
 
   const showLeaderboard = () => {
     const socket = getSocket();
+    if (!gameId) return;
     socket.emit('showLeaderboard', gameId);
   };
 
   const downloadLogs = () => {
     const socket = getSocket();
+    if (!gameId) return;
     socket.emit('downloadGameLogs', gameId);
   };
 

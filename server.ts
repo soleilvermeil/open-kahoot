@@ -3,6 +3,7 @@ import { parse } from 'url';
 import next from 'next';
 import { Server as SocketIOServer } from 'socket.io';
 import { GameServer } from './src/lib/game';
+import { SOCKET_PATH } from './src/lib/socket-config';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -25,6 +26,8 @@ app.prepare().then(() => {
 
   // Allow larger payloads (e.g. base64-encoded images) by raising the default 1 MB limit
   const io = new SocketIOServer(httpServer, {
+    path: SOCKET_PATH,
+    addTrailingSlash: false,
     // 100 MB – adjust as needed but keep a sensible upper bound
     maxHttpBufferSize: 1e8,
     cors: {
