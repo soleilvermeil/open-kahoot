@@ -24,7 +24,7 @@ export default function JoinGameFormScreen() {
 
   useEffect(() => {
     // Auto-fill PIN from URL parameter
-    const pinFromUrl = searchParams.get('pin');
+    const pinFromUrl = searchParams?.get('pin');
     if (pinFromUrl) {
       setPin(pinFromUrl);
       setPinLocked(true);
