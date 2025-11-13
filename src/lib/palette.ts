@@ -1,5 +1,5 @@
 // Color Palette for Open Kahoot Application
-// Centralized color definitions for consistent styling
+// Flat design with white/black and purple/white colors
 
 export const palette = {
   // Primary colors for correct/incorrect states
@@ -23,17 +23,18 @@ export const palette = {
     background: 'bg-red-500/30'
   },
 
-  // Button variant colors
+  // Button variant colors - flat design
   buttons: {
     primary: {
-      background: 'bg-blue-600',
-      hover: 'hover:bg-blue-700',
+      background: 'bg-purple-600',
+      hover: 'hover:bg-purple-700',
       text: 'text-white'
     },
     secondary: {
-      background: 'bg-white/20',
-      hover: 'hover:bg-white/30',
-      text: 'text-white'
+      background: 'bg-white',
+      hover: 'hover:bg-gray-100',
+      text: 'text-black',
+      border: 'border border-gray-300'
     },
     success: {
       background: 'bg-green-600',
@@ -52,26 +53,26 @@ export const palette = {
     },
     ghost: {
       background: 'bg-transparent',
-      hover: 'hover:bg-white/10',
-      text: 'text-white'
+      hover: 'hover:bg-gray-100',
+      text: 'text-black'
     }
   },
 
-  // Action card variants
+  // Action card variants - flat design
   actionCards: {
     host: {
-      icon: 'bg-orange-500',
-      button: 'bg-orange-500',
-      buttonHover: 'group-hover:bg-orange-600'
+      icon: 'bg-purple-600',
+      button: 'bg-purple-600',
+      buttonHover: 'group-hover:bg-purple-700'
     },
     join: {
-      icon: 'bg-green-500',
-      button: 'bg-green-500',
-      buttonHover: 'group-hover:bg-green-600'
+      icon: 'bg-purple-600',
+      button: 'bg-purple-600',
+      buttonHover: 'group-hover:bg-purple-700'
     }
   },
 
-  // Answer choice colors (A, B, C, D)
+  // Answer choice colors (A, B, C, D) - KEEP THESE AS IS
   choices: {
     a: 'bg-rose-500 hover:bg-rose-600 border-rose-400',
     b: 'bg-blue-600 hover:bg-blue-700 border-blue-500',
@@ -83,55 +84,45 @@ export const palette = {
   timer: {
     thinking: 'bg-white',
     answering: 'bg-white',
-    progress: 'bg-white/20'
+    progress: 'bg-gray-200'
   },
 
-  // Background gradients for different page states
-  // gradients: {
-  //   loading: 'bg-gradient-to-br from-gray-600 to-gray-800',
-  //   error: 'bg-gradient-to-br from-red-600 to-red-800',
-  //   join: 'bg-gradient-to-br from-green-500 to-blue-500',
-  //   host: 'bg-gradient-to-br from-orange-500 to-red-500',
-  //   leaderboard: 'bg-gradient-to-br from-purple-600 to-indigo-600',
-  //   finished: 'bg-gradient-to-br from-yellow-500 to-orange-500',
-  //   thinking: 'bg-gradient-to-br from-indigo-600 to-purple-600',
-  //   answering: 'bg-gradient-to-br from-blue-600 to-purple-600',
-  //   results: 'bg-gradient-to-br from-green-600 to-blue-600',
-  //   waiting: 'bg-gradient-to-br from-purple-600 to-blue-600',
-  //   home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500'
-  // },
+  // Background colors for different page states - flat design
   gradients: {
-    loading: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    error: 'bg-gradient-to-br from-orange-500 via-red-500 to-rose-500', // Orange
-    join: 'bg-gradient-to-br from-green-500 to-blue-500', // Green
-    host: 'bg-gradient-to-br from-orange-500 via-red-500 to-rose-500', // Orange
-    leaderboard: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    finished: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    thinking: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    answering: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    results: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    correct: 'bg-gradient-to-br from-green-500 to-blue-500', // Green
-    incorrect: 'bg-gradient-to-br from-orange-500 via-red-500 to-rose-500', // Orange
-    waiting: 'bg-gradient-to-br from-indigo-600 to-violet-600', // Purple
-    home: 'bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500', // HOME ONLY
+    loading: 'bg-white', // White background
+    error: 'bg-white', // White background
+    join: 'bg-white', // White background
+    host: 'bg-white', // White background
+    leaderboard: 'bg-purple-600', // Purple background
+    finished: 'bg-purple-600', // Purple background
+    thinking: 'bg-white', // White background
+    answering: 'bg-white', // White background
+    results: 'bg-white', // White background
+    correct: 'bg-green-500', // Green for correct
+    incorrect: 'bg-red-500', // Red for incorrect
+    waiting: 'bg-white', // White background
+    home: 'bg-white', // White background
   },
 
-
-  // Glass morphism and transparency effects
-  glass: {
-    primary: 'bg-white/10 backdrop-blur-lg border border-white/20',
-    secondary: 'bg-white/20 backdrop-blur-lg border border-white/30',
-    hover: 'hover:bg-white/20',
-    strong: 'bg-white/30 backdrop-blur-lg border border-white/40'
+  // Flat card styles (replacing glass morphism)
+  card: {
+    primary: 'bg-white border border-gray-300',
+    secondary: 'bg-white border border-gray-200',
+    hover: 'hover:bg-gray-50',
+    strong: 'bg-purple-600 border border-purple-700'
   },
 
-  // Text colors
+  // Text colors - flat design
   text: {
-    primary: 'text-white',
-    secondary: 'text-white/80',
-    tertiary: 'text-white/60',
-    quaternary: 'text-white/40',
-    accent: 'text-yellow-300'
+    primary: 'text-black', // Black on white
+    secondary: 'text-gray-600',
+    tertiary: 'text-gray-400',
+    quaternary: 'text-gray-300',
+    accent: 'text-purple-600',
+    // White text for purple backgrounds
+    onPurple: 'text-white',
+    onPurpleSecondary: 'text-white/90',
+    onPurpleTertiary: 'text-white/70'
   },
 
   // Status colors
@@ -167,4 +158,4 @@ export const getButtonStyle = (variant: keyof typeof palette.buttons): string =>
 };
 
 // Export individual palettes for easier imports
-export const { correct, incorrect, buttons, gradients, glass, text, choices, actionCards } = palette; 
+export const { correct, incorrect, buttons, gradients, card, text, choices, actionCards } = palette; 

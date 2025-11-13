@@ -91,7 +91,7 @@ export default function JoinGameFormScreen() {
   return (
     <Card className="w-full max-w-md">
       <div className="text-center mb-8">
-        <h1 className="text-3xl text-white mb-2 font-jua">Join Game</h1>
+        <h1 className="text-3xl text-black mb-2 font-jua">Join Game</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -108,7 +108,7 @@ export default function JoinGameFormScreen() {
           variant="center"
           placeholder={"0".repeat(pinLength)}
           maxLength={pinLength}
-          className={pinLocked ? 'bg-white/10 border-white/20 cursor-not-allowed' : ''}
+          className={pinLocked ? 'bg-gray-100 border-gray-300 cursor-not-allowed' : ''}
           icon={pinLocked ? Lock : undefined}
         />
 
@@ -138,7 +138,7 @@ export default function JoinGameFormScreen() {
         <Button
           type="submit"
           disabled={!pin || !playerName || isJoining || pin.length !== pinLength}
-          variant="black"
+          variant="primary"
           size="lg"
           fullWidth
           loading={isJoining}
@@ -149,7 +149,7 @@ export default function JoinGameFormScreen() {
       </form>
 
       <div className="mt-8 text-center">
-        <p className="text-white/60 text-sm">
+        <p className="text-gray-500 text-sm">
           Don&apos;t have a PIN? Ask the host to share it with you.
         </p>
       </div>

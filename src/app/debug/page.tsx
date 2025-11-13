@@ -59,24 +59,24 @@ export default function DebugIndexPage() {
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
         <div className="text-center mb-8">
-          <h1 className="text-3xl text-white mb-2 font-jua">Debug Screens</h1>
-          <p className="text-white/80">Preview all game layouts and phases</p>
+          <h1 className="text-3xl text-black mb-2 font-jua">Debug Screens</h1>
+          <p className="text-gray-600">Preview all game layouts and phases</p>
         </div>
 
         <div className="space-y-8">
           {debugScreens.map((section, sectionIndex) => (
             <div key={sectionIndex}>
-              <h2 className="text-xl text-white mb-4 font-jua">{section.title}</h2>
+              <h2 className="text-xl text-black mb-4 font-jua">{section.title}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {section.screens.map((screen, screenIndex) => (
                   <Link
                     key={screenIndex}
                     href={screen.path}
-                    className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                    className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors border border-gray-300"
                   >
                     <div className="flex items-center gap-3">
-                      <screen.icon className="w-5 h-5 text-white" />
-                      <span className="text-white text-sm font-medium">{screen.name}</span>
+                      <screen.icon className="w-5 h-5 text-black" />
+                      <span className="text-black text-sm font-medium">{screen.name}</span>
                     </div>
                   </Link>
                 ))}

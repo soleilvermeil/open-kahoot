@@ -56,21 +56,21 @@ export default function GamePinDisplay({
   return (
     <div className="flex gap-6 mb-6 justify-center">
       {/* Website URL Box */}
-      <div className="bg-white/20 rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px]">
-        <div className="text-white/80 text-sm text-center">Website URL</div>
-        <div className="text-3xl font-bold text-white text-center break-all">{websiteUrl}</div>
+      <div className="bg-white rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px] border border-gray-300">
+        <div className="text-gray-600 text-sm text-center">Website URL</div>
+        <div className="text-3xl font-bold text-black text-center break-all">{websiteUrl}</div>
       </div>
       
       {/* PIN Box */}
-      <div className="bg-white/20 rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px]">
-        <div className="text-white/80 text-sm">Game PIN</div>
-        <div className="text-5xl font-bold text-white">{pin}</div>
+      <div className="bg-white rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px] border border-gray-300">
+        <div className="text-gray-600 text-sm">Game PIN</div>
+        <div className="text-5xl font-bold text-black">{pin}</div>
       </div>
       
       {/* QR Code Box */}
       {joinUrl && (
         <div 
-          className="bg-white rounded-lg p-4 flex flex-col items-center justify-center min-h-[100px] cursor-pointer hover:bg-gray-50 transition-colors"
+          className="bg-white rounded-lg p-4 flex flex-col items-center justify-center min-h-[100px] cursor-pointer hover:bg-gray-50 transition-colors border border-gray-300"
           onClick={() => setShowQRModal(true)}
           title="Click to enlarge QR code"
         >
@@ -90,7 +90,7 @@ export default function GamePinDisplay({
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <div 
-            className="bg-white rounded-lg p-8"
+            className="bg-white rounded-lg p-8 border border-gray-300"
             onClick={(e) => e.stopPropagation()}
           >
             <QRCode

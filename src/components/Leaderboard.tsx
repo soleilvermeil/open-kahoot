@@ -27,22 +27,22 @@ export default function Leaderboard({
   buttons
 }: LeaderboardProps) {
   const getPodiumStyle = (index: number) => {
-    if (!showPodium) return 'bg-white/10 border-white/20';
+    if (!showPodium) return 'bg-white border-gray-300';
     
     switch (index) {
       case 0:
-        return 'bg-yellow-500/30 border-yellow-400 ring-2 ring-yellow-300 scale-105';
+        return 'bg-yellow-50 border-yellow-400 ring-2 ring-yellow-300 scale-105';
       case 1:
-        return 'bg-gray-300/30 border-gray-400';
+        return 'bg-gray-50 border-gray-400';
       case 2:
-        return 'bg-orange-600/30 border-orange-500';
+        return 'bg-orange-50 border-orange-500';
       default:
-        return 'bg-white/10 border-white/20';
+        return 'bg-white border-gray-300';
     }
   };
 
   const getPositionBadgeStyle = (index: number) => {
-    if (!showPodium) return 'bg-slate-600';
+    if (!showPodium) return 'bg-gray-600';
     
     switch (index) {
       case 0:
@@ -52,7 +52,7 @@ export default function Leaderboard({
       case 2:
         return 'bg-orange-600';
       default:
-        return 'bg-slate-600';
+        return 'bg-gray-600';
     }
   };
 
@@ -60,10 +60,10 @@ export default function Leaderboard({
     <div className={className}>
       {(title || subtitle) && (
         <div className="text-center mb-8">
-          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-yellow-300" />
-          <h1 className="text-4xl text-white mb-4 font-jua">{title}</h1>
+          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-yellow-500" />
+          <h1 className="text-4xl text-black mb-4 font-jua">{title}</h1>
           {subtitle && (
-            <p className="text-white/80 text-xl">{subtitle}</p>
+            <p className="text-gray-600 text-xl">{subtitle}</p>
           )}
         </div>
       )}
@@ -75,7 +75,7 @@ export default function Leaderboard({
               <Button
                 key={index}
                 onClick={button.onClick}
-                variant={button.variant || "black"}
+                variant={button.variant || "primary"}
                 size="xl"
                 icon={button.icon}
                 iconPosition={button.iconPosition}
@@ -99,15 +99,15 @@ export default function Leaderboard({
                 {index + 1}
               </div>
               <div>
-                <div className="text-white font-bold text-xl">{player.name}</div>
+                <div className="text-black font-bold text-xl">{player.name}</div>
                 {index === 0 && showPodium && (
-                  <div className="text-yellow-300 font-semibold">👑 Leader</div>
+                  <div className="text-yellow-600 font-semibold">👑 Leader</div>
                 )}
               </div>
             </div>
             <div className="text-right">
-              <div className="text-white font-bold text-2xl">{player.score}</div>
-              <div className="text-white/70 text-sm">points</div>
+              <div className="text-black font-bold text-2xl">{player.score}</div>
+              <div className="text-gray-600 text-sm">points</div>
             </div>
           </div>
         ))}

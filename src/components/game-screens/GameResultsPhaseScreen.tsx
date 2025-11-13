@@ -49,9 +49,9 @@ export default function GameResultsPhaseScreen({
   return (
     <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
-        <AnimatedIcon icon={Trophy} size="md" iconColor="text-white/60" className="mb-4" />
-        <h1 className="text-3xl font-bold text-white mb-4">Getting your results ready...</h1>
-        <p className="text-white/80 text-lg">Hold tight, we&apos;re calculating scores!</p>
+        <AnimatedIcon icon={Trophy} size="md" iconColor="text-gray-400" className="mb-4" />
+        <h1 className="text-3xl font-bold text-black mb-4">Getting your results ready...</h1>
+        <p className="text-gray-600 text-lg">Hold tight, we&apos;re calculating scores!</p>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, variant = 'default', className = '', icon: Icon, actionButton, ...props }, ref) => {
-    const baseClasses = "w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50";
+    const baseClasses = "w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500";
     
     const variantClasses = {
       default: "",
@@ -29,7 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-2">
         {label && (
-          <label className="block text-white text-sm font-medium">
+          <label className="block text-black text-sm font-medium">
             {label}
           </label>
         )}
@@ -40,16 +40,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {Icon && (
-            <Icon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
+            <Icon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           )}
           {actionButton && (
             <button
               type="button"
               onClick={actionButton.onClick}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-md p-1.5 transition-colors"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-100 hover:bg-gray-200 rounded-md p-1.5 transition-colors"
               title={actionButton.title}
             >
-              <actionButton.icon className="w-4 h-4 text-white/80" />
+              <actionButton.icon className="w-4 h-4 text-gray-600" />
             </button>
           )}
         </div>

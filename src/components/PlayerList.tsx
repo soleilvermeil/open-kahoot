@@ -36,7 +36,7 @@ export default function PlayerList({
   return (
     <div className={className}>
       {title && (
-        <h2 className="text-2xl text-white mb-4 font-jua">
+        <h2 className="text-2xl text-black mb-4 font-jua">
           {title} ({players.length})
         </h2>
       )}
@@ -46,11 +46,11 @@ export default function PlayerList({
           {players.map((player) => (
             <div
               key={player.id}
-              className="bg-white/20 rounded-lg p-4 text-center relative"
+              className="bg-white rounded-lg p-4 text-center relative border border-gray-300"
             >
-              <div className="text-white font-semibold">{player.name}</div>
+              <div className="text-black font-semibold">{player.name}</div>
               {player.score !== undefined && (
-                <div className="text-white/80 text-sm mt-1">{player.score} points</div>
+                <div className="text-gray-600 text-sm mt-1">{player.score} points</div>
               )}
               
               {showDyslexiaControls && (
@@ -59,8 +59,8 @@ export default function PlayerList({
                     onClick={() => handleToggleDyslexiaSupport(player.id)}
                     className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium transition-colors ${
                       player.hasDyslexiaSupport 
-                        ? 'bg-purple-500 text-white' 
-                        : 'bg-white/20 text-white/70 hover:bg-white/30'
+                        ? 'bg-purple-600 text-white' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                     title={player.hasDyslexiaSupport ? 'Dyslexia support enabled' : 'Enable dyslexia support'}
                   >
@@ -72,14 +72,14 @@ export default function PlayerList({
               
               {player.hasDyslexiaSupport && (
                 <div className="absolute top-1 right-1" title="Dyslexia support enabled">
-                  <Brain className="w-4 h-4 text-purple-400" />
+                  <Brain className="w-4 h-4 text-purple-600" />
                 </div>
               )}
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center text-white/60 py-8">
+        <div className="text-center text-gray-500 py-8">
           {emptyMessage}
         </div>
       )}

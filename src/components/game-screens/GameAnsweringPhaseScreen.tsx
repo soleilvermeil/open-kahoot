@@ -30,14 +30,14 @@ export default function GameAnsweringPhaseScreen({
         {/* Timer */}
         <div className="hidden sm:block text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Clock className="w-8 h-8 text-white" />
+            <Clock className="w-8 h-8 text-black" />
           </div>
-          <p className="text-white/80 text-lg">
+          <p className="text-gray-600 text-lg">
             {isHost ? 'Players are choosing their answers' : 'Choose your answer!'}
           </p>
-          <div className="w-full bg-white/20 rounded-full h-3 mt-4">
+          <div className="w-full bg-gray-200 rounded-full h-3 mt-4">
             <div 
-              className="bg-white h-3 rounded-full transition-all duration-1000 ease-linear"
+              className="bg-purple-600 h-3 rounded-full transition-all duration-1000 ease-linear"
               style={{ width: `${(timeLeft / (game?.settings.answerTime || 30)) * 100}%` }}
             />
           </div>

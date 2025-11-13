@@ -18,14 +18,16 @@ export default function Timer({
 }: TimerProps) {
   const percentage = (timeLeft / totalTime) * 100;
   const Icon = variant === 'thinking' ? Eye : Clock;
-  const progressColor = variant === 'thinking' ? palette.timer.thinking : palette.timer.answering;
+  const progressColor = variant === 'thinking' ? 'bg-purple-600' : palette.timer.answering;
+  const iconColor = variant === 'thinking' ? 'text-black' : 'text-black';
+  const labelColor = variant === 'thinking' ? 'text-black' : 'text-gray-600';
 
   return (
     <div className={`text-center mb-8 ${className}`}>
       <div className="flex items-center justify-center gap-2 mb-4">
-        <Icon className="w-8 h-8 text-white" />
+        <Icon className={`w-8 h-8 ${iconColor}`} />
       </div>
-      <p className="text-white/80 text-lg">{label}</p>
+      <p className={`${labelColor} text-lg`}>{label}</p>
       <div className={`w-full ${palette.timer.progress} rounded-full h-3 mt-4`}>
         <div 
           className={`${progressColor} h-3 rounded-full transition-all duration-1000 ease-linear`}
