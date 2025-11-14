@@ -107,19 +107,19 @@ export const palette = {
 
   // Background colors for different page states - flat design
   gradients: {
-    loading: 'bg-white', // White background
-    error: 'bg-white', // White background
-    join: 'bg-white', // White background
-    host: 'bg-white', // White background
+    loading: 'bg-transparent', // Transparent to show body background pattern
+    error: 'bg-transparent', // Transparent to show body background pattern
+    join: 'bg-transparent', // Transparent to show body background pattern
+    host: 'bg-transparent', // Transparent to show body background pattern
     leaderboard: accentColor.bg, // Purple background
     finished: accentColor.bg, // Purple background
-    thinking: 'bg-white', // White background
-    answering: 'bg-white', // White background
-    results: 'bg-white', // White background
+    thinking: 'bg-transparent', // Transparent to show body background pattern
+    answering: 'bg-transparent', // Transparent to show body background pattern
+    results: 'bg-transparent', // Transparent to show body background pattern
     correct: 'bg-green-500', // Green for correct
     incorrect: 'bg-red-500', // Red for incorrect
-    waiting: 'bg-white', // White background
-    home: 'bg-white', // White background
+    waiting: 'bg-transparent', // Transparent to show body background pattern
+    home: 'bg-transparent', // Transparent to show body background pattern
   },
 
   // Flat card styles (replacing glass morphism)
