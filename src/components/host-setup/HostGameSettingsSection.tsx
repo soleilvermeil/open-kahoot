@@ -12,7 +12,7 @@ export default function HostGameSettingsSection({
   onUpdateSettings 
 }: HostGameSettingsSectionProps) {
   return (
-    <div className="mb-8 bg-white rounded-lg p-6 border border-gray-300">
+    <div className="mb-8 bg-gray-50 rounded-lg p-6 border border-gray-300">
       <h2 className="text-2xl text-black mb-4 flex items-center gap-2 font-jua">
         <Settings className="w-6 h-6" />
         Game Settings

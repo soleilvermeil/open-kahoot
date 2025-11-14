@@ -118,7 +118,7 @@ export default function QuestionEditor({
       layout
       layoutId={question.id}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-white rounded-lg p-6 border border-gray-300"
+      className="bg-gray-50 rounded-lg p-6 border border-gray-300"
     >
       <div className="flex items-start justify-between mb-4">
         <h3 className="text-lg font-semibold text-black font-jua">Question {questionIndex + 1}</h3>

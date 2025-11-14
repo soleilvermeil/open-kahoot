@@ -13,7 +13,7 @@ export default function HostEmptyQuestionsState({
   onOpenAIModal 
 }: HostEmptyQuestionsStateProps) {
   return (
-    <div className="bg-white rounded-lg p-8 border border-gray-300 text-center">
+    <div className="bg-gray-50 rounded-lg p-8 border border-gray-300 text-center">
       <p className="text-black text-lg mb-4 font-jua">Create Your First Question</p>
       <p className="text-gray-600 mb-6">Choose how you want to get started:</p>
       
