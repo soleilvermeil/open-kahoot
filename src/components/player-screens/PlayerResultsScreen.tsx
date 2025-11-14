@@ -9,7 +9,7 @@ interface PlayerResultsScreenProps {
 
 export default function PlayerResultsScreen({ personalResult }: PlayerResultsScreenProps) {
   return (
-    <div className="bg-white rounded-lg p-8 border border-gray-300 text-center">
+    <div className="bg-white rounded-lg p-8 border border-gray-300 text-center w-full flex flex-col min-h-[calc(100vh-4rem)]">
       {/* Result Header */}
       <div className="mb-8">
         {/* <AnimatedIcon 
@@ -52,6 +52,9 @@ export default function PlayerResultsScreen({ personalResult }: PlayerResultsScr
           </p>
         )}
       </div>
+
+      {/* Spacer to push waiting message to bottom */}
+      <div className="flex-1"></div>
 
       {/* Waiting Message */}
       <div className="text-center">
