@@ -1,5 +1,6 @@
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
+import { accent } from '@/lib/palette';
 
 interface ButtonProps {
   children?: React.ReactNode;
@@ -35,17 +36,17 @@ export default function Button({
 }: ButtonProps) {
   
   // Base styles
-  const baseStyles = `font-semibold ${variant === 'pill' ? 'rounded-full' : 'rounded-lg'} transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50 inline-flex items-center justify-center gap-2 cursor-pointer`;
+  const baseStyles = `font-semibold ${variant === 'pill' ? 'rounded-full' : 'rounded-lg'} transition-colors focus:outline-none focus:ring-2 ${accent.ringFocus} inline-flex items-center justify-center gap-2 cursor-pointer`;
   
   // Variant styles - flat design
   const variantStyles = {
-    primary: 'bg-purple-600 hover:bg-purple-700 text-white',
+    primary: `${accent.bg} ${accent.bgHover} text-white`,
     secondary: 'bg-white hover:bg-gray-100 text-black border border-gray-300',
     success: 'bg-green-600 hover:bg-green-700 text-white',
     danger: 'bg-red-600 hover:bg-red-700 text-white',
     ghost: 'text-black hover:bg-gray-100',
     outline: 'border border-gray-300 text-black hover:bg-gray-50',
-    link: 'text-purple-600 hover:text-purple-700 underline',
+    link: `${accent.text} ${accent.textHover} underline`,
     pill: 'text-black hover:bg-gray-100 border border-gray-300 hover:border-gray-400 transition-all duration-200',
     black: 'bg-black hover:bg-gray-900 text-white',
   };

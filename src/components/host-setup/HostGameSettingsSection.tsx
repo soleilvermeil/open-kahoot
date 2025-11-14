@@ -1,5 +1,6 @@
 import { Settings } from 'lucide-react';
 import type { GameSettings } from '@/types/game';
+import { accent } from '@/lib/palette';
 
 interface HostGameSettingsSectionProps {
   gameSettings: GameSettings;
@@ -27,7 +28,7 @@ export default function HostGameSettingsSection({
           <select
             value={gameSettings.thinkTime}
             onChange={(e) => onUpdateSettings({ ...gameSettings, thinkTime: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 [&>option]:text-black [&>option]:bg-white"
+            className={`w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} [&>option]:text-black [&>option]:bg-white`}
           >
             <option value={5}>5 seconds</option>
             <option value={10}>10 seconds</option>
@@ -44,7 +45,7 @@ export default function HostGameSettingsSection({
           <select
             value={gameSettings.answerTime}
             onChange={(e) => onUpdateSettings({ ...gameSettings, answerTime: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 [&>option]:text-black [&>option]:bg-white"
+            className={`w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} [&>option]:text-black [&>option]:bg-white`}
           >
             <option value={20}>20 seconds</option>
             <option value={30}>30 seconds</option>

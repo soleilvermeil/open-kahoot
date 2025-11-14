@@ -1,5 +1,6 @@
 import { Brain } from 'lucide-react';
 import type { Player } from '@/types/game';
+import { accent } from '@/lib/palette';
 
 interface PlayerListProps {
   players: Player[];
@@ -59,7 +60,7 @@ export default function PlayerList({
                     onClick={() => handleToggleDyslexiaSupport(player.id)}
                     className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium transition-colors ${
                       player.hasDyslexiaSupport 
-                        ? 'bg-purple-600 text-white' 
+                        ? `${accent.bg} text-white` 
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                     title={player.hasDyslexiaSupport ? 'Dyslexia support enabled' : 'Enable dyslexia support'}
@@ -72,7 +73,7 @@ export default function PlayerList({
               
               {player.hasDyslexiaSupport && (
                 <div className="absolute top-1 right-1" title="Dyslexia support enabled">
-                  <Brain className="w-4 h-4 text-purple-600" />
+                  <Brain className={`w-4 h-4 ${accent.text}`} />
                 </div>
               )}
             </div>

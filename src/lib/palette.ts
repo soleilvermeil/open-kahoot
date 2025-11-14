@@ -1,7 +1,25 @@
 // Color Palette for Open Kahoot Application
 // Flat design with white/black and purple/white colors
 
+// Accent color (purple) - centralized for easy theme changes
+// Change these values to change the accent color throughout the app
+const accentColor = {
+  bg: 'bg-indigo-600',
+  bgHover: 'hover:bg-indigo-700',
+  bgLight: 'bg-indigo-500',
+  text: 'text-indigo-600',
+  textHover: 'hover:text-indigo-700',
+  border: 'border-indigo-500',
+  borderHover: 'border-indigo-600',
+  ring: 'ring-indigo-500/50',
+  ringFocus: 'focus:ring-indigo-500/50',
+  borderFocus: 'focus:border-indigo-500'
+};
+
 export const palette = {
+  // Accent color - centralized for easy theme changes
+  accent: accentColor,
+
   // Primary colors for correct/incorrect states
   correct: {
     primary: 'bg-green-400',
@@ -26,8 +44,8 @@ export const palette = {
   // Button variant colors - flat design
   buttons: {
     primary: {
-      background: 'bg-purple-600',
-      hover: 'hover:bg-purple-700',
+      background: accentColor.bg,
+      hover: accentColor.bgHover,
       text: 'text-white'
     },
     secondary: {
@@ -61,14 +79,14 @@ export const palette = {
   // Action card variants - flat design
   actionCards: {
     host: {
-      icon: 'bg-purple-600',
-      button: 'bg-purple-600',
-      buttonHover: 'group-hover:bg-purple-700'
+      icon: accentColor.bg,
+      button: accentColor.bg,
+      buttonHover: `group-${accentColor.bgHover}`
     },
     join: {
-      icon: 'bg-purple-600',
-      button: 'bg-purple-600',
-      buttonHover: 'group-hover:bg-purple-700'
+      icon: accentColor.bg,
+      button: accentColor.bg,
+      buttonHover: `group-${accentColor.bgHover}`
     }
   },
 
@@ -82,7 +100,7 @@ export const palette = {
 
   // Timer colors
   timer: {
-    thinking: 'bg-white',
+    thinking: accentColor.bg,
     answering: 'bg-white',
     progress: 'bg-gray-200'
   },
@@ -93,8 +111,8 @@ export const palette = {
     error: 'bg-white', // White background
     join: 'bg-white', // White background
     host: 'bg-white', // White background
-    leaderboard: 'bg-purple-600', // Purple background
-    finished: 'bg-purple-600', // Purple background
+    leaderboard: accentColor.bg, // Purple background
+    finished: accentColor.bg, // Purple background
     thinking: 'bg-white', // White background
     answering: 'bg-white', // White background
     results: 'bg-white', // White background
@@ -109,7 +127,7 @@ export const palette = {
     primary: 'bg-white border border-gray-300',
     secondary: 'bg-white border border-gray-200',
     hover: 'hover:bg-gray-50',
-    strong: 'bg-purple-600 border border-purple-700'
+    strong: `${accentColor.bg} border ${accentColor.borderHover}`
   },
 
   // Text colors - flat design
@@ -118,7 +136,7 @@ export const palette = {
     secondary: 'text-gray-600',
     tertiary: 'text-gray-400',
     quaternary: 'text-gray-300',
-    accent: 'text-purple-600',
+    accent: accentColor.text,
     // White text for purple backgrounds
     onPurple: 'text-white',
     onPurpleSecondary: 'text-white/90',
@@ -158,4 +176,4 @@ export const getButtonStyle = (variant: keyof typeof palette.buttons): string =>
 };
 
 // Export individual palettes for easier imports
-export const { correct, incorrect, buttons, gradients, card, text, choices, actionCards } = palette; 
+export const { correct, incorrect, buttons, gradients, card, text, choices, actionCards, accent } = palette;

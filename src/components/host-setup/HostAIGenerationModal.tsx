@@ -5,6 +5,7 @@ import { Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Modal from '@/components/Modal';
+import { accent } from '@/lib/palette';
 
 interface HostAIGenerationModalProps {
   isOpen: boolean;
@@ -83,7 +84,7 @@ export default function HostAIGenerationModal({
             value={language}
             onChange={(e) => setLanguage(e.target.value as 'english' | 'french')}
             disabled={isGenerating}
-            className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed [&>option]:text-black [&>option]:bg-white"
+            className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed [&>option]:text-black [&>option]:bg-white`}
           >
             <option value="english">English</option>
             <option value="french">Français</option>
@@ -109,7 +110,7 @@ export default function HostAIGenerationModal({
             value={questionCount}
             onChange={(e) => setQuestionCount(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
             disabled={isGenerating}
-            className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} disabled:opacity-50 disabled:cursor-not-allowed`}
           />
         </div>
 

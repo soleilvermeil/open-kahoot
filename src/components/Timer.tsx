@@ -18,7 +18,7 @@ export default function Timer({
 }: TimerProps) {
   const percentage = (timeLeft / totalTime) * 100;
   const Icon = variant === 'thinking' ? Eye : Clock;
-  const progressColor = variant === 'thinking' ? 'bg-purple-600' : palette.timer.answering;
+  const progressColor = variant === 'thinking' ? palette.accent.bg : palette.timer.answering;
   const iconColor = variant === 'thinking' ? 'text-black' : 'text-black';
   const labelColor = variant === 'thinking' ? 'text-black' : 'text-gray-600';
 

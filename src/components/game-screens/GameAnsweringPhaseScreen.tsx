@@ -1,5 +1,5 @@
 import { Clock } from 'lucide-react';
-import { getGradient } from '@/lib/palette';
+import { getGradient, accent } from '@/lib/palette';
 import HostAnsweringScreen from '@/components/host-screens/HostAnsweringScreen';
 import PlayerAnsweringScreen from '@/components/player-screens/PlayerAnsweringScreen';
 import PlayerWaitingScreen from '@/components/player-screens/PlayerWaitingScreen';
@@ -42,7 +42,7 @@ export default function GameAnsweringPhaseScreen({
           </p>
           <div className="w-full bg-gray-200 rounded-full h-3 mt-4">
             <div 
-              className="bg-purple-600 h-3 rounded-full transition-all duration-1000 ease-linear"
+              className={`${accent.bg} h-3 rounded-full transition-all duration-1000 ease-linear`}
               style={{ width: `${(timeLeft / (game?.settings.answerTime || 30)) * 100}%` }}
             />
           </div>

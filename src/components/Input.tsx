@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { LucideIcon } from 'lucide-react';
+import { accent } from '@/lib/palette';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -15,7 +16,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, variant = 'default', className = '', icon: Icon, actionButton, ...props }, ref) => {
-    const baseClasses = "w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500";
+    const baseClasses = `w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus}`;
     
     const variantClasses = {
       default: "",

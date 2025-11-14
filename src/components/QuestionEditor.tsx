@@ -7,6 +7,7 @@ import Button from '@/components/Button';
 import { useCallback, useState } from 'react';
 import { compressImage } from '@/lib/compressImage';
 import Image from 'next/image';
+import { accent } from '@/lib/palette';
 
 interface QuestionEditorProps {
   question: Question;
@@ -165,7 +166,7 @@ export default function QuestionEditor({
           type="text"
           value={question.question}
           onChange={(e) => onUpdateQuestion(questionIndex, 'question', e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500"
+          className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus}`}
           placeholder="Enter your question..."
         />
       </div>
@@ -190,7 +191,7 @@ export default function QuestionEditor({
                 className={`flex-1 px-3 py-2 rounded-lg border text-black placeholder-gray-400 focus:outline-none focus:ring-2 transition-all ${
                   question.correctAnswer === optionIndex
                     ? 'bg-green-50 border-green-400 focus:ring-green-400 focus:border-green-500'
-                    : 'bg-white border-gray-300 focus:ring-purple-500/50 focus:border-purple-500'
+                    : `bg-white border-gray-300 ${accent.ringFocus} ${accent.borderFocus}`
                 }`}
                 placeholder={`Option ${optionIndex + 1}...`}
               />
@@ -240,7 +241,7 @@ export default function QuestionEditor({
         <textarea
           value={question.explanation || ''}
           onChange={(e) => onUpdateQuestion(questionIndex, 'explanation', e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500"
+          className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus}`}
           placeholder="Enter an optional explanation for the answer..."
         />
       </div>
