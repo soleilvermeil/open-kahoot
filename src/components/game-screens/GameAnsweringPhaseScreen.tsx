@@ -31,7 +31,7 @@ export default function GameAnsweringPhaseScreen({
 
   return (
     <div className={`min-h-screen ${getGradient('answering')} p-8`}>
-      <div className="container mx-auto max-w-4xl">
+      <div className="container mx-auto max-w-4xl flex flex-col min-h-[calc(100vh-4rem)]">
         {/* Timer */}
         <div className="hidden sm:block text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -59,7 +59,9 @@ export default function GameAnsweringPhaseScreen({
 
         {/* Player Device - Show answer choices */}
         {isPlayer && !hasAnswered && (
-          <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
+          <div className="flex-1 flex">
+            <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
+          </div>
         )}
       </div>
     </div>
