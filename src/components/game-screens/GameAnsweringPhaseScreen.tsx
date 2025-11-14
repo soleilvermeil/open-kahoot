@@ -24,6 +24,11 @@ export default function GameAnsweringPhaseScreen({
   onSubmitAnswer, 
   hasAnswered
 }: GameAnsweringPhaseScreenProps) {
+  // If player has answered, show full-screen waiting screen (no timer or container)
+  if (isPlayer && hasAnswered) {
+    return <PlayerWaitingScreen />;
+  }
+
   return (
     <div className={`min-h-screen ${getGradient('answering')} p-8`}>
       <div className="container mx-auto max-w-4xl">
@@ -52,15 +57,9 @@ export default function GameAnsweringPhaseScreen({
           />
         )}
 
-        {/* Player Device - Show answer choices or waiting screen */}
-        {isPlayer && (
-          <>
-            {hasAnswered ? (
-              <PlayerWaitingScreen />
-            ) : (
-              <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
-            )}
-          </>
+        {/* Player Device - Show answer choices */}
+        {isPlayer && !hasAnswered && (
+          <PlayerAnsweringScreen onSubmitAnswer={onSubmitAnswer} />
         )}
       </div>
     </div>
