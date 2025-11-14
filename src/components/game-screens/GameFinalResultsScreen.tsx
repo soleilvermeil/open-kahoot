@@ -42,15 +42,24 @@ export default function GameFinalResultsScreen({
   ];
 
   return (
-    <PageLayout gradient="finished" maxWidth="4xl" showLogo={false}>
-      <Card>
+    <PageLayout gradient="waiting" maxWidth="4xl" showLogo={false}>
+      {isHost ? (
+        <Card>
+          <Leaderboard
+            players={finalScores}
+            title="Game Over!"
+            subtitle="Final Results"
+            buttons={hostButtons}
+          />
+        </Card>
+      ) : (
         <Leaderboard
           players={finalScores}
           title="Game Over!"
           subtitle="Final Results"
-          buttons={isHost ? hostButtons : playerButtons}
+          buttons={playerButtons}
         />
-      </Card>
+      )}
     </PageLayout>
   );
 } 

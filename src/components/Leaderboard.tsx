@@ -26,41 +26,11 @@ export default function Leaderboard({
   className = "",
   buttons
 }: LeaderboardProps) {
-  const getPodiumStyle = (index: number) => {
-    if (!showPodium) return 'bg-white border-gray-300';
-    
-    switch (index) {
-      case 0:
-        return 'bg-yellow-50 border-yellow-400 ring-2 ring-yellow-300 scale-105';
-      case 1:
-        return 'bg-gray-50 border-gray-400';
-      case 2:
-        return 'bg-orange-50 border-orange-500';
-      default:
-        return 'bg-white border-gray-300';
-    }
-  };
-
-  const getPositionBadgeStyle = (index: number) => {
-    if (!showPodium) return 'bg-gray-600';
-    
-    switch (index) {
-      case 0:
-        return 'bg-yellow-500';
-      case 1:
-        return 'bg-gray-500';
-      case 2:
-        return 'bg-orange-600';
-      default:
-        return 'bg-gray-600';
-    }
-  };
-
   return (
     <div className={className}>
       {(title || subtitle) && (
         <div className="text-center mb-8">
-          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-yellow-500" />
+          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-black" />
           <h1 className="text-4xl text-black mb-4 font-jua">{title}</h1>
           {subtitle && (
             <p className="text-gray-600 text-xl">{subtitle}</p>
@@ -88,26 +58,21 @@ export default function Leaderboard({
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {players.map((player, index) => (
           <div
             key={player.id}
-            className={`flex items-center justify-between p-6 rounded-lg border-2 transition-all ${getPodiumStyle(index)}`}
+            className="flex items-center justify-between p-4 rounded-lg border border-gray-300 bg-white"
           >
-            <div className="flex items-center gap-6">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl ${getPositionBadgeStyle(index)}`}>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg bg-gray-600">
                 {index + 1}
               </div>
-              <div>
-                <div className="text-black font-bold text-xl">{player.name}</div>
-                {index === 0 && showPodium && (
-                  <div className="text-yellow-600 font-semibold">👑 Leader</div>
-                )}
-              </div>
+              <div className="text-black font-semibold text-lg">{player.name}</div>
             </div>
             <div className="text-right">
-              <div className="text-black font-bold text-2xl">{player.score}</div>
-              <div className="text-gray-600 text-sm">points</div>
+              <div className="text-black font-bold text-xl">{player.score}</div>
+              <div className="text-gray-500 text-xs">points</div>
             </div>
           </div>
         ))}
