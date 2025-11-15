@@ -58,16 +58,16 @@ export default function AIGenerationDebugPage() {
   return (
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
-        <h2 className="text-3xl text-white mb-8 text-center font-jua">AI Generation Modal - Debug</h2>
+        <h2 className="text-3xl text-black mb-8 text-center font-jua">AI Generation Modal - Debug</h2>
         
         <div>
           <div className="text-center mb-6">
-            <p className="text-white/80 mb-4">
+            <p className="text-gray-600 mb-4">
               This page demonstrates the AI generation modal functionality.
             </p>
             <Button
               onClick={() => setIsModalOpen(true)}
-              variant="black"
+              variant="primary"
               size="lg"
               icon={Sparkles}
             >
@@ -75,7 +75,7 @@ export default function AIGenerationDebugPage() {
             </Button>
           </div>
           
-          <p className="text-white/60 text-center mt-4">
+          <p className="text-gray-500 text-center mt-4">
             Click the button to open the modal and test AI question generation.
           </p>
         </div>

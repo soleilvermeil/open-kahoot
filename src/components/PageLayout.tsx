@@ -7,6 +7,7 @@ interface PageLayoutProps {
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '6xl';
   showLogo?: boolean;
   diagonalPattern?: 'none' | 'subtle' | 'standard' | 'dense' | 'reverse' | 'crosshatch';
+  centerVertically?: boolean;
 }
 
 export default function PageLayout({ 
@@ -14,7 +15,7 @@ export default function PageLayout({
   gradient, 
   maxWidth = '4xl',
   showLogo = true,
-  diagonalPattern = 'subtle'
+  centerVertically = false
 }: PageLayoutProps) {
   const gradientClasses = gradients;
 
@@ -28,20 +29,14 @@ export default function PageLayout({
     '6xl': 'max-w-6xl'
   };
 
-  const diagonalPatternClasses = {
-    'none': '',
-    'subtle': 'diagonal-lines-subtle',
-    'standard': 'diagonal-lines',
-    'dense': 'diagonal-lines-dense',
-    'reverse': 'diagonal-lines-reverse',
-    'crosshatch': 'diagonal-crosshatch'
-  };
+  const isPurpleBackground = gradient === 'leaderboard' || gradient === 'finished';
+  const textColor = isPurpleBackground ? 'text-white' : 'text-black';
 
   return (
-    <div className={`min-h-screen ${gradientClasses[gradient]} ${diagonalPatternClasses[diagonalPattern]} p-8`}>
+    <div className={`min-h-screen ${gradientClasses[gradient]} p-8 ${centerVertically ? 'flex flex-col justify-center' : ''}`}>
       <div className={`container mx-auto ${maxWidthClasses[maxWidth]}`}>
         {showLogo && (
-          <Link href="/" className="text-4xl font-galindo mb-8 text-center text-white block">Open Kahoot!</Link>
+          <Link href="/" className={`text-4xl font-galindo mb-8 text-center ${textColor} block`}>Open Kahoot!</Link>
         )}
         {children}
       </div>

@@ -47,7 +47,7 @@ export default function HostQuizCreationScreen({
   return (
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
-        <h2 className="text-3xl text-white mb-8 text-center font-jua">Create Your Quiz</h2>
+        {/* <h2 className="text-3xl text-black mb-8 text-center font-jua">Create Your Quiz</h2> */}
 
         <HostGameSettingsSection 
           gameSettings={gameSettings}
@@ -71,7 +71,7 @@ export default function HostQuizCreationScreen({
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 onClick={onDownloadTSV}
-                variant="black"
+                variant="primary"
                 size="lg"
                 icon={Download}
               >
@@ -80,7 +80,7 @@ export default function HostQuizCreationScreen({
               <Button
                 onClick={onCreateGame}
                 disabled={!isFormValid}
-                variant="black"
+                variant="primary"
                 size="lg"
                 icon={MonitorPlay}
               >

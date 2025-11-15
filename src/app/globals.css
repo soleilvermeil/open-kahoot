@@ -22,141 +22,31 @@
 }
 
 body {
-  background: var(--background);
+  background: #ffffff;
+  background-image: 
+    linear-gradient(to bottom, rgb(255, 255, 255), #4f39f627),
+    radial-gradient(circle, #442dd76e 0px, transparent 2px),
+    radial-gradient(circle, #442dd76e 0px, transparent 2px),
+    repeating-linear-gradient(to left, #442dd700 0px, #442dd700 1px, transparent 1px, transparent 38px),
+    repeating-linear-gradient(30deg, #442dd71a 0px, #442dd71a 1px, transparent 1px, transparent 19px),
+    repeating-linear-gradient(-30deg, #442dd71a 0px, #442dd71a 1px, transparent 1px, transparent 19px);
+  
+  background-size: 
+    100% 100%,
+    38px 22px,
+    38px 22px,
+    19px 11px,
+    76px 22px,
+    76px 22px;
+  background-position: 
+    0 0,
+    0 0,
+    19px 11px,
+    0 0,
+    0 0,
+    0 0;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Diagonal Line Patterns */
-.diagonal-lines {
-  position: relative;
-}
-
-.diagonal-lines::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 2px,
-    rgba(255, 255, 255, 0.05) 2px,
-    rgba(255, 255, 255, 0.05) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-.diagonal-lines-dense {
-  position: relative;
-}
-
-.diagonal-lines-dense::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 1px,
-    rgba(255, 255, 255, 0.08) 1px,
-    rgba(255, 255, 255, 0.08) 2px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-.diagonal-lines-subtle {
-  position: relative;
-}
-
-.diagonal-lines-subtle::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 6px,
-    rgba(255, 255, 255, 0.05) 6px,
-    rgba(255, 255, 255, 0.05) 8px
-  );
-  mask: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 1) 100%);
-  -webkit-mask: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 1) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.diagonal-lines-reverse {
-  position: relative;
-}
-
-.diagonal-lines-reverse::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 2px,
-    rgba(255, 255, 255, 0.05) 2px,
-    rgba(255, 255, 255, 0.05) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Crosshatch pattern - combines both diagonal directions */
-.diagonal-crosshatch {
-  position: relative;
-}
-
-.diagonal-crosshatch::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.03) 2px,
-      rgba(255, 255, 255, 0.03) 4px
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.03) 2px,
-      rgba(255, 255, 255, 0.03) 4px
-    );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Ensure child content appears above the pattern */
-.diagonal-lines > *,
-.diagonal-lines-dense > *,
-.diagonal-lines-subtle > *,
-.diagonal-lines-reverse > *,
-.diagonal-crosshatch > * {
-  position: relative;
-  z-index: 2;
 }
 
 /* Winky Sans font styles */

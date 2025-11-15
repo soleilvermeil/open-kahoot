@@ -10,7 +10,7 @@ export default function HostThinkingScreen({ currentQuestion }: HostThinkingScre
   return (
     <Card className="mb-8">
       {/* Question Text */}
-      <h1 className="mb-8 text-5xl text-white text-center leading-tight font-jua">
+      <h1 className="mb-8 text-5xl text-black text-center leading-tight font-jua">
         {currentQuestion.question}
       </h1>
 

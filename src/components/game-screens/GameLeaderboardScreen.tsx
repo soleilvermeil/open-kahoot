@@ -18,7 +18,7 @@ export default function GameLeaderboardScreen({
   const isLastQuestion = (game?.currentQuestionIndex ?? 0) + 1 >= (game?.questions.length ?? 0);
 
   return (
-    <PageLayout gradient="leaderboard" maxWidth="4xl" showLogo={false}>
+    <PageLayout gradient="waiting" maxWidth="4xl" showLogo={false}>
       <Card>
         <Leaderboard
           players={leaderboard}

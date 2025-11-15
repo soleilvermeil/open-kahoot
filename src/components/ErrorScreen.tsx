@@ -22,18 +22,18 @@ export default function ErrorScreen({
 }: ErrorScreenProps) {
   return (
     <div className="text-center">
-      <AlertCircle className="w-16 h-16 text-red-300 mx-auto mb-4" />
-      <h1 className="text-4xl text-white mb-4 font-jua">{title}</h1>
-      <p className="text-white/80 text-xl mb-6">{message}</p>
+      <AlertCircle className="w-16 h-16 text-red-600 mx-auto mb-4" />
+      <h1 className="text-4xl text-black mb-4 font-jua">{title}</h1>
+      <p className="text-gray-600 text-xl mb-6">{message}</p>
       
       {autoRedirect && (
-        <p className="text-white/60 mb-4">{autoRedirect.message}</p>
+        <p className="text-gray-500 mb-4">{autoRedirect.message}</p>
       )}
       
       {actionText && onAction && (
         <Button
           onClick={onAction}
-          variant="secondary"
+          variant="primary"
           size="lg"
         >
           {actionText}

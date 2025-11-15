@@ -34,10 +34,10 @@ export default function HostAnsweringScreen({
   ];
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+    <div className="bg-white rounded-lg p-8 border border-gray-300 shadow-[0px_20px_30px_-10px_rgba(0,_0,_0,_0.1)]">
 
       {/* Question Text */}
-      <h1 className="text-4xl text-white text-center leading-tight mb-8 font-jua">
+      <h1 className="text-4xl text-black text-center leading-tight mb-8 font-jua">
         {currentQuestion.question}
       </h1>
 
@@ -64,7 +64,7 @@ export default function HostAnsweringScreen({
           </div>
         ))}
       </div>
-      <div className="text-center mt-6 text-white/80 text-lg">
+      <div className="text-center mt-6 text-gray-600 text-lg">
         Players are choosing their answers on their devices
       </div>
     </div>

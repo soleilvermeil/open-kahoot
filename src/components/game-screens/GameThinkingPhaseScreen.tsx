@@ -21,22 +21,26 @@ export default function GameThinkingPhaseScreen({
 }: GameThinkingPhaseScreenProps) {
   return (
     <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
-      <Timer
-        timeLeft={timeLeft}
-        totalTime={game?.settings.thinkTime || 5}
-        label={isHost ? 'Players are reading the question' : 'Read the question carefully'}
-        variant="thinking"
-      />
+      <div className="flex flex-col min-h-[calc(100vh-4rem)] shadow-[0px_20px_30px_-10px_rgba(0,_0,_0,_0.1)]">
+        <Timer
+          timeLeft={timeLeft}
+          totalTime={game?.settings.thinkTime || 5}
+          label={isHost ? 'Players are reading the question' : 'Read the question carefully'}
+          variant="thinking"
+        />
 
-      {/* Question Display - Host Screen */}
-      {isHost && (
-        <HostThinkingScreen currentQuestion={currentQuestion} />
-      )}
+        {/* Question Display - Host Screen */}
+        {isHost && (
+          <HostThinkingScreen currentQuestion={currentQuestion} />
+        )}
 
-      {/* Player Device - Waiting */}
-      {isPlayer && (
-        <PlayerThinkingScreen />
-      )}
+        {/* Player Device - Waiting */}
+        {isPlayer && (
+          <div className="flex-1 flex">
+            <PlayerThinkingScreen />
+          </div>
+        )}
+      </div>
     </PageLayout>
   );
 } 

@@ -13,7 +13,7 @@ interface AddQuestionButtonProps {
 export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAIModal, index }: AddQuestionButtonProps) {
   return (
     <div className="flex items-center py-2 gap-4">
-      <div className="flex-1 h-px bg-white/20"></div>
+      <div className="flex-1 h-px bg-gray-300"></div>
       
       <div className="flex gap-2">
         <Button
@@ -51,7 +51,7 @@ export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAI
         </Button>
       </div>
       
-      <div className="flex-1 h-px bg-white/20"></div>
+      <div className="flex-1 h-px bg-gray-300"></div>
     </div>
   );
 } 

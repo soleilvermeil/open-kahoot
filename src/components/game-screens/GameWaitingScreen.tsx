@@ -12,10 +12,10 @@ export default function GameWaitingScreen({ gameStatus }: GameWaitingScreenProps
     <div className={`min-h-screen ${getGradient('waiting')} flex items-center justify-center p-8`}>
       <div className="text-center">
         <AnimatedIcon icon={Hourglass} />
-        <h1 className="text-4xl text-white mb-4 font-jua">
+        <h1 className="text-4xl text-black mb-4 font-jua">
           {gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
         </h1>
-        <p className="text-white/80 text-xl">Get ready to answer some questions!</p>
+        <p className="text-gray-600 text-xl">Get ready to answer some questions!</p>
       </div>
     </div>
   );

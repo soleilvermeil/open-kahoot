@@ -1,5 +1,6 @@
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
+import { accent } from '@/lib/palette';
 
 interface ButtonProps {
   children?: React.ReactNode;
@@ -35,19 +36,19 @@ export default function Button({
 }: ButtonProps) {
   
   // Base styles
-  const baseStyles = `font-semibold ${variant === 'pill' ? 'rounded-full' : 'rounded-lg'} transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 inline-flex items-center justify-center gap-2 cursor-pointer`;
+  const baseStyles = `font-semibold ${variant === 'pill' ? 'rounded-full' : 'rounded-lg'} transition-colors focus:outline-none focus:ring-2 ${accent.ringFocus} inline-flex items-center justify-center gap-2 cursor-pointer`;
   
-  // Variant styles
+  // Variant styles - flat design
   const variantStyles = {
-    primary: 'bg-blue-500 hover:bg-blue-600 text-white',
-    secondary: 'bg-white/20 hover:bg-white/30 text-white',
-    success: 'bg-green-500 hover:bg-green-600 text-white',
-    danger: 'bg-red-500 hover:bg-red-600 text-white',
-    ghost: 'text-white hover:text-white/80',
-    outline: 'border border-white/30 text-white hover:bg-white/10',
-    link: 'text-blue-300 hover:text-blue-200 underline',
-    pill: 'text-white/60 hover:text-white hover:bg-white/10 border border-white/30 hover:border-white/50 transition-all duration-200',
-    black: 'bg-slate-700 hover:bg-slate-900 text-white',
+    primary: `${accent.bg} ${accent.bgHover} text-white`,
+    secondary: 'bg-white hover:bg-gray-100 text-black border border-gray-300',
+    success: 'bg-green-600 hover:bg-green-700 text-white',
+    danger: 'bg-red-600 hover:bg-red-700 text-white',
+    ghost: 'text-black hover:bg-gray-100',
+    outline: 'border border-gray-300 text-black hover:bg-gray-50',
+    link: `${accent.text} ${accent.textHover} underline`,
+    pill: 'text-black hover:bg-gray-100 border border-gray-300 hover:border-gray-400 transition-all duration-200',
+    black: 'bg-black hover:bg-gray-900 text-white',
   };
   
   // Size styles
@@ -101,7 +102,7 @@ export default function Button({
     >
       {loading ? (
         <>
-          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+          <div className={`animate-spin rounded-full h-5 w-5 border-b-2 ${variant === 'primary' || variant === 'success' || variant === 'danger' || variant === 'black' ? 'border-white' : 'border-black'}`}></div>
           {children}
         </>
       ) : (

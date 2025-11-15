@@ -37,18 +37,18 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50"
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-white/20">
+      <div className="relative bg-white rounded-lg shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-300">
         {/* Header */}
-        <div className="sticky top-0 bg-white/5 backdrop-blur-lg px-6 py-4 flex items-center justify-between border-b border-white/20">
-          <h2 className="text-2xl text-white font-jua">{title}</h2>
+        <div className="sticky top-0 bg-white px-6 py-4 flex items-center justify-between border-b border-gray-300">
+          <h2 className="text-2xl text-black font-jua">{title}</h2>
           <button
             onClick={onClose}
-            className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
+            className="text-gray-600 hover:text-black transition-colors p-1 hover:bg-gray-100 rounded-lg"
           >
             <X className="w-6 h-6" />
           </button>

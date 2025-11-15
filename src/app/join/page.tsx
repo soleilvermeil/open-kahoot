@@ -12,7 +12,7 @@ import JoinGameFormScreen from '@/components/join-screens/JoinGameFormScreen';
 
 export default function JoinPage() {
   return (
-    <PageLayout gradient="join" maxWidth="md">
+    <PageLayout gradient="join" maxWidth="md" centerVertically={true}>
       <div className="flex items-center justify-center">
         <Suspense fallback={
           <Card className="w-full max-w-md">

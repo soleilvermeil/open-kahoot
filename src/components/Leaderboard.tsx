@@ -2,12 +2,14 @@ import { Trophy, LucideIcon } from 'lucide-react';
 import type { Player } from '@/types/game';
 import Button from './Button';
 import AnimatedIcon from './AnimatedIcon';
+import { palette } from '@/lib/palette';
 
 interface LeaderboardProps {
   players: Player[];
   title?: string;
   subtitle?: string;
   showPodium?: boolean;
+  showIcon?: boolean;
   className?: string;
   buttons?: {
     text: string;
@@ -22,48 +24,19 @@ export default function Leaderboard({
   players, 
   title = "Leaderboard",
   subtitle,
-  showPodium = true,
-  className = "",
+  showIcon = true,
   buttons
 }: LeaderboardProps) {
-  const getPodiumStyle = (index: number) => {
-    if (!showPodium) return 'bg-white/10 border-white/20';
-    
-    switch (index) {
-      case 0:
-        return 'bg-yellow-500/30 border-yellow-400 ring-2 ring-yellow-300 scale-105';
-      case 1:
-        return 'bg-gray-300/30 border-gray-400';
-      case 2:
-        return 'bg-orange-600/30 border-orange-500';
-      default:
-        return 'bg-white/10 border-white/20';
-    }
-  };
-
-  const getPositionBadgeStyle = (index: number) => {
-    if (!showPodium) return 'bg-slate-600';
-    
-    switch (index) {
-      case 0:
-        return 'bg-yellow-500';
-      case 1:
-        return 'bg-gray-500';
-      case 2:
-        return 'bg-orange-600';
-      default:
-        return 'bg-slate-600';
-    }
-  };
-
   return (
-    <div className={className}>
+    <div className="">
       {(title || subtitle) && (
         <div className="text-center mb-8">
-          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-yellow-300" />
-          <h1 className="text-4xl text-white mb-4 font-jua">{title}</h1>
+          {showIcon && (
+            <AnimatedIcon icon={Trophy} size="xl" iconColor="text-black" />
+          )}
+          <h1 className="text-4xl text-black mb-4 font-jua">{title}</h1>
           {subtitle && (
-            <p className="text-white/80 text-xl">{subtitle}</p>
+            <p className="text-gray-600 text-xl">{subtitle}</p>
           )}
         </div>
       )}
@@ -75,7 +48,7 @@ export default function Leaderboard({
               <Button
                 key={index}
                 onClick={button.onClick}
-                variant={button.variant || "black"}
+                variant={button.variant || "primary"}
                 size="xl"
                 icon={button.icon}
                 iconPosition={button.iconPosition}
@@ -88,26 +61,21 @@ export default function Leaderboard({
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {players.map((player, index) => (
           <div
             key={player.id}
-            className={`flex items-center justify-between p-6 rounded-lg border-2 transition-all ${getPodiumStyle(index)}`}
+            className="flex items-center justify-between p-4 rounded-lg border border-gray-300 bg-white"
           >
-            <div className="flex items-center gap-6">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl ${getPositionBadgeStyle(index)}`}>
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg ${palette.accent.bg}`}>
                 {index + 1}
               </div>
-              <div>
-                <div className="text-white font-bold text-xl">{player.name}</div>
-                {index === 0 && showPodium && (
-                  <div className="text-yellow-300 font-semibold">👑 Leader</div>
-                )}
-              </div>
+              <div className="text-black font-semibold text-lg">{player.name}</div>
             </div>
             <div className="text-right">
-              <div className="text-white font-bold text-2xl">{player.score}</div>
-              <div className="text-white/70 text-sm">points</div>
+              <div className="text-black font-bold text-xl">{player.score}</div>
+              <div className="text-gray-500 text-xs">points</div>
             </div>
           </div>
         ))}

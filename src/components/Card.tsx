@@ -1,3 +1,5 @@
+import { card } from '@/lib/palette';
+
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -5,7 +7,7 @@ interface CardProps {
 
 export default function Card({ children, className = '' }: CardProps) {
   return (
-    <div className={`bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 ${className}`}>
+    <div className={`${card.primary} rounded-lg p-8 ${className} shadow-[0px_20px_30px_-10px_rgba(0,_0,_0,_0.1)]`}>
       {children}
     </div>
   );

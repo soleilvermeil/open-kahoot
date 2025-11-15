@@ -5,6 +5,7 @@ import { Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Modal from '@/components/Modal';
+import { accent } from '@/lib/palette';
 
 interface HostAIGenerationModalProps {
   isOpen: boolean;
@@ -60,7 +61,7 @@ export default function HostAIGenerationModal({
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="AI Quiz Generation">
-      <p className="text-white/80 text-sm mb-6">
+      <p className="text-gray-600 text-sm mb-6">
         Let AI create quiz questions for you! Select a language and enter a subject.
       </p>
 
@@ -76,17 +77,17 @@ export default function HostAIGenerationModal({
         />
 
         <div className="space-y-2">
-          <label className="block text-white text-sm font-medium">
+          <label className="block text-black text-sm font-medium">
             Language
           </label>
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value as 'english' | 'french')}
             disabled={isGenerating}
-            className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed [&>option]:text-black [&>option]:bg-white`}
           >
-            <option value="english" className="bg-slate-800">English</option>
-            <option value="french" className="bg-slate-800">Français</option>
+            <option value="english">English</option>
+            <option value="french">Français</option>
           </select>
         </div>
 
@@ -99,7 +100,7 @@ export default function HostAIGenerationModal({
         />
 
         <div className="space-y-2">
-          <label className="block text-white text-sm font-medium">
+          <label className="block text-black text-sm font-medium">
             Number of Questions
           </label>
           <input
@@ -109,7 +110,7 @@ export default function HostAIGenerationModal({
             value={questionCount}
             onChange={(e) => setQuestionCount(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
             disabled={isGenerating}
-            className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} disabled:opacity-50 disabled:cursor-not-allowed`}
           />
         </div>
 
@@ -118,7 +119,7 @@ export default function HostAIGenerationModal({
             onClick={handleGenerate}
             disabled={!subject.trim() || !accessKey.trim() || isGenerating}
             loading={isGenerating}
-            variant="black"
+            variant="primary"
             size="md"
             icon={Sparkles}
           >
@@ -127,7 +128,7 @@ export default function HostAIGenerationModal({
         </div>
       </div>
 
-      <p className="text-white/40 text-sm mt-4 text-center">
+      <p className="text-gray-500 text-sm mt-4 text-center">
         ⚠️ AI-generated content may contain inaccuracies. Please review and verify all questions before use.
       </p>
     </Modal>

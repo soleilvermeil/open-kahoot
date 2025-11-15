@@ -7,13 +7,15 @@ interface AnimatedIconProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   iconColor?: string;
+  iconBgColor?: string;
 }
 
 export default function AnimatedIcon({ 
   icon: Icon, 
   size = 'lg',
   className = '',
-  iconColor = 'text-white'
+  iconColor = 'text-white',
+  iconBgColor = 'bg-white'
 }: AnimatedIconProps) {
   const sizeStyles = {
     sm: {
@@ -36,7 +38,7 @@ export default function AnimatedIcon({
 
         return (
     <div className="animate-pulse">
-      <div className={`${sizeStyles[size].container} ${className.includes('bg-') ? '' : 'bg-white/20'} rounded-full flex items-center justify-center mx-auto mb-6 ${className}`}>
+      <div className={`${sizeStyles[size].container} ${className.includes('bg-') ? '' : iconBgColor} rounded-full flex items-center justify-center mx-auto mb-6 ${className}`}>
         <Icon className={`${sizeStyles[size].icon} ${iconColor}`} />
       </div>
     </div>
