@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, Zap } from 'lucide-react';
+import { Users, Zap, MonitorCog, MonitorPlay } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Hero from '@/components/Hero';
 import ActionCard from '@/components/ActionCard';
@@ -14,19 +14,19 @@ export default function Home() {
       <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
         <ActionCard
           href="/join"
-          icon={Zap}
+          icon={MonitorPlay}
           variant="join"
-          title="Join Game"
+          title="Play"
           description="Enter a game pin to join an existing quiz and compete with other players"
-          buttonText="Join Game →"
+          buttonText="Play →"
         />
         <ActionCard
           href="/host"
-          icon={Users}
+          icon={MonitorCog}
           variant="host"
-          title="Host Game"
+          title="Host"
           description="Create your own quiz with custom questions and let players join with a game pin"
-          buttonText="Create Game →"
+          buttonText="Host →"
         />
       </div>
 
