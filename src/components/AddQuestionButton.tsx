@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Plus, Upload, Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 
@@ -11,6 +12,8 @@ interface AddQuestionButtonProps {
 }
 
 export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAIModal, index }: AddQuestionButtonProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="flex items-center py-2 gap-4">
       <div className="flex-1 h-px bg-gray-300"></div>
@@ -22,7 +25,7 @@ export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAI
           size="sm"
           icon={Plus}
         >
-          Add Question
+          {t('host.quizCreation.addQuestion')}
         </Button>
         
         <div className="relative">
@@ -37,7 +40,7 @@ export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAI
             size="sm"
             icon={Upload}
           >
-            Append TSV
+            {t('host.quizCreation.appendTSV')}
           </Button>
         </div>
 
@@ -47,7 +50,7 @@ export default function AddQuestionButton({ onAddQuestion, onAppendTSV, onOpenAI
           size="sm"
           icon={Sparkles}
         >
-          Ask AI
+          {t('host.quizCreation.askAI')}
         </Button>
       </div>
       

@@ -15,6 +15,78 @@
       "disclaimer": "This project is not affiliated with, endorsed by, or connected to Kahoot! AS or any of its subsidiaries. Kahoot! is a trademark of Kahoot! AS.",
       "github": "View on GitHub"
     }
+  },
+  "join": {
+    "loading": "Loading...",
+    "gamePin": "Game PIN",
+    "yourName": "Your Name",
+    "namePlaceholder": "Enter your name...",
+    "generateNickname": "Generate random nickname",
+    "joinGame": "Join Game",
+    "error": {
+      "gameNotFound": "Game not found or already started. Please check the PIN and try again."
+    }
+  },
+  "host": {
+    "settings": {
+      "thinkTime": "Think Time",
+      "thinkTimeDescription": "Time to show question before allowing answers",
+      "answerTime": "Answer Time",
+      "answerTimeDescription": "Time allowed to submit answers",
+      "default": "Default",
+      "longer": "Longer",
+      "longest": "Longest",
+      "seconds": "seconds"
+    },
+    "quizCreation": {
+      "createFirstQuestion": "Create Your First Question",
+      "chooseHowToStart": "Choose how you want to get started:",
+      "createQuestion": "Create Question",
+      "or": "or",
+      "importTSV": "Import TSV File",
+      "askAI": "Ask AI",
+      "tsvInfo": "TSV files should contain columns: question, correct, wrong1, wrong2, wrong3, and optionally explanation.",
+      "downloadTSV": "Download TSV",
+      "createGame": "Create Game",
+      "question": "Question",
+      "shuffleOptions": "Shuffle options",
+      "questionPlaceholder": "Enter your question...",
+      "optionPlaceholder": "Option {{number}}...",
+      "uploadImage": "Upload Image",
+      "removeImage": "Remove image",
+      "explanationPlaceholder": "Enter an optional explanation for the answer...",
+      "addQuestion": "Add Question",
+      "appendTSV": "Append TSV",
+      "unsavedWarning": "You have unsaved questions in your quiz. Are you sure you want to leave?",
+      "noQuestionsToExport": "There are no questions to export.",
+      "errorImporting": "Error importing file: {{error}}",
+      "errorAppending": "Error appending file: {{error}}",
+      "successGenerated": "Successfully generated {{count}} questions!",
+      "errorGenerating": "Error: {{error}}",
+      "failedToGenerate": "Failed to generate questions",
+      "defaultTitle": "Quiz Game"
+    },
+    "aiModal": {
+      "title": "AI Quiz Generation",
+      "description": "Let AI create quiz questions for you! Select a language and enter a subject.",
+      "accessKey": "Access Key",
+      "accessKeyPlaceholder": "Enter AI generation access key",
+      "language": "Language",
+      "english": "English",
+      "french": "Français",
+      "subject": "Subject",
+      "numberOfQuestions": "Number of Questions",
+      "generating": "Generating...",
+      "generateQuestions": "Generate Questions",
+      "warning": "⚠️ AI-generated content may contain inaccuracies. Please review and verify all questions before use.",
+      "errorSubject": "Please enter a subject for the quiz.",
+      "errorAccessKey": "Please enter the AI generation access key."
+    },
+    "lobby": {
+      "players": "Players",
+      "startGame": "Start Game",
+      "waitingForPlayers": "Waiting for players to join..."
+    }
   }
 }
 

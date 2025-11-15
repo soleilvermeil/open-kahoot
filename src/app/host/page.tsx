@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import Papa from 'papaparse';
@@ -16,6 +17,7 @@ import HostGameLobbyScreen from '@/components/host-setup/HostGameLobbyScreen';
 import HostQuizCreationScreen from '@/components/host-setup/HostQuizCreationScreen';
 
 export default function HostPage() {
+  const { t } = useTranslation();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     thinkTime: 5,
@@ -28,7 +30,7 @@ export default function HostPage() {
   // Enable beforeunload when there are questions to prevent accidental data loss
   const { clearNavigationFlag } = useBeforeUnload({
     enabled: questions.length > 0,
-    message: 'You have unsaved questions in your quiz. Are you sure you want to leave?'
+    message: t('host.quizCreation.unsavedWarning')
   });
 
   useEffect(() => {
@@ -166,7 +168,7 @@ export default function HostPage() {
       // Removed console.log
     } catch (error) {
       console.error('Import error:', error);
-      alert(`Error importing file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(t('host.quizCreation.errorImporting', { error: error instanceof Error ? error.message : 'Unknown error' }));
       event.target.value = '';
     }
   };
@@ -190,7 +192,7 @@ export default function HostPage() {
       // Removed console.log
     } catch (error) {
       console.error('Append error:', error);
-      alert(`Error appending file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(t('host.quizCreation.errorAppending', { error: error instanceof Error ? error.message : 'Unknown error' }));
       event.target.value = '';
     }
   };
@@ -246,7 +248,7 @@ export default function HostPage() {
     if (questions.length === 0) return;
     
     const socket = getSocket();
-    const title = 'Quiz Game'; // Default title
+    const title = t('host.quizCreation.defaultTitle');
     socket.emit('createGame', title, questions, gameSettings, (createdGame: Game) => {
       setGame(createdGame);
       clearNavigationFlag(); // Clear flag since game is created and questions are saved
@@ -276,7 +278,7 @@ export default function HostPage() {
 
   const downloadTSV = () => {
     if (questions.length === 0) {
-      alert('There are no questions to export.');
+      alert(t('host.quizCreation.noQuestionsToExport'));
       return;
     }
 
@@ -325,11 +327,11 @@ export default function HostPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate questions');
+        throw new Error(data.error || t('host.quizCreation.failedToGenerate'));
       }
 
       if (!data.success || !data.questions) {
-        throw new Error('Invalid response from API');
+        throw new Error(t('host.quizCreation.failedToGenerate'));
       }
 
       // Convert AI response to Question objects
@@ -360,11 +362,11 @@ export default function HostPage() {
       setQuestions([...questions, ...newQuestions]);
 
       // Show success message
-      alert(`Successfully generated ${newQuestions.length} questions!`);
+      alert(t('host.quizCreation.successGenerated', { count: newQuestions.length }));
       
     } catch (error) {
       console.error('Error generating questions:', error);
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to generate questions'}`);
+      alert(t('host.quizCreation.errorGenerating', { error: error instanceof Error ? error.message : t('host.quizCreation.failedToGenerate') }));
     }
   };
 
