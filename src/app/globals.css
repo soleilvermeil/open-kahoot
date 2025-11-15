@@ -24,12 +24,12 @@
 body {
   background: #ffffff;
   background-image: 
-    linear-gradient(to bottom, rgb(255, 255, 255), rgba(217, 211, 255, 0.5)),
-    radial-gradient(circle, #432dd7 0px, transparent 2px),
-    radial-gradient(circle, #432dd7 0px, transparent 2px),
+    linear-gradient(to bottom, rgb(255, 255, 255), #4f39f627),
+    radial-gradient(circle, #442dd76e 0px, transparent 2px),
+    radial-gradient(circle, #442dd76e 0px, transparent 2px),
     repeating-linear-gradient(to left, #442dd700 0px, #442dd700 1px, transparent 1px, transparent 38px),
-    repeating-linear-gradient(30deg, #442dd733 0px, #442dd733 1px, transparent 1px, transparent 19px),
-    repeating-linear-gradient(-30deg, #442dd733 0px, #442dd733 1px, transparent 1px, transparent 19px);
+    repeating-linear-gradient(30deg, #442dd71a 0px, #442dd71a 1px, transparent 1px, transparent 19px),
+    repeating-linear-gradient(-30deg, #442dd71a 0px, #442dd71a 1px, transparent 1px, transparent 19px);
   
   background-size: 
     100% 100%,
