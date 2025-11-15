@@ -71,7 +71,7 @@ export default function HostQuizCreationScreen({
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 onClick={onDownloadTSV}
-                variant="black"
+                variant="primary"
                 size="lg"
                 icon={Download}
               >
@@ -80,7 +80,7 @@ export default function HostQuizCreationScreen({
               <Button
                 onClick={onCreateGame}
                 disabled={!isFormValid}
-                variant="black"
+                variant="primary"
                 size="lg"
                 icon={MonitorPlay}
               >

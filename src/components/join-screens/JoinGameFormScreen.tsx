@@ -90,10 +90,6 @@ export default function JoinGameFormScreen() {
 
   return (
     <Card className="w-full max-w-md">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl text-black mb-2 font-jua">Join Game</h1>
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
           label="Game PIN"
