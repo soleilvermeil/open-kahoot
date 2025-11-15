@@ -8,10 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-galindo: var(--font-galindo);
-  --font-jua: var(--font-jua);
+  --font-title: var(--font-title);
+  --font-subtitle: var(--font-subtitle);
 }
 
 @media (prefers-color-scheme: dark) {

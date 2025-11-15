@@ -3,6 +3,7 @@ import Timer from '@/components/Timer';
 import HostThinkingScreen from '@/components/host-screens/HostThinkingScreen';
 import PlayerThinkingScreen from '@/components/player-screens/PlayerThinkingScreen';
 import type { Question, Game } from '@/types/game';
+import PendingLayout from '@/components/PendingLayout';
 
 interface GameThinkingPhaseScreenProps {
   currentQuestion: Question;
@@ -21,7 +22,7 @@ export default function GameThinkingPhaseScreen({
 }: GameThinkingPhaseScreenProps) {
   return (
     <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
-      <div className="flex flex-col min-h-[calc(100vh-4rem)] shadow-[0px_20px_30px_-10px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex flex-col min-h-[calc(100vh-4rem)]">
         <Timer
           timeLeft={timeLeft}
           totalTime={game?.settings.thinkTime || 5}

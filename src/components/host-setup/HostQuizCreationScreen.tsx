@@ -49,7 +49,7 @@ export default function HostQuizCreationScreen({
   return (
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
-        {/* <h2 className="text-3xl text-black mb-8 text-center font-jua">Create Your Quiz</h2> */}
+        {/* <h2 className="text-3xl text-black mb-8 text-center font-subtitle">Create Your Quiz</h2> */}
 
         <HostGameSettingsSection 
           gameSettings={gameSettings}

@@ -58,7 +58,7 @@ export default function AIGenerationDebugPage() {
   return (
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
-        <h2 className="text-3xl text-black mb-8 text-center font-jua">AI Generation Modal - Debug</h2>
+        <h2 className="text-3xl text-black mb-8 text-center font-subtitle">AI Generation Modal - Debug</h2>
         
         <div>
           <div className="text-center mb-6">

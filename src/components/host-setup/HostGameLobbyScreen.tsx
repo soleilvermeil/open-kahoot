@@ -70,7 +70,7 @@ export default function HostGameLobbyScreen({
     <PageLayout gradient="host" maxWidth="6xl">
       <Card>
         <div className="text-center mb-8">
-          <h2 className="text-3xl text-black mb-4 font-jua">{game.title}</h2>
+          <h2 className="text-3xl text-black mb-4 font-subtitle">{game.title}</h2>
           
           <GamePinDisplay 
             pin={game.pin}
@@ -83,7 +83,7 @@ export default function HostGameLobbyScreen({
 
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl text-black flex items-center gap-2 font-jua">
+            <h2 className="text-2xl text-black flex items-center gap-2 font-subtitle">
               <Users className="w-6 h-6" />
               {t('host.lobby.players')} ({playersOnly.length})
             </h2>

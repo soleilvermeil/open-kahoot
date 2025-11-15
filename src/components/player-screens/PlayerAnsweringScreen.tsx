@@ -9,7 +9,7 @@ export default function PlayerAnsweringScreen({
 }: PlayerAnsweringScreenProps) {
   return (
     <div className="bg-white rounded-lg p-8 border border-gray-300 w-full flex flex-col justify-center shadow-[0px_20px_30px_-10px_rgba(0,_0,_0,_0.1)]">
-      <h2 className="text-3xl text-black text-center mb-8 font-jua">
+      <h2 className="text-3xl text-black text-center mb-8 font-subtitle">
         Choose your answer:
       </h2>
       <div className="grid grid-cols-2 gap-4 flex-1">

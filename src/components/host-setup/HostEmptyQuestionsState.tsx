@@ -19,7 +19,7 @@ export default function HostEmptyQuestionsState({
   
   return (
     <div className="bg-gray-50 rounded-lg p-8 border border-gray-300 text-center">
-      <p className="text-black text-lg mb-4 font-jua">{t('host.quizCreation.createFirstQuestion')}</p>
+      <p className="text-black text-lg mb-4 font-subtitle">{t('host.quizCreation.createFirstQuestion')}</p>
       <p className="text-gray-600 mb-6">{t('host.quizCreation.chooseHowToStart')}</p>
       
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

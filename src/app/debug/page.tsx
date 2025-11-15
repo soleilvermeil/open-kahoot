@@ -59,14 +59,14 @@ export default function DebugIndexPage() {
     <PageLayout gradient="host" maxWidth="4xl">
       <Card>
         <div className="text-center mb-8">
-          <h1 className="text-3xl text-black mb-2 font-jua">Debug Screens</h1>
+          <h1 className="text-3xl text-black mb-2 font-subtitle">Debug Screens</h1>
           <p className="text-gray-600">Preview all game layouts and phases</p>
         </div>
 
         <div className="space-y-8">
           {debugScreens.map((section, sectionIndex) => (
             <div key={sectionIndex}>
-              <h2 className="text-xl text-black mb-4 font-jua">{section.title}</h2>
+              <h2 className="text-xl text-black mb-4 font-subtitle">{section.title}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {section.screens.map((screen, screenIndex) => (
                   <Link

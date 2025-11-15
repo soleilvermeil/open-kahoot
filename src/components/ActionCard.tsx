@@ -43,7 +43,7 @@ export default function ActionCard({
               <Icon className="w-10 h-10 text-white" />
             </div>
           )}
-          <h2 className="text-3xl text-black mb-4 font-jua">{title}</h2>
+          <h2 className="text-3xl text-black mb-4 font-subtitle">{title}</h2>
           <p className="text-gray-600 text-lg mb-6">{description}</p>
           <div className={`${styles.buttonColor} text-white py-3 px-6 rounded-lg font-semibold ${styles.hoverButtonColor} transition-colors`}>
             {buttonText}
