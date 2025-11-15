@@ -21,14 +21,14 @@ export default function GameFinalResultsScreen({
       onClick: onDownloadLogs,
       icon: Download,
       iconPosition: 'left' as const,
-      variant: 'black' as const
+      variant: 'primary' as const
     },
     {
       text: "Back to Home",
       onClick: () => window.location.href = '/',
       icon: LogOut,
       iconPosition: 'right' as const,
-      variant: 'black' as const
+      variant: 'primary' as const
     }
   ];
 
@@ -47,18 +47,21 @@ export default function GameFinalResultsScreen({
         <Card>
           <Leaderboard
             players={finalScores}
-            title="Game Over!"
-            subtitle="Final Results"
+            title="Final Leaderboard"
+            subtitle="Game is now over!"
             buttons={hostButtons}
           />
         </Card>
       ) : (
-        <Leaderboard
-          players={finalScores}
-          title="Game Over!"
-          subtitle="Final Results"
-          buttons={playerButtons}
-        />
+        <Card>
+          <Leaderboard
+            players={finalScores}
+            title="Final Leaderboard"
+            subtitle="Game is now over!"
+            buttons={playerButtons}
+            showIcon={false}
+          />
+        </Card>
       )}
     </PageLayout>
   );

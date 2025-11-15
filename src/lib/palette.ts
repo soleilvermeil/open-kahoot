@@ -116,8 +116,8 @@ export const palette = {
     thinking: 'bg-transparent', // Transparent to show body background pattern
     answering: 'bg-transparent', // Transparent to show body background pattern
     results: 'bg-transparent', // Transparent to show body background pattern
-    correct: 'bg-green-500', // Green for correct
-    incorrect: 'bg-red-500', // Red for incorrect
+    correct: 'bg-gradient-to-b from-green-500 to-transparent', // Green for correct
+    incorrect: 'bg-gradient-to-b from-red-500 to-transparent', // Red for incorrect
     waiting: 'bg-transparent', // Transparent to show body background pattern
     home: 'bg-transparent', // Transparent to show body background pattern
   },

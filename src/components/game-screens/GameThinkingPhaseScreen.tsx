@@ -21,7 +21,7 @@ export default function GameThinkingPhaseScreen({
 }: GameThinkingPhaseScreenProps) {
   return (
     <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
-      <div className="flex flex-col min-h-[calc(100vh-4rem)]">
+      <div className="flex flex-col min-h-[calc(100vh-4rem)] shadow-[0px_20px_30px_-10px_rgba(0,_0,_0,_0.1)]">
         <Timer
           timeLeft={timeLeft}
           totalTime={game?.settings.thinkTime || 5}

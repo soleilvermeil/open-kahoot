@@ -2,12 +2,14 @@ import { Trophy, LucideIcon } from 'lucide-react';
 import type { Player } from '@/types/game';
 import Button from './Button';
 import AnimatedIcon from './AnimatedIcon';
+import { palette } from '@/lib/palette';
 
 interface LeaderboardProps {
   players: Player[];
   title?: string;
   subtitle?: string;
   showPodium?: boolean;
+  showIcon?: boolean;
   className?: string;
   buttons?: {
     text: string;
@@ -23,14 +25,17 @@ export default function Leaderboard({
   title = "Leaderboard",
   subtitle,
   showPodium = true,
+  showIcon = true,
   className = "",
   buttons
 }: LeaderboardProps) {
   return (
-    <div className={className}>
+    <div className="">
       {(title || subtitle) && (
         <div className="text-center mb-8">
-          <AnimatedIcon icon={Trophy} size="xl" iconColor="text-black" />
+          {showIcon && (
+            <AnimatedIcon icon={Trophy} size="xl" iconColor="text-black" />
+          )}
           <h1 className="text-4xl text-black mb-4 font-jua">{title}</h1>
           {subtitle && (
             <p className="text-gray-600 text-xl">{subtitle}</p>
@@ -65,7 +70,7 @@ export default function Leaderboard({
             className="flex items-center justify-between p-4 rounded-lg border border-gray-300 bg-white"
           >
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg bg-gray-600">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg ${palette.accent.bg}`}>
                 {index + 1}
               </div>
               <div className="text-black font-semibold text-lg">{player.name}</div>

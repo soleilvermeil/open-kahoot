@@ -36,7 +36,7 @@ export default function ActionCard({
 
   return (
     <Link href={href} className="group">
-      <div className="bg-white rounded-lg p-8 border border-gray-300 hover:bg-gray-50 transition-all duration-300">
+      <div className="bg-white rounded-lg p-8 border border-gray-300 hover:bg-gray-50 transition-all duration-300 shadow-[0px_20px_30px_0px_rgba(0,_0,_0,_0.1)]">
         <div className="text-center">
           {Icon && (
             <div className={`w-20 h-20 ${styles.iconColor} rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform`}>
