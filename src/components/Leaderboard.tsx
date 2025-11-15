@@ -24,9 +24,7 @@ export default function Leaderboard({
   players, 
   title = "Leaderboard",
   subtitle,
-  showPodium = true,
   showIcon = true,
-  className = "",
   buttons
 }: LeaderboardProps) {
   return (

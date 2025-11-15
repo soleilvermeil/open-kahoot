@@ -1,7 +1,4 @@
-import { Check, X } from 'lucide-react';
 import { PersonalResult } from '@/types/game';
-import AnimatedIcon from '@/components/AnimatedIcon';
-import { accent, correct, incorrect } from '@/lib/palette';
 
 interface PlayerResultsScreenProps {
   personalResult: PersonalResult;

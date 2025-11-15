@@ -1,4 +1,3 @@
-import { Settings } from 'lucide-react';
 import type { GameSettings } from '@/types/game';
 import { accent } from '@/lib/palette';
 

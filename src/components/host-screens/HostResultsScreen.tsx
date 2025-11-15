@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { GameStats } from '@/types/game';
-import { getChoiceColor } from '@/lib/palette';
 import Button from '@/components/Button';
 import { ChevronRight } from 'lucide-react';
 import { useCountdownMusic } from '@/lib/useCountdownMusic';
