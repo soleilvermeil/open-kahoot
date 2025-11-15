@@ -1,0 +1,20 @@
+{
+  "home": {
+    "title": "Open Kahoot!",
+    "play": {
+      "title": "Jouer",
+      "description": "Rejoindre une partie existante et concourir avec d'autres joueurs",
+      "button": "Jouer →"
+    },
+    "host": {
+      "title": "Animer",
+      "description": "Créer des questions personnalisées et laisser les joueurs rejoindre votre partie",
+      "button": "Animer →"
+    },
+    "footer": {
+      "disclaimer": "Ce projet n'est pas affilié à, approuvé par, ou connecté à Kahoot! AS ou l'une de ses filiales. Kahoot! est une marque déposée par Kahoot! AS.",
+      "github": "Voir le projet sur GitHub"
+    }
+  }
+}
+

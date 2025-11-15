@@ -1,0 +1,20 @@
+{
+  "home": {
+    "title": "Open Kahoot!",
+    "play": {
+      "title": "Play",
+      "description": "Enter a game pin to join an existing quiz and compete with other players",
+      "button": "Play →"
+    },
+    "host": {
+      "title": "Host",
+      "description": "Create your own quiz with custom questions and let players join with a game pin",
+      "button": "Host →"
+    },
+    "footer": {
+      "disclaimer": "This project is not affiliated with, endorsed by, or connected to Kahoot! AS or any of its subsidiaries. Kahoot! is a trademark of Kahoot! AS.",
+      "github": "View on GitHub"
+    }
+  }
+}
+
