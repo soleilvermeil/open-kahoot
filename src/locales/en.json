@@ -85,7 +85,9 @@
     "lobby": {
       "players": "Players",
       "startGame": "Start Game",
-      "waitingForPlayers": "Waiting for players to join..."
+      "waitingForPlayers": "Waiting for players to join...",
+      "websiteUrl": "Website URL",
+      "gamePin": "Game PIN"
     }
   },
   "screens": {
@@ -119,6 +121,46 @@
     "gameThinkingPhase": {
       "hostLabel": "Players are reading the question",
       "playerLabel": "Read the question carefully"
+    },
+    "answering": {
+      "hostLabel": "Players are choosing their answers",
+      "playerLabel": "Choose your answer!",
+      "playerTitle": "Choose your answer:",
+      "hostDescription": "Players are choosing their answers on their devices"
+    },
+    "results": {
+      "loadingTitle": "Getting your results ready...",
+      "loadingDescription": "Hold tight, we're calculating scores!",
+      "correct": "Correct!",
+      "incorrect": "Incorrect!",
+      "pointsEarned": "Points earned this question",
+      "totalScore": "Total score:",
+      "currentPosition": "Current position",
+      "pointsBehind": "points behind",
+      "inTheLead": "You're in the lead! Keep it up!",
+      "waitingForHost": "Waiting for host to continue...",
+      "playersGotItRight": "{{correct}} out of {{total}} players got it right!",
+      "showLeaderboard": "Show Leaderboard"
+    },
+    "leaderboard": {
+      "title": "Current Leaderboard",
+      "questionProgress": "Question {{current}} of {{total}} completed",
+      "finishGame": "Finish Game",
+      "nextQuestion": "Next Question"
+    },
+    "finalLeaderboard": {
+      "title": "Final Leaderboard",
+      "subtitle": "Game is now over!",
+      "downloadLogs": "Download Game Logs",
+      "backToHome": "Back to Home"
+    },
+    "gameError": {
+      "title": "Game not found",
+      "goHome": "Go home",
+      "redirecting": "Redirecting to home page...",
+      "gameNotFound": "Game not found or no longer available",
+      "unableToRejoin": "Unable to rejoin game. You may have been removed.",
+      "noPlayerData": "No player data found for this game. Please join the game again."
     }
   }
 }

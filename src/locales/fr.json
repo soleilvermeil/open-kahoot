@@ -84,8 +84,10 @@
     },
     "lobby": {
       "players": "Joueurs",
-      "startGame": "Démarrer la partie",
-      "waitingForPlayers": "En attente de joueurs..."
+      "startGame": "Commencer",
+      "waitingForPlayers": "En attente de joueurs...",
+      "websiteUrl": "URL du site",
+      "gamePin": "Code de partie"
     }
   },
   "screens": {
@@ -95,7 +97,7 @@
     },
     "gameFallback": {
       "title": "En attente de l'animateur...",
-      "description": "L'animateur prépare la prochaine question."
+      "description": "L'animateur prépare la prochaine question"
     },
     "playerThinking": {
       "title": "Préparez-vous !",
@@ -114,11 +116,51 @@
     },
     "gameValidation": {
       "title": "Connexion au jeu...",
-      "description": "Nous vérifions si le jeu est toujours actif et validons votre connexion. Cela garantit que vous pouvez rejoindre ou continuer à jouer."
+      "description": "Nous vérifions que le jeu soit actif et validons votre connexion."
     },
     "gameThinkingPhase": {
-      "hostLabel": "Les joueurs lisent la question",
+      "hostLabel": "Tout le monde lit la question attentivement",
       "playerLabel": "Lisez la question attentivement"
+    },
+    "answering": {
+      "hostLabel": "Tout le monde choisit sa réponse",
+      "playerLabel": "Choisissez votre réponse !",
+      "playerTitle": "Choisissez votre réponse :",
+      "hostDescription": "Les joueurs choisissent leurs réponses sur leurs appareils"
+    },
+    "results": {
+      "loadingTitle": "Préparation de vos résultats...",
+      "loadingDescription": "Un instant, nous calculons les scores !",
+      "correct": "Correct !",
+      "incorrect": "Incorrect !",
+      "pointsEarned": "Points gagnés pour cette question",
+      "totalScore": "Score total :",
+      "currentPosition": "Position actuelle",
+      "pointsBehind": "points derrière",
+      "inTheLead": "Vous êtes en tête ! Bravo !",
+      "waitingForHost": "En attente de l'animateur...",
+      "playersGotItRight": "{{correct}} joueur(s) sur {{total}} ont trouvé la bonne réponse !",
+      "showLeaderboard": "Afficher le classement"
+    },
+    "leaderboard": {
+      "title": "Classement actuel",
+      "questionProgress": "Question {{current}} sur {{total}} terminée",
+      "finishGame": "Terminer la partie",
+      "nextQuestion": "Question suivante"
+    },
+    "finalLeaderboard": {
+      "title": "Classement final",
+      "subtitle": "La partie est terminée !",
+      "downloadLogs": "Télécharger les résultats",
+      "backToHome": "Retour à l'accueil"
+    },
+    "gameError": {
+      "title": "Partie introuvable",
+      "goHome": "Retour à l'accueil",
+      "redirecting": "Redirection vers la page d'accueil...",
+      "gameNotFound": "Partie introuvable ou plus disponible",
+      "unableToRejoin": "Impossible de rejoindre la partie. Vous avez peut-être été retiré.",
+      "noPlayerData": "Aucune donnée de joueur trouvée pour cette partie. Veuillez rejoindre la partie à nouveau."
     }
   }
 }

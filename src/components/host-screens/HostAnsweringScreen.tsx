@@ -1,4 +1,7 @@
+'use client';
+
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Question } from '@/types/game';
 import { getChoiceColor } from '@/lib/palette';
 import { useCountdownMusic } from '@/lib/useCountdownMusic';
@@ -13,6 +16,7 @@ interface HostAnsweringScreenProps {
 export default function HostAnsweringScreen({ 
   currentQuestion 
 }: HostAnsweringScreenProps) {
+  const { t } = useTranslation();
   const { playRandomCountdown, stopMusic } = useCountdownMusic();
 
   // Play random countdown music when the answering phase starts (only once)
@@ -65,7 +69,7 @@ export default function HostAnsweringScreen({
         ))}
       </div>
       <div className="text-center mt-6 text-gray-600 text-lg">
-        Players are choosing their answers on their devices
+        {t('screens.answering.hostDescription')}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useReducer } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { getSocket } from '@/lib/socket-client';
 import type { Game, Question, GameStats, Player, PersonalResult, GamePhase } from '@/types/game';
 // Game Screen Components
@@ -165,6 +166,7 @@ export default function GamePage() {
   const params = useParams<{ id?: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { t } = useTranslation();
   const gameId = params?.id ?? null;
   const isHost = searchParams?.get('host') === 'true';
   const isPlayer = searchParams?.get('player') === 'true';
@@ -176,7 +178,7 @@ export default function GamePage() {
 
     if (!gameId) {
       dispatch({ type: 'SET_VALIDATING', payload: false });
-      dispatch({ type: 'SET_GAME_ERROR', payload: 'Game not found or no longer available' });
+      dispatch({ type: 'SET_GAME_ERROR', payload: t('screens.gameError.gameNotFound') });
       return;
     }
 
@@ -201,19 +203,19 @@ export default function GamePage() {
               if (success && game) {
                 dispatch({ type: 'SET_GAME_DATA', payload: { game: game, status: game.status } });
               } else {
-                dispatch({ type: 'SET_GAME_ERROR', payload: 'Unable to rejoin game. You may have been removed.' });
+                dispatch({ type: 'SET_GAME_ERROR', payload: t('screens.gameError.unableToRejoin') });
                 setTimeout(() => router.push('/'), 3000);
               }
             });
           } else {
             // No stored player ID for this game
             dispatch({ type: 'SET_VALIDATING', payload: false });
-            dispatch({ type: 'SET_GAME_ERROR', payload: 'No player data found for this game. Please join the game again.' });
+            dispatch({ type: 'SET_GAME_ERROR', payload: t('screens.gameError.noPlayerData') });
             setTimeout(() => router.push('/'), 3000);
           }
         } else {
           dispatch({ type: 'SET_VALIDATING', payload: false });
-          dispatch({ type: 'SET_GAME_ERROR', payload: 'Game not found or no longer available' });
+          dispatch({ type: 'SET_GAME_ERROR', payload: t('screens.gameError.gameNotFound') });
           setTimeout(() => router.push('/'), 3000);
         }
       });
@@ -224,7 +226,7 @@ export default function GamePage() {
         if (valid && gameData) {
           dispatch({ type: 'SET_GAME_DATA', payload: { game: gameData, status: gameData.status } });
         } else {
-          dispatch({ type: 'SET_GAME_ERROR', payload: 'Game not found or no longer available' });
+          dispatch({ type: 'SET_GAME_ERROR', payload: t('screens.gameError.gameNotFound') });
           setTimeout(() => router.push('/'), 3000);
         }
       });

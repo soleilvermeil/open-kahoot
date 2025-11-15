@@ -1,4 +1,7 @@
+'use client';
+
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GameStats } from '@/types/game';
 import Button from '@/components/Button';
 import { ChevronRight } from 'lucide-react';
@@ -13,6 +16,7 @@ export default function HostResultsScreen({
   questionStats, 
   onShowLeaderboard 
 }: HostResultsScreenProps) {
+  const { t } = useTranslation();
   const { playGong } = useCountdownMusic();
 
   // Play gong sound when results phase starts (only once)
@@ -40,7 +44,7 @@ export default function HostResultsScreen({
           </p>
         )}
         <p className="text-gray-600 text-2xl">
-          {questionStats.correctAnswers} out of {questionStats.totalPlayers} players got it right!
+          {t('screens.results.playersGotItRight', { correct: questionStats.correctAnswers, total: questionStats.totalPlayers })}
         </p>
       </div>
 
@@ -53,7 +57,7 @@ export default function HostResultsScreen({
           iconPosition="right"
           className="mx-auto"
         >
-          Show Leaderboard
+          {t('screens.results.showLeaderboard')}
         </Button>
       </div>
 

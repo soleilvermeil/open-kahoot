@@ -3,10 +3,12 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import GameErrorScreen from '@/components/game-screens/GameErrorScreen';
+import { useTranslation } from 'react-i18next';
 
 function GameErrorContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
-  const error = searchParams?.get('error') || 'Game not found or no longer available';
+  const error = searchParams?.get('error') || t('screens.gameError.gameNotFound');
 
   return (
     <GameErrorScreen error={error} />

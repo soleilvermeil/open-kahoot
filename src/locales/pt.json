@@ -85,7 +85,9 @@
     "lobby": {
       "players": "Jogadores",
       "startGame": "Iniciar Jogo",
-      "waitingForPlayers": "Aguardando jogadores entrarem..."
+      "waitingForPlayers": "Aguardando jogadores entrarem...",
+      "websiteUrl": "URL do Site",
+      "gamePin": "PIN do Jogo"
     }
   },
   "screens": {
@@ -119,6 +121,46 @@
     "gameThinkingPhase": {
       "hostLabel": "Os jogadores estão lendo a pergunta",
       "playerLabel": "Leia a pergunta com atenção"
+    },
+    "answering": {
+      "hostLabel": "Os jogadores estão escolhendo suas respostas",
+      "playerLabel": "Escolha sua resposta!",
+      "playerTitle": "Escolha sua resposta:",
+      "hostDescription": "Os jogadores estão escolhendo suas respostas em seus dispositivos"
+    },
+    "results": {
+      "loadingTitle": "Preparando seus resultados...",
+      "loadingDescription": "Aguarde, estamos calculando as pontuações!",
+      "correct": "Correto!",
+      "incorrect": "Incorreto!",
+      "pointsEarned": "Pontos ganhos nesta pergunta",
+      "totalScore": "Pontuação total:",
+      "currentPosition": "Posição atual",
+      "pointsBehind": "pontos atrás",
+      "inTheLead": "Você está na liderança! Continue assim!",
+      "waitingForHost": "Aguardando o anfitrião continuar...",
+      "playersGotItRight": "{{correct}} de {{total}} jogadores acertaram!",
+      "showLeaderboard": "Mostrar Classificação"
+    },
+    "leaderboard": {
+      "title": "Classificação Atual",
+      "questionProgress": "Pergunta {{current}} de {{total}} concluída",
+      "finishGame": "Finalizar Jogo",
+      "nextQuestion": "Próxima Pergunta"
+    },
+    "finalLeaderboard": {
+      "title": "Classificação Final",
+      "subtitle": "O jogo terminou!",
+      "downloadLogs": "Baixar Registros do Jogo",
+      "backToHome": "Voltar ao Início"
+    },
+    "gameError": {
+      "title": "Jogo não encontrado",
+      "goHome": "Voltar ao início",
+      "redirecting": "Redirecionando para a página inicial...",
+      "gameNotFound": "Jogo não encontrado ou não está mais disponível",
+      "unableToRejoin": "Não foi possível voltar ao jogo. Você pode ter sido removido.",
+      "noPlayerData": "Nenhum dado de jogador encontrado para este jogo. Por favor, entre no jogo novamente."
     }
   }
 }
