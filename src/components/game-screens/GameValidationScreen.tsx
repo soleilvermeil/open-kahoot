@@ -11,7 +11,7 @@ export default function GameValidationScreen() {
           Validating game connection...
         </h1>
         <p className="text-gray-600 text-lg">
-          We're checking if the game is still active and verifying your connection. This ensures you can join or continue playing.
+          We&apos;re checking if the game is still active and verifying your connection. This ensures you can join or continue playing.
         </p>
         <div className="flex justify-center mt-6">
           <div className="animate-pulse flex space-x-1">
