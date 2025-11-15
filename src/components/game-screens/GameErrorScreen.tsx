@@ -1,5 +1,4 @@
 import { useRouter } from 'next/navigation';
-import PageLayout from '@/components/PageLayout';
 import ErrorScreen from '@/components/ErrorScreen';
 
 interface GameErrorScreenProps {

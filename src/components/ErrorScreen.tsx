@@ -1,6 +1,5 @@
 import { Ban } from 'lucide-react';
 import Button from './Button';
-import PendingLayout from '@/components/PendingLayout'
 import { getGradient } from '@/lib/palette';
 import AnimatedIcon from '@/components/AnimatedIcon';
 

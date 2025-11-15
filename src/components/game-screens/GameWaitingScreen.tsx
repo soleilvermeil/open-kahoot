@@ -1,6 +1,4 @@
 import { Hourglass } from 'lucide-react';
-import { getGradient } from '@/lib/palette';
-import AnimatedIcon from '@/components/AnimatedIcon';
 import type { GamePhase } from '@/types/game';
 import PendingLayout from '@/components/PendingLayout'
 

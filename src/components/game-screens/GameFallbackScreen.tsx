@@ -1,6 +1,4 @@
 import { UserCog } from 'lucide-react';
-import { getGradient } from '@/lib/palette';
-import AnimatedIcon from '@/components/AnimatedIcon';
 import PendingLayout from '@/components/PendingLayout';
 
 export default function GameFallbackScreen() {

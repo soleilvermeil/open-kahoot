@@ -3,7 +3,6 @@ import Timer from '@/components/Timer';
 import HostThinkingScreen from '@/components/host-screens/HostThinkingScreen';
 import PlayerThinkingScreen from '@/components/player-screens/PlayerThinkingScreen';
 import type { Question, Game } from '@/types/game';
-import PendingLayout from '@/components/PendingLayout';
 
 interface GameThinkingPhaseScreenProps {
   currentQuestion: Question;
