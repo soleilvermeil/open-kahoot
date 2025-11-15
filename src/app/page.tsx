@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, Zap, MonitorCog, MonitorPlay } from 'lucide-react';
+import { MonitorCog, MonitorPlay } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Hero from '@/components/Hero';
 import ActionCard from '@/components/ActionCard';
