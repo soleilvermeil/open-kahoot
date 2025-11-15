@@ -15,7 +15,7 @@ export default function PlayerResultsScreen({ personalResult }: PlayerResultsScr
           iconColor={personalResult.wasCorrect ? correct.text : incorrect.text}
           iconBgColor={personalResult.wasCorrect ? correct.primary : incorrect.primary}
         /> */}
-        <h1 className="text-4xl sm:text-5xl text-black mb-4 font-jua">
+        <h1 className="text-4xl sm:text-5xl text-black mb-4 font-subtitle">
           {personalResult.wasCorrect ? 'Correct!' : 'Incorrect!'}
         </h1>
       </div>

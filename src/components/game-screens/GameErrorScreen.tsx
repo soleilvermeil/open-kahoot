@@ -10,12 +10,11 @@ export default function GameErrorScreen({ error }: GameErrorScreenProps) {
   const router = useRouter();
 
   return (
-    <PageLayout gradient="error" showLogo={false}>
       <div className="flex items-center justify-center min-h-[60vh]">
         <ErrorScreen
-          title="Game Not Found"
+          title="Game not found"
           message={error}
-          actionText="Go Home Now"
+          actionText="Go home"
           onAction={() => router.push('/')}
           autoRedirect={{
             url: '/',
@@ -24,6 +23,5 @@ export default function GameErrorScreen({ error }: GameErrorScreenProps) {
           }}
         />
       </div>
-    </PageLayout>
   );
 } 

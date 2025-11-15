@@ -36,7 +36,7 @@ export default function PageLayout({
     <div className={`min-h-screen ${gradientClasses[gradient]} p-8 ${centerVertically ? 'flex flex-col justify-center' : ''}`}>
       <div className={`container mx-auto ${maxWidthClasses[maxWidth]}`}>
         {showLogo && (
-          <Link href="/" className={`text-4xl font-galindo mb-8 text-center ${textColor} block`}>Open Kahoot!</Link>
+          <Link href="/" className={`text-4xl font-title mb-8 text-center ${textColor} block`}>Open Kahoot!</Link>
         )}
         {children}
       </div>

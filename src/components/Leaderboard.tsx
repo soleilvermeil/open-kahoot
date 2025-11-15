@@ -34,7 +34,7 @@ export default function Leaderboard({
           {showIcon && (
             <AnimatedIcon icon={Trophy} size="xl" iconColor="text-black" />
           )}
-          <h1 className="text-4xl text-black mb-4 font-jua">{title}</h1>
+          <h1 className="text-4xl text-black mb-4 font-subtitle">{title}</h1>
           {subtitle && (
             <p className="text-gray-600 text-xl">{subtitle}</p>
           )}

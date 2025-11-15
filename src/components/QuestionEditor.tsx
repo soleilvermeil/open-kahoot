@@ -121,7 +121,7 @@ export default function QuestionEditor({
       className="bg-gray-50 rounded-lg p-6 border border-gray-300"
     >
       <div className="flex items-start justify-between mb-4">
-        <h3 className="text-lg font-semibold text-black font-jua">Question {questionIndex + 1}</h3>
+        <h3 className="text-lg font-semibold text-black font-subtitle">{t('host.quizCreation.question')} {questionIndex + 1}</h3>
         <div className="flex gap-2">
           <Button
             onClick={handleShuffleOptions}
