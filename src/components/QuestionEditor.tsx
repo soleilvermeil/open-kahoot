@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Trash2, ChevronUp, ChevronDown, Shuffle, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Question } from '@/types/game';
@@ -28,6 +29,7 @@ export default function QuestionEditor({
   onRemoveQuestion,
   onMoveQuestion
 }: QuestionEditorProps) {
+  const { t } = useTranslation();
   const handleShuffleOptions = () => {
     // Create array of options with their indices
     const optionsWithIndices = question.options.map((option, index) => ({
@@ -129,7 +131,7 @@ export default function QuestionEditor({
             size="icon"
             icon={Shuffle}
             className="text-black hover:text-gray-700"
-            title="Shuffle options"
+            title={t('host.quizCreation.shuffleOptions')}
           >
           </Button>
           <Button
@@ -167,7 +169,7 @@ export default function QuestionEditor({
           value={question.question}
           onChange={(e) => onUpdateQuestion(questionIndex, 'question', e.target.value)}
           className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus}`}
-          placeholder="Enter your question..."
+          placeholder={t('host.quizCreation.questionPlaceholder')}
         />
       </div>
       <div className="flex gap-4 mb-4">
@@ -193,7 +195,7 @@ export default function QuestionEditor({
                     ? 'bg-green-50 border-green-400 focus:ring-green-400 focus:border-green-500'
                     : `bg-white border-gray-300 ${accent.ringFocus} ${accent.borderFocus}`
                 }`}
-                placeholder={`Option ${optionIndex + 1}...`}
+                placeholder={t('host.quizCreation.optionPlaceholder', { number: optionIndex + 1 })}
               />
             </div>
           ))}
@@ -218,7 +220,7 @@ export default function QuestionEditor({
             {!question.image && (
               <div className="text-center">
                 <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                <span className="mt-2 text-sm text-gray-600">Upload Image</span>
+                <span className="mt-2 text-sm text-gray-600">{t('host.quizCreation.uploadImage')}</span>
               </div>
             )}
             {question.image && (
@@ -232,7 +234,7 @@ export default function QuestionEditor({
               size="icon"
               icon={Trash2}
               className="absolute top-2 right-2 text-white bg-red-500 hover:bg-red-600 rounded-full"
-              title="Remove image"
+              title={t('host.quizCreation.removeImage')}
             />
           )}
         </div>
@@ -242,7 +244,7 @@ export default function QuestionEditor({
           value={question.explanation || ''}
           onChange={(e) => onUpdateQuestion(questionIndex, 'explanation', e.target.value)}
           className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus}`}
-          placeholder="Enter an optional explanation for the answer..."
+          placeholder={t('host.quizCreation.explanationPlaceholder')}
         />
       </div>
     </motion.div>

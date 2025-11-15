@@ -1,0 +1,167 @@
+{
+  "home": {
+    "title": "Open Kahoot!",
+    "play": {
+      "title": "Play",
+      "description": "Enter a game pin to join an existing quiz and compete with other players",
+      "button": "Play →"
+    },
+    "host": {
+      "title": "Host",
+      "description": "Create your own quiz with custom questions and let players join with a game pin",
+      "button": "Host →"
+    },
+    "footer": {
+      "disclaimer": "This project is not affiliated with, endorsed by, or connected to Kahoot! AS or any of its subsidiaries. Kahoot! is a trademark of Kahoot! AS.",
+      "github": "View on GitHub"
+    }
+  },
+  "join": {
+    "loading": "Loading...",
+    "gamePin": "Game PIN",
+    "yourName": "Your Name",
+    "namePlaceholder": "Enter your name...",
+    "generateNickname": "Generate random nickname",
+    "joinGame": "Join Game",
+    "error": {
+      "gameNotFound": "Game not found or already started. Please check the PIN and try again."
+    }
+  },
+  "host": {
+    "settings": {
+      "thinkTime": "Think Time",
+      "thinkTimeDescription": "Time to show question before allowing answers",
+      "answerTime": "Answer Time",
+      "answerTimeDescription": "Time allowed to submit answers",
+      "default": "Default",
+      "longer": "Longer",
+      "longest": "Longest",
+      "seconds": "seconds"
+    },
+    "quizCreation": {
+      "createFirstQuestion": "Create Your First Question",
+      "chooseHowToStart": "Choose how you want to get started:",
+      "createQuestion": "Create Question",
+      "or": "or",
+      "importTSV": "Import TSV File",
+      "askAI": "Ask AI",
+      "tsvInfo": "TSV files should contain columns: question, correct, wrong1, wrong2, wrong3, and optionally explanation.",
+      "downloadTSV": "Download TSV",
+      "createGame": "Create Game",
+      "question": "Question",
+      "shuffleOptions": "Shuffle options",
+      "questionPlaceholder": "Enter your question...",
+      "optionPlaceholder": "Option {{number}}...",
+      "uploadImage": "Upload Image",
+      "removeImage": "Remove image",
+      "explanationPlaceholder": "Enter an optional explanation for the answer...",
+      "addQuestion": "Add Question",
+      "appendTSV": "Append TSV",
+      "unsavedWarning": "You have unsaved questions in your quiz. Are you sure you want to leave?",
+      "noQuestionsToExport": "There are no questions to export.",
+      "errorImporting": "Error importing file: {{error}}",
+      "errorAppending": "Error appending file: {{error}}",
+      "successGenerated": "Successfully generated {{count}} questions!",
+      "errorGenerating": "Error: {{error}}",
+      "failedToGenerate": "Failed to generate questions",
+      "defaultTitle": "Quiz Game"
+    },
+    "aiModal": {
+      "title": "AI Quiz Generation",
+      "description": "Let AI create quiz questions for you! Select a language and enter a subject.",
+      "accessKey": "Access Key",
+      "accessKeyPlaceholder": "Enter AI generation access key",
+      "language": "Language",
+      "english": "English",
+      "french": "Français",
+      "subject": "Subject",
+      "numberOfQuestions": "Number of Questions",
+      "generating": "Generating...",
+      "generateQuestions": "Generate Questions",
+      "warning": "⚠️ AI-generated content may contain inaccuracies. Please review and verify all questions before use.",
+      "errorSubject": "Please enter a subject for the quiz.",
+      "errorAccessKey": "Please enter the AI generation access key."
+    },
+    "lobby": {
+      "players": "Players",
+      "startGame": "Start Game",
+      "waitingForPlayers": "Waiting for players to join...",
+      "websiteUrl": "Website URL",
+      "gamePin": "Game PIN"
+    }
+  },
+  "screens": {
+    "playerWaiting": {
+      "title": "Answer submitted!",
+      "description": "Your answer has been received. Waiting for other players to finish answering before results are shown."
+    },
+    "gameFallback": {
+      "title": "Waiting for the host...",
+      "description": "The host is preparing the next question."
+    },
+    "playerThinking": {
+      "title": "Get Ready!",
+      "description": "Look at the main screen and read the question"
+    },
+    "gameWaiting": {
+      "waitingTitle": "Waiting for game to start...",
+      "startingTitle": "Game Starting!",
+      "description": "Get ready to answer some questions!"
+    },
+    "gameWaitingForResults": {
+      "hostTitle": "Calculating results...",
+      "playerTitle": "Getting your results ready...",
+      "hostDescription": "Preparing the results for all players",
+      "playerDescription": "Hold tight, we're calculating your score!"
+    },
+    "gameValidation": {
+      "title": "Connecting to game...",
+      "description": "We're checking if the game is still active and verifying your connection. This ensures you can join or continue playing."
+    },
+    "gameThinkingPhase": {
+      "hostLabel": "Players are reading the question",
+      "playerLabel": "Read the question carefully"
+    },
+    "answering": {
+      "hostLabel": "Players are choosing their answers",
+      "playerLabel": "Choose your answer!",
+      "playerTitle": "Choose your answer:",
+      "hostDescription": "Players are choosing their answers on their devices"
+    },
+    "results": {
+      "loadingTitle": "Getting your results ready...",
+      "loadingDescription": "Hold tight, we're calculating scores!",
+      "correct": "Correct!",
+      "incorrect": "Incorrect!",
+      "pointsEarned": "Points earned this question",
+      "totalScore": "Total score:",
+      "currentPosition": "Current position",
+      "pointsBehind": "points behind",
+      "inTheLead": "You're in the lead! Keep it up!",
+      "waitingForHost": "Waiting for host to continue...",
+      "playersGotItRight": "{{correct}} out of {{total}} players got it right!",
+      "showLeaderboard": "Show Leaderboard"
+    },
+    "leaderboard": {
+      "title": "Current Leaderboard",
+      "questionProgress": "Question {{current}} of {{total}} completed",
+      "finishGame": "Finish Game",
+      "nextQuestion": "Next Question"
+    },
+    "finalLeaderboard": {
+      "title": "Final Leaderboard",
+      "subtitle": "Game is now over!",
+      "downloadLogs": "Download Game Logs",
+      "backToHome": "Back to Home"
+    },
+    "gameError": {
+      "title": "Game not found",
+      "goHome": "Go home",
+      "redirecting": "Redirecting to home page...",
+      "gameNotFound": "Game not found or no longer available",
+      "unableToRejoin": "Unable to rejoin game. You may have been removed.",
+      "noPlayerData": "No player data found for this game. Please join the game again."
+    }
+  }
+}
+

@@ -1,0 +1,167 @@
+{
+  "home": {
+    "title": "Open Kahoot!",
+    "play": {
+      "title": "Jouer",
+      "description": "Rejoindre une partie existante et concourir avec d'autres joueurs",
+      "button": "Jouer →"
+    },
+    "host": {
+      "title": "Animer",
+      "description": "Créer des questions personnalisées et laisser les joueurs rejoindre votre partie",
+      "button": "Animer →"
+    },
+    "footer": {
+      "disclaimer": "Ce projet n'est pas affilié à, approuvé par, ou connecté à Kahoot! AS ou l'une de ses filiales. Kahoot! est une marque déposée par Kahoot! AS.",
+      "github": "Voir le projet sur GitHub"
+    }
+  },
+  "join": {
+    "loading": "Chargement...",
+    "gamePin": "Code de partie",
+    "yourName": "Votre nom",
+    "namePlaceholder": "Entrez votre nom...",
+    "generateNickname": "Générer un surnom aléatoire",
+    "joinGame": "Rejoindre la partie",
+    "error": {
+      "gameNotFound": "Partie introuvable ou déjà commencée. Veuillez vérifier le code et réessayer."
+    }
+  },
+  "host": {
+    "settings": {
+      "thinkTime": "Temps de lecture",
+      "thinkTimeDescription": "Temps durant lequel les joueurs peuvent lire la question",
+      "answerTime": "Temps de réponse",
+      "answerTimeDescription": "Temps durant lequel les joueurs peuvent répondre",
+      "default": "Normal",
+      "longer": "Long",
+      "longest": "Très long",
+      "seconds": "secondes"
+    },
+    "quizCreation": {
+      "createFirstQuestion": "Créez votre première question",
+      "chooseHowToStart": "Choisissez par où commencer :",
+      "createQuestion": "Rédiger",
+      "or": "ou",
+      "importTSV": "Importer",
+      "askAI": "Demander à l'IA",
+      "tsvInfo": "Les questions importées doivent être sous forme de fichier TSV avec les colonnes suivantes : question, correct, wrong1, wrong2, wrong3. En option, vous pouvez ajouter : explanation.",
+      "downloadTSV": "Exporter les questions",
+      "createGame": "Créer la partie",
+      "question": "Question",
+      "shuffleOptions": "Mélanger les options",
+      "questionPlaceholder": "Entrez votre question...",
+      "optionPlaceholder": "Option {{number}}...",
+      "uploadImage": "Ajouter une image",
+      "removeImage": "Supprimer l'image",
+      "explanationPlaceholder": "(Optionnel) Entrez une explication pour la réponse...",
+      "addQuestion": "Ajouter une question",
+      "appendTSV": "Importer des questions",
+      "unsavedWarning": "Vous avez des questions non enregistrées dans votre quiz. Êtes-vous sûr de vouloir quitter la page ?",
+      "noQuestionsToExport": "Il n'y a pas de questions à exporter.",
+      "errorImporting": "Erreur lors de l'importation du fichier : {{error}}",
+      "errorAppending": "Erreur lors de l'ajout du fichier : {{error}}",
+      "successGenerated": "{{count}} questions générées avec succès !",
+      "errorGenerating": "Erreur : {{error}}",
+      "failedToGenerate": "Échec de la génération des questions",
+      "defaultTitle": "Jeu de quiz"
+    },
+    "aiModal": {
+      "title": "Génération de quiz par IA",
+      "description": "Laissez l'IA créer des questions de quiz pour vous ! Sélectionnez une langue et entrez un sujet.",
+      "accessKey": "Clé d'accès",
+      "accessKeyPlaceholder": "Entrez la clé d'accès pour cette fonctionnalité",
+      "language": "Langue",
+      "english": "Anglais",
+      "french": "Français",
+      "subject": "Sujet",
+      "numberOfQuestions": "Nombre de questions",
+      "generating": "Génération...",
+      "generateQuestions": "Générer les questions",
+      "warning": "⚠️ Le contenu généré par l'IA peut contenir des inexactitudes. Veuillez vérifier toutes les questions avant utilisation.",
+      "errorSubject": "Veuillez entrer un sujet pour le quiz.",
+      "errorAccessKey": "Veuillez entrer la clé d'accès."
+    },
+    "lobby": {
+      "players": "Joueurs",
+      "startGame": "Commencer",
+      "waitingForPlayers": "En attente de joueurs...",
+      "websiteUrl": "URL du site",
+      "gamePin": "Code de partie"
+    }
+  },
+  "screens": {
+    "playerWaiting": {
+      "title": "Réponse envoyée !",
+      "description": "Votre réponse a été enregistrée. En attente des autres joueurs..."
+    },
+    "gameFallback": {
+      "title": "En attente de l'animateur...",
+      "description": "L'animateur prépare la prochaine question"
+    },
+    "playerThinking": {
+      "title": "Préparez-vous !",
+      "description": "Regardez l'écran principal et lisez la question"
+    },
+    "gameWaiting": {
+      "waitingTitle": "En attente du début de la partie...",
+      "startingTitle": "La partie commence !",
+      "description": "Préparez-vous à répondre à des questions !"
+    },
+    "gameWaitingForResults": {
+      "hostTitle": "Calcul des résultats...",
+      "playerTitle": "Préparation de vos résultats...",
+      "hostDescription": "Préparation des résultats pour tous les joueurs",
+      "playerDescription": "Un instant, nous calculons votre score !"
+    },
+    "gameValidation": {
+      "title": "Connexion au jeu...",
+      "description": "Nous vérifions que le jeu soit actif et validons votre connexion."
+    },
+    "gameThinkingPhase": {
+      "hostLabel": "Tout le monde lit la question attentivement",
+      "playerLabel": "Lisez la question attentivement"
+    },
+    "answering": {
+      "hostLabel": "Tout le monde choisit sa réponse",
+      "playerLabel": "Choisissez votre réponse !",
+      "playerTitle": "Choisissez votre réponse :",
+      "hostDescription": "Les joueurs choisissent leurs réponses sur leurs appareils"
+    },
+    "results": {
+      "loadingTitle": "Préparation de vos résultats...",
+      "loadingDescription": "Un instant, nous calculons les scores !",
+      "correct": "Correct !",
+      "incorrect": "Incorrect !",
+      "pointsEarned": "Points gagnés pour cette question",
+      "totalScore": "Score total :",
+      "currentPosition": "Position actuelle",
+      "pointsBehind": "points derrière",
+      "inTheLead": "Vous êtes en tête ! Bravo !",
+      "waitingForHost": "En attente de l'animateur...",
+      "playersGotItRight": "{{correct}} joueur(s) sur {{total}} ont trouvé la bonne réponse !",
+      "showLeaderboard": "Afficher le classement"
+    },
+    "leaderboard": {
+      "title": "Classement actuel",
+      "questionProgress": "Question {{current}} sur {{total}} terminée",
+      "finishGame": "Terminer la partie",
+      "nextQuestion": "Question suivante"
+    },
+    "finalLeaderboard": {
+      "title": "Classement final",
+      "subtitle": "La partie est terminée !",
+      "downloadLogs": "Télécharger les résultats",
+      "backToHome": "Retour à l'accueil"
+    },
+    "gameError": {
+      "title": "Partie introuvable",
+      "goHome": "Retour à l'accueil",
+      "redirecting": "Redirection vers la page d'accueil...",
+      "gameNotFound": "Partie introuvable ou plus disponible",
+      "unableToRejoin": "Impossible de rejoindre la partie. Vous avez peut-être été retiré.",
+      "noPlayerData": "Aucune donnée de joueur trouvée pour cette partie. Veuillez rejoindre la partie à nouveau."
+    }
+  }
+}
+

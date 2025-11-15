@@ -1,6 +1,7 @@
+'use client';
+
 import { Hourglass } from 'lucide-react';
-import { getGradient } from '@/lib/palette';
-import AnimatedIcon from '@/components/AnimatedIcon';
+import { useTranslation } from 'react-i18next';
 import type { GamePhase } from '@/types/game';
 import PendingLayout from '@/components/PendingLayout'
 
@@ -9,11 +10,13 @@ interface GameWaitingScreenProps {
 }
 
 export default function GameWaitingScreen({ gameStatus }: GameWaitingScreenProps) {
+  const { t } = useTranslation();
+  
   return (
     <PendingLayout
       icon={Hourglass}
-      title={gameStatus === 'waiting' ? 'Waiting for game to start...' : 'Game Starting!'}
-      description="Get ready to answer some questions!"
+      title={gameStatus === 'waiting' ? t('screens.gameWaiting.waitingTitle') : t('screens.gameWaiting.startingTitle')}
+      description={t('screens.gameWaiting.description')}
     />
   );
 }

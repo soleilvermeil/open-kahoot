@@ -1,14 +1,17 @@
+'use client';
+
 import { ShieldCheck } from 'lucide-react';
-import { getGradient } from '@/lib/palette';
-import AnimatedIcon from '@/components/AnimatedIcon';
+import { useTranslation } from 'react-i18next';
 import PendingLayout from '@/components/PendingLayout';
 
 export default function GameValidationScreen() {
+  const { t } = useTranslation();
+  
   return (
     <PendingLayout
       icon={ShieldCheck}
-      title="Connecting to game..."
-      description="We&apos;re checking if the game is still active and verifying your connection. This ensures you can join or continue playing."
+      title={t('screens.gameValidation.title')}
+      description={t('screens.gameValidation.description')}
     />
   );
 } 

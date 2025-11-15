@@ -1,6 +1,7 @@
+'use client';
+
 import { Clock } from 'lucide-react';
-import { getGradient } from '@/lib/palette';
-import AnimatedIcon from '@/components/AnimatedIcon';
+import { useTranslation } from 'react-i18next';
 import PendingLayout from '@/components/PendingLayout';
 
 interface GameWaitingForResultsScreenProps {
@@ -8,11 +9,13 @@ interface GameWaitingForResultsScreenProps {
 }
 
 export default function GameWaitingForResultsScreen({ isHost }: GameWaitingForResultsScreenProps) {
+  const { t } = useTranslation();
+  
   return (
     <PendingLayout
       icon={Clock}
-      title={isHost ? 'Calculating results...' : 'Getting your results ready...'}
-      description={isHost ? 'Preparing the results for all players' : 'Hold tight, we\'re calculating your score!'}
+      title={isHost ? t('screens.gameWaitingForResults.hostTitle') : t('screens.gameWaitingForResults.playerTitle')}
+      description={isHost ? t('screens.gameWaitingForResults.hostDescription') : t('screens.gameWaitingForResults.playerDescription')}
     />
   );
 } 

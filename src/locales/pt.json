@@ -1,0 +1,167 @@
+{
+  "home": {
+    "title": "Open Kahoot!",
+    "play": {
+      "title": "Jogar",
+      "description": "Digite um PIN do jogo para entrar em um quiz existente e competir com outros jogadores",
+      "button": "Jogar →"
+    },
+    "host": {
+      "title": "Hospedar",
+      "description": "Crie seu próprio quiz com perguntas personalizadas e deixe os jogadores entrarem com um PIN do jogo",
+      "button": "Hospedar →"
+    },
+    "footer": {
+      "disclaimer": "Este projeto não é afiliado, endossado ou conectado à Kahoot! AS ou qualquer uma de suas subsidiárias. Kahoot! é uma marca registrada da Kahoot! AS.",
+      "github": "Ver no GitHub"
+    }
+  },
+  "join": {
+    "loading": "Carregando...",
+    "gamePin": "PIN do Jogo",
+    "yourName": "Seu Nome",
+    "namePlaceholder": "Digite seu nome...",
+    "generateNickname": "Gerar apelido aleatório",
+    "joinGame": "Entrar no Jogo",
+    "error": {
+      "gameNotFound": "Jogo não encontrado ou já iniciado. Verifique o PIN e tente novamente."
+    }
+  },
+  "host": {
+    "settings": {
+      "thinkTime": "Tempo de Reflexão",
+      "thinkTimeDescription": "Tempo para mostrar a pergunta antes de permitir respostas",
+      "answerTime": "Tempo de Resposta",
+      "answerTimeDescription": "Tempo permitido para enviar respostas",
+      "default": "Padrão",
+      "longer": "Mais Longo",
+      "longest": "Mais Longo",
+      "seconds": "segundos"
+    },
+    "quizCreation": {
+      "createFirstQuestion": "Crie Sua Primeira Pergunta",
+      "chooseHowToStart": "Escolha como deseja começar:",
+      "createQuestion": "Criar Pergunta",
+      "or": "ou",
+      "importTSV": "Importar Arquivo TSV",
+      "askAI": "Perguntar à IA",
+      "tsvInfo": "Os arquivos TSV devem conter as colunas: question, correct, wrong1, wrong2, wrong3 e opcionalmente explanation.",
+      "downloadTSV": "Baixar TSV",
+      "createGame": "Criar Jogo",
+      "question": "Pergunta",
+      "shuffleOptions": "Embaralhar opções",
+      "questionPlaceholder": "Digite sua pergunta...",
+      "optionPlaceholder": "Opção {{number}}...",
+      "uploadImage": "Enviar Imagem",
+      "removeImage": "Remover imagem",
+      "explanationPlaceholder": "Digite uma explicação opcional para a resposta...",
+      "addQuestion": "Adicionar Pergunta",
+      "appendTSV": "Anexar TSV",
+      "unsavedWarning": "Você tem perguntas não salvas no seu quiz. Tem certeza de que deseja sair?",
+      "noQuestionsToExport": "Não há perguntas para exportar.",
+      "errorImporting": "Erro ao importar arquivo: {{error}}",
+      "errorAppending": "Erro ao anexar arquivo: {{error}}",
+      "successGenerated": "{{count}} perguntas geradas com sucesso!",
+      "errorGenerating": "Erro: {{error}}",
+      "failedToGenerate": "Falha ao gerar perguntas",
+      "defaultTitle": "Jogo de Quiz"
+    },
+    "aiModal": {
+      "title": "Geração de Quiz por IA",
+      "description": "Deixe a IA criar perguntas de quiz para você! Selecione um idioma e digite um assunto.",
+      "accessKey": "Chave de Acesso",
+      "accessKeyPlaceholder": "Digite a chave de acesso de geração de IA",
+      "language": "Idioma",
+      "english": "Inglês",
+      "french": "Francês",
+      "subject": "Assunto",
+      "numberOfQuestions": "Número de Perguntas",
+      "generating": "Gerando...",
+      "generateQuestions": "Gerar Perguntas",
+      "warning": "⚠️ O conteúdo gerado por IA pode conter imprecisões. Por favor, revise e verifique todas as perguntas antes de usar.",
+      "errorSubject": "Por favor, digite um assunto para o quiz.",
+      "errorAccessKey": "Por favor, digite a chave de acesso de geração de IA."
+    },
+    "lobby": {
+      "players": "Jogadores",
+      "startGame": "Iniciar Jogo",
+      "waitingForPlayers": "Aguardando jogadores entrarem...",
+      "websiteUrl": "URL do Site",
+      "gamePin": "PIN do Jogo"
+    }
+  },
+  "screens": {
+    "playerWaiting": {
+      "title": "Resposta enviada!",
+      "description": "Sua resposta foi recebida. Aguardando outros jogadores terminarem de responder antes de mostrar os resultados."
+    },
+    "gameFallback": {
+      "title": "Aguardando o anfitrião...",
+      "description": "O anfitrião está preparando a próxima pergunta."
+    },
+    "playerThinking": {
+      "title": "Prepare-se!",
+      "description": "Olhe para a tela principal e leia a pergunta"
+    },
+    "gameWaiting": {
+      "waitingTitle": "Aguardando o jogo começar...",
+      "startingTitle": "Jogo Iniciando!",
+      "description": "Prepare-se para responder algumas perguntas!"
+    },
+    "gameWaitingForResults": {
+      "hostTitle": "Calculando resultados...",
+      "playerTitle": "Preparando seus resultados...",
+      "hostDescription": "Preparando os resultados para todos os jogadores",
+      "playerDescription": "Aguarde, estamos calculando sua pontuação!"
+    },
+    "gameValidation": {
+      "title": "Conectando ao jogo...",
+      "description": "Estamos verificando se o jogo ainda está ativo e validando sua conexão. Isso garante que você possa entrar ou continuar jogando."
+    },
+    "gameThinkingPhase": {
+      "hostLabel": "Os jogadores estão lendo a pergunta",
+      "playerLabel": "Leia a pergunta com atenção"
+    },
+    "answering": {
+      "hostLabel": "Os jogadores estão escolhendo suas respostas",
+      "playerLabel": "Escolha sua resposta!",
+      "playerTitle": "Escolha sua resposta:",
+      "hostDescription": "Os jogadores estão escolhendo suas respostas em seus dispositivos"
+    },
+    "results": {
+      "loadingTitle": "Preparando seus resultados...",
+      "loadingDescription": "Aguarde, estamos calculando as pontuações!",
+      "correct": "Correto!",
+      "incorrect": "Incorreto!",
+      "pointsEarned": "Pontos ganhos nesta pergunta",
+      "totalScore": "Pontuação total:",
+      "currentPosition": "Posição atual",
+      "pointsBehind": "pontos atrás",
+      "inTheLead": "Você está na liderança! Continue assim!",
+      "waitingForHost": "Aguardando o anfitrião continuar...",
+      "playersGotItRight": "{{correct}} de {{total}} jogadores acertaram!",
+      "showLeaderboard": "Mostrar Classificação"
+    },
+    "leaderboard": {
+      "title": "Classificação Atual",
+      "questionProgress": "Pergunta {{current}} de {{total}} concluída",
+      "finishGame": "Finalizar Jogo",
+      "nextQuestion": "Próxima Pergunta"
+    },
+    "finalLeaderboard": {
+      "title": "Classificação Final",
+      "subtitle": "O jogo terminou!",
+      "downloadLogs": "Baixar Registros do Jogo",
+      "backToHome": "Voltar ao Início"
+    },
+    "gameError": {
+      "title": "Jogo não encontrado",
+      "goHome": "Voltar ao início",
+      "redirecting": "Redirecionando para a página inicial...",
+      "gameNotFound": "Jogo não encontrado ou não está mais disponível",
+      "unableToRejoin": "Não foi possível voltar ao jogo. Você pode ter sido removido.",
+      "noPlayerData": "Nenhum dado de jogador encontrado para este jogo. Por favor, entre no jogo novamente."
+    }
+  }
+}
+

@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { Plus, Upload, Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 
@@ -12,6 +15,8 @@ export default function HostEmptyQuestionsState({
   onFileImport,
   onOpenAIModal 
 }: HostEmptyQuestionsStateProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="bg-gray-50 rounded-lg p-8 border border-gray-300 text-center">
       <p className="text-black text-lg mb-4 font-subtitle">{t('host.quizCreation.createFirstQuestion')}</p>
@@ -24,10 +29,10 @@ export default function HostEmptyQuestionsState({
           size="lg"
           icon={Plus}
         >
-          Create Question
+          {t('host.quizCreation.createQuestion')}
         </Button>
         
-        <div className="text-gray-400 text-sm">or</div>
+        <div className="text-gray-400 text-sm">{t('host.quizCreation.or')}</div>
         
         <div className="relative">
           <input
@@ -37,11 +42,11 @@ export default function HostEmptyQuestionsState({
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
           <Button variant="primary" size="lg" icon={Upload}>
-            Import TSV File
+            {t('host.quizCreation.importTSV')}
           </Button>
         </div>
 
-        <div className="text-gray-400 text-sm">or</div>
+        <div className="text-gray-400 text-sm">{t('host.quizCreation.or')}</div>
 
         <Button
           onClick={onOpenAIModal}
@@ -49,12 +54,12 @@ export default function HostEmptyQuestionsState({
           size="lg"
           icon={Sparkles}
         >
-          Ask AI
+          {t('host.quizCreation.askAI')}
         </Button>
       </div>
       
       <p className="text-gray-500 text-sm mt-4">
-        TSV files should contain columns: question, correct, wrong1, wrong2, wrong3, and optionally explanation.
+        {t('host.quizCreation.tsvInfo')}
       </p>
     </div>
   );

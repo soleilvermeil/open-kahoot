@@ -30,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${galindo.variable} ${chango.variable} antialiased`}
       >
-        {children}
+        <I18nProvider>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   );

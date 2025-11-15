@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import type { GameSettings } from '@/types/game';
 import { accent } from '@/lib/palette';
 
@@ -10,41 +13,43 @@ export default function HostGameSettingsSection({
   gameSettings, 
   onUpdateSettings 
 }: HostGameSettingsSectionProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="mb-8 bg-gray-50 rounded-lg p-6 border border-gray-300">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-black font-medium mb-2">
-            Think Time
+            {t('host.settings.thinkTime')}
           </label>
           <p className="text-gray-600 text-sm mb-2">
-            Time to show question before allowing answers
+            {t('host.settings.thinkTimeDescription')}
           </p>
           <select
             value={gameSettings.thinkTime}
             onChange={(e) => onUpdateSettings({ ...gameSettings, thinkTime: parseInt(e.target.value) })}
             className={`w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} [&>option]:text-black [&>option]:bg-white`}
           >
-            <option value={5}>Default (5 seconds)</option>
-            <option value={10}>Longer (10 seconds)</option>
-            <option value={20}>Longest (20 seconds)</option>
+            <option value={5}>{t('host.settings.default')} (5 {t('host.settings.seconds')})</option>
+            <option value={10}>{t('host.settings.longer')} (10 {t('host.settings.seconds')})</option>
+            <option value={20}>{t('host.settings.longest')} (20 {t('host.settings.seconds')})</option>
           </select>
         </div>
         <div>
           <label className="block text-black font-medium mb-2">
-            Answer Time
+            {t('host.settings.answerTime')}
           </label>
           <p className="text-gray-600 text-sm mb-2">
-            Time allowed to submit answers
+            {t('host.settings.answerTimeDescription')}
           </p>
           <select
             value={gameSettings.answerTime}
             onChange={(e) => onUpdateSettings({ ...gameSettings, answerTime: parseInt(e.target.value) })}
             className={`w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} [&>option]:text-black [&>option]:bg-white`}
           >
-            <option value={20}>Default (20 seconds)</option>
-            <option value={30}>Longer (30 seconds)</option>
-            <option value={60}>Longest (60 seconds)</option>
+            <option value={20}>{t('host.settings.default')} (20 {t('host.settings.seconds')})</option>
+            <option value={30}>{t('host.settings.longer')} (30 {t('host.settings.seconds')})</option>
+            <option value={60}>{t('host.settings.longest')} (60 {t('host.settings.seconds')})</option>
           </select>
         </div>
       </div>

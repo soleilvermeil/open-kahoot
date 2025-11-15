@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -13,30 +14,31 @@ interface HostAIGenerationModalProps {
   onGenerateQuestions: (subject: string, language: 'english' | 'french', accessKey: string, questionCount: number) => Promise<void>;
 }
 
-const subjectPlaceholders = {
-  english: 'e.g., World War II, Photosynthesis, JavaScript Basics...',
-  french: 'ex: Seconde Guerre mondiale, Photosynthèse, Bases de JavaScript...'
-};
-
 export default function HostAIGenerationModal({ 
   isOpen,
   onClose,
   onGenerateQuestions 
 }: HostAIGenerationModalProps) {
+  const { t } = useTranslation();
   const [subject, setSubject] = useState('');
   const [language, setLanguage] = useState<'english' | 'french'>('english');
   const [accessKey, setAccessKey] = useState('');
   const [questionCount, setQuestionCount] = useState(5);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const subjectPlaceholders = {
+    english: 'e.g., World War II, Photosynthesis, JavaScript Basics...',
+    french: 'ex: Seconde Guerre mondiale, Photosynthèse, Bases de JavaScript...'
+  };
+
   const handleGenerate = async () => {
     if (!subject.trim()) {
-      alert('Please enter a subject for the quiz.');
+      alert(t('host.aiModal.errorSubject'));
       return;
     }
 
     if (!accessKey.trim()) {
-      alert('Please enter the AI generation access key.');
+      alert(t('host.aiModal.errorAccessKey'));
       return;
     }
 
@@ -60,17 +62,17 @@ export default function HostAIGenerationModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="AI Quiz Generation">
+    <Modal isOpen={isOpen} onClose={handleClose} title={t('host.aiModal.title')}>
       <p className="text-gray-600 text-sm mb-6">
-        Let AI create quiz questions for you! Select a language and enter a subject.
+        {t('host.aiModal.description')}
       </p>
 
       <div className="space-y-4">
 
         <Input
-        label="Access Key"
+        label={t('host.aiModal.accessKey')}
         type="password"
-        placeholder="Enter AI generation access key"
+        placeholder={t('host.aiModal.accessKeyPlaceholder')}
         value={accessKey}
         onChange={(e) => setAccessKey(e.target.value)}
         disabled={isGenerating}
@@ -78,7 +80,7 @@ export default function HostAIGenerationModal({
 
         <div className="space-y-2">
           <label className="block text-black text-sm font-medium">
-            Language
+            {t('host.aiModal.language')}
           </label>
           <select
             value={language}
@@ -86,13 +88,13 @@ export default function HostAIGenerationModal({
             disabled={isGenerating}
             className={`w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 ${accent.ringFocus} ${accent.borderFocus} cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed [&>option]:text-black [&>option]:bg-white`}
           >
-            <option value="english">English</option>
-            <option value="french">Français</option>
+            <option value="english">{t('host.aiModal.english')}</option>
+            <option value="french">{t('host.aiModal.french')}</option>
           </select>
         </div>
 
         <Input
-          label="Subject"
+          label={t('host.aiModal.subject')}
           placeholder={subjectPlaceholders[language]}
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
@@ -101,7 +103,7 @@ export default function HostAIGenerationModal({
 
         <div className="space-y-2">
           <label className="block text-black text-sm font-medium">
-            Number of Questions
+            {t('host.aiModal.numberOfQuestions')}
           </label>
           <input
             type="number"
@@ -123,13 +125,13 @@ export default function HostAIGenerationModal({
             size="md"
             icon={Sparkles}
           >
-            {isGenerating ? 'Generating...' : 'Generate Questions'}
+            {isGenerating ? t('host.aiModal.generating') : t('host.aiModal.generateQuestions')}
           </Button>
         </div>
       </div>
 
       <p className="text-gray-500 text-sm mt-4 text-center">
-        ⚠️ AI-generated content may contain inaccuracies. Please review and verify all questions before use.
+        {t('host.aiModal.warning')}
       </p>
     </Modal>
   );

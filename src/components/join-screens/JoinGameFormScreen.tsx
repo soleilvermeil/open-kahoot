@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { LogIn, Lock, Dice6 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,6 +13,7 @@ import Card from '@/components/Card';
 import Input from '@/components/Input';
 
 export default function JoinGameFormScreen() {
+  const { t } = useTranslation();
   const [pin, setPin] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [isJoining, setIsJoining] = useState(false);
@@ -56,7 +58,7 @@ export default function JoinGameFormScreen() {
         localStorage.setItem(storageKey, playerId);
         router.push(`/game/${game.id}?player=true`);
       } else {
-        setError('Game not found or already started. Please check the PIN and try again.');
+        setError(t('join.error.gameNotFound'));
       }
     });
   };
@@ -92,7 +94,7 @@ export default function JoinGameFormScreen() {
     <Card className="w-full max-w-md">
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
-          label="Game PIN"
+          label={t('join.gamePin')}
           type="tel"
           inputMode="numeric"
           value={pin}
@@ -109,19 +111,19 @@ export default function JoinGameFormScreen() {
         />
 
         <Input
-          label="Your Name"
+          label={t('join.yourName')}
           type="text"
           value={playerName}
           onChange={(e) => {
             setPlayerName(e.target.value.slice(0, 20));
             setError(''); // Clear error when user starts typing
           }}
-          placeholder="Enter your name..."
+          placeholder={t('join.namePlaceholder')}
           maxLength={20}
           actionButton={featureConfig.showRandomNickname ? {
             icon: Dice6,
             onClick: generateRandomNickname,
-            title: "Generate random nickname"
+            title: t('join.generateNickname')
           } : undefined}
         />
 
@@ -140,7 +142,7 @@ export default function JoinGameFormScreen() {
           loading={isJoining}
           icon={LogIn}
         >
-          Join Game
+          {t('join.joinGame')}
         </Button>
       </form>
     </Card>

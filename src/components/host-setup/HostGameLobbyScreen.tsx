@@ -1,4 +1,7 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Users, Play } from 'lucide-react';
 import type { Game, Player } from '@/types/game';
 import PageLayout from '@/components/PageLayout';
@@ -22,6 +25,7 @@ export default function HostGameLobbyScreen({
   onStartGame,
   onToggleDyslexiaSupport
 }: HostGameLobbyScreenProps) {
+  const { t } = useTranslation();
   const { startLobbyMusic, stopLobbyMusic, playBlup } = useCountdownMusic();
   const playersOnly = game.players.filter(p => !p.isHost);
   const musicStartedRef = useRef(false);
@@ -81,22 +85,22 @@ export default function HostGameLobbyScreen({
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl text-black flex items-center gap-2 font-subtitle">
               <Users className="w-6 h-6" />
-              Players ({playersOnly.length})
+              {t('host.lobby.players')} ({playersOnly.length})
             </h2>
             <Button
               onClick={handleStartGame}
               disabled={playersOnly.length === 0}
-              variant="black"
+              variant="primary"
               size="lg"
               icon={Play}
             >
-              Start Game
+              {t('host.lobby.startGame')}
             </Button>
           </div>
           
           <PlayerList 
             players={playersOnly}
-            emptyMessage="Waiting for players to join..."
+            emptyMessage={t('host.lobby.waitingForPlayers')}
             columns={3}
             showDyslexiaControls={true}
             onToggleDyslexiaSupport={onToggleDyslexiaSupport}

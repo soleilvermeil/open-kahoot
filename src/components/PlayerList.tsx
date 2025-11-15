@@ -49,10 +49,10 @@ export default function PlayerList({
               key={player.id}
               className="bg-white rounded-lg p-4 text-center relative border border-gray-300"
             >
-              <div className="text-black font-semibold">{player.name}</div>
-              {player.score !== undefined && (
+              <div className="text-black text-4xl font-subtitle">{player.name}</div>
+              {/* {player.score !== undefined && (
                 <div className="text-gray-600 text-sm mt-1">{player.score} points</div>
-              )}
+              )} */}
               
               {showDyslexiaControls && (
                 <div className="mt-2 flex items-center justify-center">

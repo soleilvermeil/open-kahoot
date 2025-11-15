@@ -1,4 +1,7 @@
+'use client';
+
 import { LogOut, Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
 import Leaderboard from '@/components/Leaderboard';
@@ -15,16 +18,18 @@ export default function GameFinalResultsScreen({
   isHost, 
   onDownloadLogs 
 }: GameFinalResultsScreenProps) {
+  const { t } = useTranslation();
+  
   const hostButtons = [
     {
-      text: "Download Game Logs",
+      text: t('screens.finalLeaderboard.downloadLogs'),
       onClick: onDownloadLogs,
       icon: Download,
       iconPosition: 'left' as const,
       variant: 'primary' as const
     },
     {
-      text: "Back to Home",
+      text: t('screens.finalLeaderboard.backToHome'),
       onClick: () => window.location.href = '/',
       icon: LogOut,
       iconPosition: 'right' as const,
@@ -34,7 +39,7 @@ export default function GameFinalResultsScreen({
 
   const playerButtons = [
     {
-      text: "Back to Home",
+      text: t('screens.finalLeaderboard.backToHome'),
       onClick: () => window.location.href = '/',
       icon: LogOut,
       iconPosition: 'right' as const
@@ -47,8 +52,8 @@ export default function GameFinalResultsScreen({
         <Card>
           <Leaderboard
             players={finalScores}
-            title="Final Leaderboard"
-            subtitle="Game is now over!"
+            title={t('screens.finalLeaderboard.title')}
+            subtitle={t('screens.finalLeaderboard.subtitle')}
             buttons={hostButtons}
           />
         </Card>
@@ -56,8 +61,8 @@ export default function GameFinalResultsScreen({
         <Card>
           <Leaderboard
             players={finalScores}
-            title="Final Leaderboard"
-            subtitle="Game is now over!"
+            title={t('screens.finalLeaderboard.title')}
+            subtitle={t('screens.finalLeaderboard.subtitle')}
             buttons={playerButtons}
             showIcon={false}
           />
