@@ -147,12 +147,6 @@ export default function JoinGameFormScreen() {
           Join Game
         </Button>
       </form>
-
-      <div className="mt-8 text-center">
-        <p className="text-gray-500 text-sm">
-          Don&apos;t have a PIN? Ask the host to share it with you.
-        </p>
-      </div>
     </Card>
   );
 } 
