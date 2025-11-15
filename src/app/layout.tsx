@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Galindo, Coiny } from "next/font/google";
 import "./globals.css";
+import I18nProvider from "@/components/I18nProvider";
 
 const galindo = Galindo({
   variable: "--font-title",
