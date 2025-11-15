@@ -291,7 +291,7 @@ export default function GamePage() {
       socket.off('playerAnswered');
       socket.off('gameLogs');
     };
-  }, [gameId, isHost, router]);
+  }, [gameId, isHost, router, state.game?.pin]);
 
   // Timer effect for question countdown
   useEffect(() => {
