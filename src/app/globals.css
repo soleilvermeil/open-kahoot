@@ -27,21 +27,21 @@ body {
     linear-gradient(to bottom, rgb(255, 255, 255), rgba(217, 211, 255, 0.5)),
     radial-gradient(circle, #432dd7 0px, transparent 2px),
     radial-gradient(circle, #432dd7 0px, transparent 2px),
-    repeating-linear-gradient(to bottom, #442dd734 0px, #442dd734 1px, transparent 1px, transparent 26px),
-    repeating-linear-gradient(60deg, #442dd734 0px, #442dd734 1px, transparent 1px, transparent 13px),
-    repeating-linear-gradient(-60deg, #432dd734 0px, #442dd734 1px, transparent 1px, transparent 13px);
+    repeating-linear-gradient(to left, #442dd700 0px, #442dd700 1px, transparent 1px, transparent 38px),
+    repeating-linear-gradient(30deg, #442dd733 0px, #442dd733 1px, transparent 1px, transparent 19px),
+    repeating-linear-gradient(-30deg, #442dd733 0px, #442dd733 1px, transparent 1px, transparent 19px);
   
   background-size: 
     100% 100%,
-    15px 26px,
-    15px 26px,
-    7.5px 13px,
-    15px 52px,
-    15px 52px;
+    38px 22px,
+    38px 22px,
+    19px 11px,
+    76px 22px,
+    76px 22px;
   background-position: 
     0 0,
     0 0,
-    7.5px 13px,
+    19px 11px,
     0 0,
     0 0,
     0 0;
