@@ -90,7 +90,7 @@ export default function HostGameLobbyScreen({
             <Button
               onClick={handleStartGame}
               disabled={playersOnly.length === 0}
-              variant="black"
+              variant="primary"
               size="lg"
               icon={Play}
             >
