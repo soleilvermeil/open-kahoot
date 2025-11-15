@@ -1,12 +1,17 @@
+'use client';
+
 import { UserCog } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PendingLayout from '@/components/PendingLayout';
 
 export default function GameFallbackScreen() {
+  const { t } = useTranslation();
+  
   return (
     <PendingLayout
       icon={UserCog}
-      title="Waiting for the host..."
-      description="The host is preparing the next question."
+      title={t('screens.gameFallback.title')}
+      description={t('screens.gameFallback.description')}
     />
   );
 } 

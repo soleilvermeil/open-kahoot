@@ -87,6 +87,39 @@
       "startGame": "Start Game",
       "waitingForPlayers": "Waiting for players to join..."
     }
+  },
+  "screens": {
+    "playerWaiting": {
+      "title": "Answer submitted!",
+      "description": "Your answer has been received. Waiting for other players to finish answering before results are shown."
+    },
+    "gameFallback": {
+      "title": "Waiting for the host...",
+      "description": "The host is preparing the next question."
+    },
+    "playerThinking": {
+      "title": "Get Ready!",
+      "description": "Look at the main screen and read the question"
+    },
+    "gameWaiting": {
+      "waitingTitle": "Waiting for game to start...",
+      "startingTitle": "Game Starting!",
+      "description": "Get ready to answer some questions!"
+    },
+    "gameWaitingForResults": {
+      "hostTitle": "Calculating results...",
+      "playerTitle": "Getting your results ready...",
+      "hostDescription": "Preparing the results for all players",
+      "playerDescription": "Hold tight, we're calculating your score!"
+    },
+    "gameValidation": {
+      "title": "Connecting to game...",
+      "description": "We're checking if the game is still active and verifying your connection. This ensures you can join or continue playing."
+    },
+    "gameThinkingPhase": {
+      "hostLabel": "Players are reading the question",
+      "playerLabel": "Read the question carefully"
+    }
   }
 }
 

@@ -1,12 +1,17 @@
+'use client';
+
 import { Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PendingLayout from '@/components/PendingLayout'
 
 export default function PlayerWaitingScreen() {
+  const { t } = useTranslation();
+  
   return (
     <PendingLayout
       icon={Check}
-      title="Answer submitted!"
-      description="Your answer has been received. Waiting for other players to finish answering before results are shown."
+      title={t('screens.playerWaiting.title')}
+      description={t('screens.playerWaiting.description')}
     />
   );
 } 

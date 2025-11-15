@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import PageLayout from '@/components/PageLayout';
 import Timer from '@/components/Timer';
 import HostThinkingScreen from '@/components/host-screens/HostThinkingScreen';
@@ -19,13 +22,15 @@ export default function GameThinkingPhaseScreen({
   isHost, 
   isPlayer 
 }: GameThinkingPhaseScreenProps) {
+  const { t } = useTranslation();
+  
   return (
     <PageLayout gradient="thinking" maxWidth="4xl" showLogo={false}>
       <div className="flex flex-col min-h-[calc(100vh-4rem)]">
         <Timer
           timeLeft={timeLeft}
           totalTime={game?.settings.thinkTime || 5}
-          label={isHost ? 'Players are reading the question' : 'Read the question carefully'}
+          label={isHost ? t('screens.gameThinkingPhase.hostLabel') : t('screens.gameThinkingPhase.playerLabel')}
           variant="thinking"
         />
 

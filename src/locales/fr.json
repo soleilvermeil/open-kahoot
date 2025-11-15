@@ -87,6 +87,39 @@
       "startGame": "Démarrer la partie",
       "waitingForPlayers": "En attente de joueurs..."
     }
+  },
+  "screens": {
+    "playerWaiting": {
+      "title": "Réponse envoyée !",
+      "description": "Votre réponse a été enregistrée. En attente des autres joueurs..."
+    },
+    "gameFallback": {
+      "title": "En attente de l'animateur...",
+      "description": "L'animateur prépare la prochaine question."
+    },
+    "playerThinking": {
+      "title": "Préparez-vous !",
+      "description": "Regardez l'écran principal et lisez la question"
+    },
+    "gameWaiting": {
+      "waitingTitle": "En attente du début de la partie...",
+      "startingTitle": "La partie commence !",
+      "description": "Préparez-vous à répondre à des questions !"
+    },
+    "gameWaitingForResults": {
+      "hostTitle": "Calcul des résultats...",
+      "playerTitle": "Préparation de vos résultats...",
+      "hostDescription": "Préparation des résultats pour tous les joueurs",
+      "playerDescription": "Un instant, nous calculons votre score !"
+    },
+    "gameValidation": {
+      "title": "Connexion au jeu...",
+      "description": "Nous vérifions si le jeu est toujours actif et validons votre connexion. Cela garantit que vous pouvez rejoindre ou continuer à jouer."
+    },
+    "gameThinkingPhase": {
+      "hostLabel": "Les joueurs lisent la question",
+      "playerLabel": "Lisez la question attentivement"
+    }
   }
 }
 

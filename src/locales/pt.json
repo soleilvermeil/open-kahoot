@@ -87,6 +87,39 @@
       "startGame": "Iniciar Jogo",
       "waitingForPlayers": "Aguardando jogadores entrarem..."
     }
+  },
+  "screens": {
+    "playerWaiting": {
+      "title": "Resposta enviada!",
+      "description": "Sua resposta foi recebida. Aguardando outros jogadores terminarem de responder antes de mostrar os resultados."
+    },
+    "gameFallback": {
+      "title": "Aguardando o anfitrião...",
+      "description": "O anfitrião está preparando a próxima pergunta."
+    },
+    "playerThinking": {
+      "title": "Prepare-se!",
+      "description": "Olhe para a tela principal e leia a pergunta"
+    },
+    "gameWaiting": {
+      "waitingTitle": "Aguardando o jogo começar...",
+      "startingTitle": "Jogo Iniciando!",
+      "description": "Prepare-se para responder algumas perguntas!"
+    },
+    "gameWaitingForResults": {
+      "hostTitle": "Calculando resultados...",
+      "playerTitle": "Preparando seus resultados...",
+      "hostDescription": "Preparando os resultados para todos os jogadores",
+      "playerDescription": "Aguarde, estamos calculando sua pontuação!"
+    },
+    "gameValidation": {
+      "title": "Conectando ao jogo...",
+      "description": "Estamos verificando se o jogo ainda está ativo e validando sua conexão. Isso garante que você possa entrar ou continuar jogando."
+    },
+    "gameThinkingPhase": {
+      "hostLabel": "Os jogadores estão lendo a pergunta",
+      "playerLabel": "Leia a pergunta com atenção"
+    }
   }
 }
 
