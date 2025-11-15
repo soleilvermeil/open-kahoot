@@ -29,7 +29,7 @@ export default function HostQuestionsSection({
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl text-white font-jua">Questions</h2>
+        <h2 className="text-2xl text-black font-jua">Questions</h2>
       </div>
 
       {questions.length === 0 ? (

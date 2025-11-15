@@ -20,7 +20,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     
     const variantClasses = {
       default: "",
-      center: "text-center text-2xl font-bold tracking-widest",
+      center: "text-center text-4xl font-black",
       large: "text-xl"
     };
 
